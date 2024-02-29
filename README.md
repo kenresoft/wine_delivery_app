@@ -2,6 +2,13 @@
 
 A new Flutter project.
 
+### Attribution
+
+Design idea from: [aPurple](https://dribbble.com/shots/14095115-Beer-Delivery-App-UI) on Dribble.
+
+---
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
