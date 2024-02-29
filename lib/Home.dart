@@ -20,13 +20,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(backgroundColor: Colors.white, toolbarHeight: 0, scrolledUnderElevation: 0),
       backgroundColor: Colors.white,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+      body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.only(top: 50, bottom: 10),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -73,7 +72,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
                 const SizedBox(height: 30),
 
-                /// TEXTFIELD
+                /// TEXT FIELD
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -118,7 +117,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('Collection', style: TextStyle(fontSize: 25)),
+                  child: Text('Collection', style: TextStyle(fontSize: 30)),
                 ),
 
                 const SizedBox(height: 35),
@@ -142,18 +141,35 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('On Sale', style: TextStyle(fontSize: 25)),
+                  child: Text('On Sale', style: TextStyle(fontSize: 30)),
                 ),
 
                 const SizedBox(height: 30),
 
                 SizedBox(
-                  //color: Colors.blueGrey,
                   height: 200,
-                  child: TabBarView(controller: tabController, children: [
-                    buildTabAll(),
-                    buildTabAll(),
-                    buildTabAll(),
+                  child: TabBarView(controller: tabController, children: const [
+                    DrinksCollection(
+                      name: 'Remy Martin',
+                      image: 'assets/profile.jpg',
+                      price: 28.45,
+                      rating: 4,
+                      color: Colors.grey,
+                    ),
+                    DrinksCollection(
+                      name: 'Grover',
+                      image: 'assets/profile.jpg',
+                      price: 16.99,
+                      rating: 3.0,
+                      color: Colors.purple,
+                    ),
+                    DrinksCollection(
+                      name: 'Sailor',
+                      image: 'assets/profile.jpg',
+                      price: 28.45,
+                      rating: 3.5,
+                      color: Colors.redAccent,
+                    ),
                   ]),
                 ),
 
@@ -187,8 +203,26 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       ),
     );
   }
+}
 
-  Widget buildTabAll() {
+class DrinksCollection extends StatelessWidget {
+  const DrinksCollection({
+    super.key,
+    required this.name,
+    required this.image,
+    required this.price,
+    required this.rating,
+    required this.color,
+  });
+
+  final String name;
+  final String image;
+  final double price;
+  final double rating;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: 8,
       scrollDirection: Axis.horizontal,
@@ -196,10 +230,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(4.0).copyWith(left: index == 0 ? 16 : 0, right: index == 7 ? 16 : 0),
-          child: const SizedBox(
+          child: SizedBox(
             width: 150,
             height: 200,
-            child: Card(color: Colors.brown),
+            child: Card(
+              color: color,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Image.asset(
+                      image,
+                      width: 75,
+                      height: 105,
+                    ),
+                  ),
+                  Positioned(
+                    top: 95,
+                    left: 10,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name, style: const TextStyle(color: Colors.white, fontSize: 19)),
+                        const SizedBox(height: 2),
+                        Text('\$$price', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                        const SizedBox(height: 2),
+                        Text(rating.toString(), style: const TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
