@@ -4,10 +4,13 @@ A new Flutter project.
 
 ### Attribution
 
-Design idea from: [aPurple](https://dribbble.com/shots/14095115-Beer-Delivery-App-UI) on Dribble.
+Design idea by: [aPurple](https://dribbble.com/shots/14095115-Beer-Delivery-App-UI) on Dribble.
+
+Image
+by: [tohamina](https://www.freepik.com/free-psd/wine-bottle-isolated-transparent-background_135017326.htm#query=wine%20bottle&position=9&from_view=keyword&track=ais&uuid=9f9cdd85-991b-4946-95c5-a5c1fbc91a7f)
+on Freepik.
 
 ---
-
 
 ## Getting Started
 
