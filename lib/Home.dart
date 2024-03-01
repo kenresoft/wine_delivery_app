@@ -1,5 +1,9 @@
 import 'package:circular_image/circular_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fontresoft/fontresoft.dart';
+import 'package:wine_delivery_app/sale_item.dart';
+
+import 'drink_collection.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -111,7 +115,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 //SizedBox(height: 10),
 
                 /// TEXT
-                const Padding(
+                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text('Drinks', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
                 ),
@@ -120,7 +124,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   child: Text('Collection', style: TextStyle(fontSize: 30)),
                 ),
 
-                const SizedBox(height: 35),
+                const SizedBox(height: 25),
 
                 SizedBox(
                   height: 35,
@@ -137,134 +141,120 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ),
                 ),
 
-                const SizedBox(height: 45),
+                const SizedBox(height: 25),
+
+                SizedBox(
+                  height: 270,
+                  child: TabBarView(controller: tabController, children: const [
+                    DrinksCollection(
+                      name: [
+                        'Remy Martin',
+                        'Remy Martin',
+                        'Remy Martin',
+                        'Remy Martin',
+                        'Remy Martin',
+                      ],
+                      image: [
+                        'assets/wine-5.png',
+                        'assets/wine-2.png',
+                        'assets/wine-3.png',
+                        'assets/wine-4.png',
+                        'assets/wine-6.png',
+                      ],
+                      price: [
+                        28.45,
+                        28.45,
+                        28.45,
+                        28.45,
+                        28.45,
+                      ],
+                      rating: [
+                        4,
+                        4,
+                        4,
+                        4,
+                        4,
+                      ],
+                      color: [
+                        Color(0xff3e494d),
+                        Color(0xff7E587D),
+                        Color(0xffE18182),
+                        Colors.blueAccent,
+                        Colors.orangeAccent,
+                      ],
+                    ),
+                    DrinksCollection(
+                      name: ['Grover'],
+                      image: ['assets/wine-2.jpg'],
+                      price: [16.99],
+                      rating: [3.0],
+                      color: [Colors.purple],
+                    ),
+                    DrinksCollection(
+                      name: ['Sailor'],
+                      image: ['assets/wine-3.jpg'],
+                      price: [28.45],
+                      rating: [3.5],
+                      color: [Colors.redAccent],
+                    ),
+                  ]),
+                ),
+
+                //const SizedBox(height: 5),
 
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text('On Sale', style: TextStyle(fontSize: 30)),
                 ),
 
-                const SizedBox(height: 30),
+                const SizedBox(height: 5),
 
                 SizedBox(
-                  height: 200,
-                  child: TabBarView(controller: tabController, children: const [
-                    DrinksCollection(
-                      name: 'Remy Martin',
-                      image: 'assets/profile.jpg',
-                      price: 28.45,
-                      rating: 4,
-                      color: Colors.grey,
-                    ),
-                    DrinksCollection(
-                      name: 'Grover',
-                      image: 'assets/profile.jpg',
-                      price: 16.99,
-                      rating: 3.0,
-                      color: Colors.purple,
-                    ),
-                    DrinksCollection(
-                      name: 'Sailor',
-                      image: 'assets/profile.jpg',
-                      price: 28.45,
-                      rating: 3.5,
-                      color: Colors.redAccent,
-                    ),
-                  ]),
+                  height: 180,
+                  child: ListView.builder(
+                    itemCount: 4,
+                    itemExtent: MediaQuery.of(context).size.width,
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return const SaleItem(
+                        name: 'Carpene Malvolti Prosecco',
+                        image: 'assets/wine-6.png',
+                        price: 17.40,
+                        rating: 7,
+                        color: Color(0xffC37D7D),
+                      );
+                    },
+                  ),
                 ),
 
-                const SizedBox(height: 25),
-
-                Padding(
+                /*Padding(
                   padding: const EdgeInsets.all(16),
                   child: Stack(
                     children: [
                       const SizedBox(
                         width: double.infinity,
                         height: 120,
-                        child: Card(color: Colors.brown),
+                        child: Card(color: Color(0xffC37D7D)),
                       ),
                       Positioned(
                         left: 20,
                         bottom: 50,
                         child: Image.asset(
-                          'assets/profile.jpg',
+                          'assets/wine.png',
                           height: 70,
                           width: 70,
                         ),
                       )
                     ],
                   ),
-                )
+                )*/
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class DrinksCollection extends StatelessWidget {
-  const DrinksCollection({
-    super.key,
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.rating,
-    required this.color,
-  });
-
-  final String name;
-  final String image;
-  final double price;
-  final double rating;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 8,
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(4.0).copyWith(left: index == 0 ? 16 : 0, right: index == 7 ? 16 : 0),
-          child: SizedBox(
-            width: 150,
-            height: 200,
-            child: Card(
-              color: color,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Image.asset(
-                      image,
-                      width: 75,
-                      height: 105,
-                    ),
-                  ),
-                  Positioned(
-                    top: 95,
-                    left: 10,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(name, style: const TextStyle(color: Colors.white, fontSize: 19)),
-                        const SizedBox(height: 2),
-                        Text('\$$price', style: const TextStyle(color: Colors.white, fontSize: 16)),
-                        const SizedBox(height: 2),
-                        Text(rating.toString(), style: const TextStyle(color: Colors.white)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
