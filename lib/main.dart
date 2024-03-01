@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fontresoft/fontresoft.dart';
 import 'package:wine_delivery_app/Home.dart';
 
 void main() {
@@ -15,8 +16,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
+        fontFamily: FontResoft.inter,
+        package: FontResoft.package,
       ),
       home: const Home(),
     );
