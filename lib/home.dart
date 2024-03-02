@@ -57,15 +57,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                             ),
-                            ClipOval(
-                              child: Card(
-                                elevation: 10,
-                                color: Colors.red,
-                                shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(80)),
-                                child: CircularImage(
-                                  radius: 28,
-                                  source: 'assets/profile.jpg',
-                                ),
+                            Card(
+                              elevation: 10,
+                              color: Colors.red,
+                              shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(80)),
+                              child: CircularImage(
+                                radius: 28,
+                                source: 'assets/profile.jpg',
                               ),
                             ),
                           ],
@@ -80,7 +78,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
                 Container(
                   height: 50,
-                  margin:const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
                   decoration: BoxDecoration(
                     color: Colors.black12.withOpacity(.03),
                     borderRadius: BorderRadius.circular(12),
@@ -108,20 +106,22 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                       SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          color: Colors.black,
-                          child: const Icon(CupertinoIcons.search, color: Colors.white),
+                      InkWell(
+                        onTap: () {},
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Card(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            color: Colors.black,
+                            child: const Icon(CupertinoIcons.search, color: Colors.white),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-
-                //SizedBox(height: 10),
 
                 /// TEXT
                 Padding(
@@ -151,6 +151,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           indicatorPadding: const EdgeInsets.only(left: 4, right: 4),
                           indicatorColor: Colors.black,
                           labelColor: Colors.black,
+                          unselectedLabelColor: Colors.black,
                           labelStyle: Font.poppins(style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                           labelPadding: const EdgeInsets.only(top: 5, left: 20, right: 20),
                           isScrollable: true,
@@ -193,8 +194,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ]),
                 ),
 
-                //const SizedBox(height: 5),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -223,8 +222,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ],
                 ),
 
-                const SizedBox(height: 5),
-
                 SizedBox(
                   height: 180,
                   child: ListView.builder(
@@ -235,7 +232,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     itemBuilder: (context, index) {
                       return const SaleItem(
                         name: 'Carpene Malvolti Prosecco',
-                        image: 'assets/wine-6.png',
+                        image: 'assets/wine-2.png',
                         price: 17.40,
                         rating: 3,
                         color: Color(0xffC37D7D),
@@ -261,11 +258,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         'Grover',
       ],
       image: [
+        'assets/wine-4.png',
+        'assets/wine-3.png',
+        'assets/wine-6.png',
         'assets/wine-5.png',
         'assets/wine-2.png',
-        'assets/wine-3.png',
-        'assets/wine-4.png',
-        'assets/wine-6.png',
       ],
       price: [
         28.45,
