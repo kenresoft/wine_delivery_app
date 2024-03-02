@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:wine_delivery_app/rate_bar.dart';
 
 class SaleItem extends StatelessWidget {
   const SaleItem({
@@ -21,15 +21,16 @@ class SaleItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned(
-        top: 70,
+        top: 60,
         left: 10,
         child: SizedBox(
           width: MediaQuery.of(context).size.width - 20,
           height: 105,
           child: Card(
             color: color,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             child: Padding(
-              padding: const EdgeInsets.only(left: 85, right: 16),
+              padding: const EdgeInsets.only(left: 80, right: 16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +39,7 @@ class SaleItem extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text('\$$price', style: const TextStyle(color: Colors.white, fontSize: 16)),
                   const SizedBox(height: 2),
-                  buildRatingBar(rating),
+                  RateBar(rating: rating),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -46,30 +47,18 @@ class SaleItem extends StatelessWidget {
           ),
         ),
       ),
-      Align(
-        alignment: Alignment.centerLeft,
-        child: Image.asset(
-          image,
-          height: 155,
+      Positioned(
+        top: 15,
+        left: -14,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Image.asset(
+            image,
+            height: 155,
+            width: 140,
+          ),
         ),
       ),
     ]);
-  }
-
-  RatingBar buildRatingBar(double value) {
-    return RatingBar.builder(
-      itemSize: 15,
-      initialRating: rating,
-      minRating: 1,
-      direction: Axis.horizontal,
-      allowHalfRating: true,
-      itemCount: 5,
-      unratedColor: Colors.white70,
-      itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-      itemBuilder: (context, _) {
-        return const Icon(Icons.star, size: 2, color: Colors.amber);
-      },
-      onRatingUpdate: (double value) {},
-    );
   }
 }
