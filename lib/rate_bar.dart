@@ -5,17 +5,15 @@ class RateBar extends StatelessWidget {
   const RateBar({
     super.key,
     required this.rating,
-    required this.index,
   });
 
-  final List<double> rating;
-  final int index;
+  final double rating;
 
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
       itemSize: 15,
-      initialRating: rating[index],
+      initialRating: rating,
       minRating: 1,
       direction: Axis.horizontal,
       allowHalfRating: true,
