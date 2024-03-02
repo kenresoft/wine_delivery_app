@@ -15,11 +15,39 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   late TabController tabController;
+  final ScrollController _controller_1 = ScrollController();
+  final ScrollController _controller_2 = ScrollController();
+  int _currentIndex_1 = 1;
+  int _currentIndex_2 = 1;
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 3, vsync: this);
+    _controller_1.addListener(_scrollListener_1);
+    _controller_2.addListener(_scrollListener_2);
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    _controller_1.removeListener(_scrollListener_1);
+    _controller_1.dispose();
+    _controller_2.removeListener(_scrollListener_2);
+    _controller_2.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener_1() {
+    setState(() {
+      _currentIndex_1 = (_controller_1.offset / 165).round() + 1; // Assuming item height is 50
+    });
+  }
+
+  void _scrollListener_2() {
+    setState(() {
+      _currentIndex_2 = (_controller_2.offset / MediaQuery.of(context).size.width).round() + 1; // Assuming item height is 50
+    });
   }
 
   @override
@@ -43,27 +71,34 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         width: 150,
                         child: Stack(
                           children: [
-                            const Positioned(
-                              left: 40,
-                              width: 80,
+                            Positioned(
+                              left: 28,
+                              width: 95,
                               top: 10,
-                              child: Card(
-                                color: Colors.grey,
-                                margin: EdgeInsets.all(10),
-                                child: Text(
-                                  'Alex',
-                                  style: TextStyle(fontSize: 18, backgroundColor: Colors.transparent),
-                                  textAlign: TextAlign.center,
+                              child: Container(
+                                decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(16)),
+                                margin: const EdgeInsets.all(10),
+                                child: const Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    'Alex',
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, backgroundColor: Colors.transparent),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
                             ),
                             Card(
-                              elevation: 10,
-                              color: Colors.red,
-                              shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(80)),
-                              child: CircularImage(
-                                radius: 28,
-                                source: 'assets/profile.jpg',
+                              elevation: 5,
+                              color: Colors.white,
+                              shadowColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: CircularImage(
+                                  radius: 25,
+                                  source: 'assets/profile.jpg',
+                                ),
                               ),
                             ),
                           ],
@@ -170,11 +205,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       child: Row(
                         children: [
                           Text(
-                            '2',
+                            '$_currentIndex_1',
                             style: Font.poppins(style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                           ),
                           Text(
-                            '/8',
+                            '/6',
                             style: Font.poppins(style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey)),
                           ),
                         ],
@@ -209,11 +244,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       child: Row(
                         children: [
                           Text(
-                            '1',
+                            '$_currentIndex_2',
                             style: Font.poppins(style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                           ),
                           Text(
-                            '/3',
+                            '/4',
                             style: Font.poppins(style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey)),
                           ),
                         ],
@@ -229,6 +264,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     itemExtent: MediaQuery.of(context).size.width,
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
+                    controller: _controller_2,
                     itemBuilder: (context, index) {
                       return const SaleItem(
                         name: 'Carpene Malvolti Prosecco',
@@ -249,8 +285,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   DrinksCollection buildDrinksCollection() {
-    return const DrinksCollection(
-      name: [
+    return DrinksCollection(
+      name: const [
         'Remy Martin',
         'Grover',
         'Sailor',
@@ -258,7 +294,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         'Leo Swiss',
         'Grover',
       ],
-      image: [
+      image: const [
         'assets/wine-8.png',
         'assets/wine-9.png',
         'assets/wine-3.png',
@@ -266,7 +302,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         'assets/wine-6.png',
         'assets/wine-2.png',
       ],
-      price: [
+      price: const [
         28.45,
         16.99,
         16.99,
@@ -274,7 +310,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         28.45,
         28.45,
       ],
-      rating: [
+      rating: const [
         4,
         3,
         3,
@@ -282,7 +318,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         2,
         5,
       ],
-      color: [
+      color: const [
         Color(0xff3e494d),
         Color(0xff7E587D),
         Color(0xffE18182),
@@ -290,6 +326,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         Colors.green,
         Colors.orange,
       ],
+      scrollController: _controller_1,
     );
   }
 }
