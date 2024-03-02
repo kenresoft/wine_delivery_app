@@ -6,7 +6,7 @@ A new Flutter project.
 
 Design idea by: [aPurple](https://dribbble.com/shots/14095115-Beer-Delivery-App-UI) on Dribble.
 
-Image
+Images
 by: [pngwing](https://www.pngwing.com/en/search?q=wine+bottle).
 
 ---
