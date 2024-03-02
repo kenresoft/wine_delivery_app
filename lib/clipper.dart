@@ -6,12 +6,12 @@ class SemiCircle extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white12
+      ..color = Colors.white10
       ..style = PaintingStyle.fill;
 
     final Path path = Path();
 
-    path.moveTo(10, 10);
+    path.moveTo(0, 0);
     path.arcTo(
       const Rect.fromLTWH(0, 0, 90, 100),
       pi,
