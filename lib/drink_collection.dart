@@ -23,19 +23,21 @@ class DrinksCollection extends StatelessWidget {
     return ListView.builder(
       itemCount: name.length,
       scrollDirection: Axis.horizontal,
-      itemExtent: 175,
+      //itemExtent: 180,
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         return Container(
-          margin: const EdgeInsets.all(4.0).copyWith(left: index == 0 ? 12 : 6, right: index == name.length - 1 ? 12 : 6),
+          width: 165,
+          margin: const EdgeInsets.all(4.0).copyWith(left: index == 0 ? 15 : 4, right: index == name.length - 1 ? 15 : 4),
           child: Stack(children: [
             Positioned(
               top: 50,
               left: 0,
-              width: 160,
+              width: 165,
               height: 200,
               child: Card(
                 color: color[index],
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
@@ -46,7 +48,7 @@ class DrinksCollection extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text('\$${price[index]}', style: const TextStyle(color: Colors.white, fontSize: 16)),
                       const SizedBox(height: 2),
-                      buildRatingBar(index),
+                      RateBar(rating: rating[index]),
                       //Text(rating[index].toString(), style: const TextStyle(color: Colors.white)),
                       const SizedBox(height: 10),
                     ],
@@ -56,19 +58,23 @@ class DrinksCollection extends StatelessWidget {
             ),
             Positioned(
               top: 4,
-              left: 40,
+              left: 38,
               child: CustomPaint(
                 painter: SemiCircle(),
               ),
             ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: Image.asset(
-                  image[index],
-                  height: 165,
-                  width: 140,
+            Positioned(
+              left: -3,
+              top: 2,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Image.asset(
+                    image[index],
+                    height: 165,
+                    width: 140,
+                  ),
                 ),
               ),
             ),
@@ -76,9 +82,5 @@ class DrinksCollection extends StatelessWidget {
         );
       },
     );
-  }
-
-  RateBar buildRatingBar(int index) {
-    return RateBar(rating: rating, index: index);
   }
 }
