@@ -10,6 +10,7 @@ class DrinksCollection extends StatelessWidget {
     required this.price,
     required this.rating,
     required this.color,
+    required this.scrollController,
   });
 
   final List<String> name;
@@ -17,13 +18,14 @@ class DrinksCollection extends StatelessWidget {
   final List<double> price;
   final List<double> rating;
   final List<Color> color;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: name.length,
       scrollDirection: Axis.horizontal,
-      //itemExtent: 180,
+      controller: scrollController,
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         return Container(
