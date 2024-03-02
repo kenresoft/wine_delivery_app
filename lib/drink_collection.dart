@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wine_delivery_app/clippeer.dart';
+import 'package:wine_delivery_app/clipper.dart';
+import 'package:wine_delivery_app/rate_bar.dart';
 
 class DrinksCollection extends StatelessWidget {
   const DrinksCollection({
@@ -20,35 +21,35 @@ class DrinksCollection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 5,
+      itemCount: name.length,
       scrollDirection: Axis.horizontal,
+      itemExtent: 175,
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(4.0).copyWith(left: index == 0 ? 16 : 0, right: index == 7 ? 16 : 0),
+        return Container(
+          margin: const EdgeInsets.all(4.0).copyWith(left: index == 0 ? 12 : 6, right: index == name.length - 1 ? 12 : 6),
           child: Stack(children: [
             Positioned(
               top: 50,
-              left: 10,
-              child: SizedBox(
-                width: 150,
-                height: 200,
-                child: Card(
-                  color: color[index],
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(name[index], style: const TextStyle(color: Colors.white, fontSize: 19)),
-                        const SizedBox(height: 2),
-                        Text('\$${price[index]}', style: const TextStyle(color: Colors.white, fontSize: 16)),
-                        const SizedBox(height: 2),
-                        Text(rating[index].toString(), style: const TextStyle(color: Colors.white)),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
+              left: 0,
+              width: 160,
+              height: 200,
+              child: Card(
+                color: color[index],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name[index], style: const TextStyle(color: Colors.white, fontSize: 18)),
+                      const SizedBox(height: 2),
+                      Text('\$${price[index]}', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                      const SizedBox(height: 2),
+                      buildRatingBar(index),
+                      //Text(rating[index].toString(), style: const TextStyle(color: Colors.white)),
+                      const SizedBox(height: 10),
+                    ],
                   ),
                 ),
               ),
@@ -66,7 +67,7 @@ class DrinksCollection extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 15),
                 child: Image.asset(
                   image[index],
-                  height: 155,
+                  height: 165,
                   width: 140,
                 ),
               ),
@@ -75,5 +76,9 @@ class DrinksCollection extends StatelessWidget {
         );
       },
     );
+  }
+
+  RateBar buildRatingBar(int index) {
+    return RateBar(rating: rating, index: index);
   }
 }
