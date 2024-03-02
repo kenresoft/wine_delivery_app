@@ -232,7 +232,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     itemBuilder: (context, index) {
                       return const SaleItem(
                         name: 'Carpene Malvolti Prosecco',
-                        image: 'assets/wine-2.png',
+                        image: 'assets/wine-10.png',
                         price: 17.40,
                         rating: 3,
                         color: Color(0xffC37D7D),
@@ -255,17 +255,20 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         'Grover',
         'Sailor',
         'Remy Martin',
+        'Leo Swiss',
         'Grover',
       ],
       image: [
-        'assets/wine-4.png',
+        'assets/wine-8.png',
+        'assets/wine-9.png',
         'assets/wine-3.png',
+        'assets/wine-4.png',
         'assets/wine-6.png',
-        'assets/wine-5.png',
         'assets/wine-2.png',
       ],
       price: [
         28.45,
+        16.99,
         16.99,
         16.99,
         28.45,
@@ -276,6 +279,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         3,
         3,
         2,
+        2,
         5,
       ],
       color: [
@@ -283,6 +287,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         Color(0xff7E587D),
         Color(0xffE18182),
         Colors.blue,
+        Colors.green,
         Colors.orange,
       ],
     );
