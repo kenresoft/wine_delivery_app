@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/page_1/clipper.dart';
 import 'package:wine_delivery_app/page_1/rate_bar.dart';
 
@@ -33,53 +34,56 @@ class DrinksCollection extends StatelessWidget {
         return InkWell(
           onTap: () => onClick(index, this),
           child: Container(
-            width: 165,
-            margin: const EdgeInsets.all(4.0).copyWith(left: index == 0 ? 15 : 4, right: index == name.length - 1 ? 15 : 4),
+            width: 165.w,
+            margin: const EdgeInsets.all(4.0).copyWith(
+              left: index == 0 ? 15.w : 4.w,
+              right: index == name.length - 1 ? 15.w : 4.w,
+            ),
             child: Stack(children: [
               Positioned(
-                top: 50,
+                top: 50.h,
                 left: 0,
-                width: 165,
-                height: 200,
+                width: 165.w,
+                height: 200.h,
                 child: Card(
                   color: color[index],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15).r),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10).w,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name[index], style: const TextStyle(color: Colors.white, fontSize: 18)),
-                        const SizedBox(height: 2),
-                        Text('\$${price[index]}', style: const TextStyle(color: Colors.white, fontSize: 16)),
-                        const SizedBox(height: 2),
+                        Text(name[index], style: TextStyle(color: Colors.white, fontSize: 18.sp)),
+                        SizedBox(height: 2.h),
+                        Text('\$${price[index]}', style: TextStyle(color: Colors.white, fontSize: 16.sp)),
+                        SizedBox(height: 2.h),
                         RateBar(rating: rating[index]),
                         //Text(rating[index].toString(), style: const TextStyle(color: Colors.white)),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                       ],
                     ),
                   ),
                 ),
               ),
               Positioned(
-                top: 4,
-                left: 38,
+                top: 4.h,
+                left: 38.w,
                 child: CustomPaint(
                   painter: SemiCircle(),
                 ),
               ),
               Positioned(
-                left: -3,
-                top: 2,
+                left: -3.w,
+                top: 2.h,
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 15),
+                    padding: const EdgeInsets.only(left: 15).r,
                     child: Image.asset(
                       image[index],
-                      height: 165,
-                      width: 140,
+                      height: 165.h,
+                      width: 140.w,
                     ),
                   ),
                 ),
