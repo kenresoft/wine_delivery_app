@@ -36,7 +36,7 @@ class DrinksCollection extends StatelessWidget {
         return InkWell(
           onTap: () => onClick(index, this),
           child: Container(
-            width: 165.w,
+            width: 145.w,
             margin: const EdgeInsets.all(4.0).copyWith(
               left: index == 0 ? 15.w : 4.w,
               right: index == name.length - 1 ? 15.w : 4.w,
@@ -45,7 +45,7 @@ class DrinksCollection extends StatelessWidget {
               Positioned(
                 top: 50.h,
                 left: 0,
-                width: 165.w,
+                width: 145.w,
                 height: 200.h,
                 child: Card(
                   color: color[index],
@@ -70,7 +70,7 @@ class DrinksCollection extends StatelessWidget {
               ),
               Positioned(
                 top: 4.h,
-                left: 38.w,
+                left: 33.w,
                 child: CustomPaint(
                   painter: SemiCircle(),
                 ),
@@ -81,7 +81,7 @@ class DrinksCollection extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 15).r,
+                    padding: const EdgeInsets.only(left: 5).r,
                     child: Image.asset(
                       image[index],
                       height: 165.h,
