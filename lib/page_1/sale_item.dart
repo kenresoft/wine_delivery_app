@@ -38,7 +38,7 @@ class SaleItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: TextStyle(color: Colors.white, fontSize: 19.sp)),
+                  Text(name, style: TextStyle(color: Colors.white, fontSize: 17.sp)),
                   SizedBox(height: 2.h),
                   Text('\$$price', style: TextStyle(color: Colors.white, fontSize: 16.sp)),
                   SizedBox(height: 2.h),
