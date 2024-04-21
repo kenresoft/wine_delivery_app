@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/page_1/clipper.dart';
-import 'package:wine_delivery_app/page_1/home.dart';
 import 'package:wine_delivery_app/page_1/rate_bar.dart';
 
 class DrinksCollection extends StatelessWidget {
@@ -56,7 +55,12 @@ class DrinksCollection extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name[index], style: TextStyle(color: Colors.white, fontSize: 18.sp)),
+                        Text(
+                          name[index],
+                          style: TextStyle(color: Colors.white, fontSize: 18.sp),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         SizedBox(height: 2.h),
                         Text('\$${price[index]}', style: TextStyle(color: Colors.white, fontSize: 16.sp)),
                         SizedBox(height: 2.h),
