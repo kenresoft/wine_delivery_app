@@ -2,6 +2,8 @@ import 'package:circular_image/circular_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fontresoft/fontresoft.dart';
 import 'package:wine_delivery_app/page_1/sale_item.dart';
 
@@ -362,3 +364,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 }
+
+/*extension ExtensionName on num {
+  double get h => toDouble();
+
+  double get w => toDouble();
+
+  double get sp => toDouble();
+
+  double get r => toDouble();
+}
+
+extension ExtensionName2 on EdgeInsets {
+  EdgeInsets get h => this;
+
+  EdgeInsets get w => this;
+
+  EdgeInsets get r => this;
+}
+
+extension ExtensionName3 on BorderRadius {
+  BorderRadius get r => this;
+}*/
