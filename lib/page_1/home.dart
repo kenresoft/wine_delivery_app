@@ -79,9 +79,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         child: Stack(
                           children: [
                             Positioned(
-                              left: 28.w,
-                              width: 95.w,
-                              top: 10.h,
+                              left: 20.w,
+                              width: 90.w,
+                              top: 3.h,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xffF0ECED),
@@ -89,11 +89,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 ),
                                 margin: const EdgeInsets.all(10).r,
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 8.0.w),
+                                  padding: EdgeInsets.only(left: 8.0.w, top: 2.h, bottom: 2.h),
                                   child: Text(
                                     'Alex',
                                     style: TextStyle(
-                                      fontSize: 18.sp,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.w500,
                                       backgroundColor: Colors.transparent,
                                     ),
@@ -111,7 +111,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               child: Padding(
                                 padding: const EdgeInsets.all(2).r,
                                 child: CircularImage(
-                                  radius: 25.r,
+                                  radius: 20.r,
                                   source: 'assets/profile.jpg',
                                 ),
                               ),
@@ -127,7 +127,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 /// TEXT FIELD
 
                 Container(
-                  height: 50.h,
+                  height: 45.h,
                   margin: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 20.h),
                   decoration: BoxDecoration(
                     color: Colors.black12.withOpacity(.03),
@@ -150,7 +150,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           child: TextField(
                             decoration: InputDecoration(
                               hintText: 'Search Drinks',
-                              hintStyle: TextStyle(fontSize: 14.sp),
+                              hintStyle: TextStyle(fontSize: 13.sp),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10).r,
                                 borderSide: BorderSide(color: Colors.transparent, width: 1.w),
@@ -186,14 +186,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
                   child: Text(
                     'Drinks',
-                    style: Font.poppins(style: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.w700)),
+                    style: Font.poppins(style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w700)),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
                   child: Text(
                     'Collection',
-                    style: Font.poppins(style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w500)),
+                    style: Font.poppins(style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w500)),
                   ),
                 ),
 
@@ -264,7 +264,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
                       child: Text(
                         'On Sale',
-                        style: Font.poppins(style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w500)),
+                        style: Font.poppins(style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.w500)),
                       ),
                     ),
                     Padding(
