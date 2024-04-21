@@ -60,255 +60,250 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, toolbarHeight: 0, scrolledUnderElevation: 0),
+      //appBar: AppBar(backgroundColor: Colors.white, toolbarHeight: 0, scrolledUnderElevation: 0),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10).h,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12).w,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 150.w,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 20.w,
-                              width: 90.w,
-                              top: 3.h,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xffF0ECED),
-                                  borderRadius: BorderRadius.circular(16).r,
-                                ),
-                                margin: const EdgeInsets.all(10).r,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 8.0.w, top: 2.h, bottom: 2.h),
-                                  child: Text(
-                                    'Alex',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Card(
-                              elevation: 5.h,
-                              color: Colors.white,
-                              surfaceTintColor: Colors.white,
-                              shadowColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80).r),
-                              child: Padding(
-                                padding: const EdgeInsets.all(2).r,
-                                child: CircularImage(
-                                  radius: 20.r,
-                                  source: 'assets/profile.jpg',
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.shopping_bag_outlined, size: 30.r, color: Color(0xff383838)),
-                    ],
-                  ),
-                ),
-
-                /// TEXT FIELD
-
-                Container(
-                  height: 45.h,
-                  margin: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 20.h),
-                  decoration: BoxDecoration(
-                    color: Colors.black12.withOpacity(.03),
-                    borderRadius: BorderRadius.circular(12).r,
-                    boxShadow: [
-                      BoxShadow(color: Colors.white12, blurRadius: 10, offset: Offset(-2.w, -2.h)),
-                      BoxShadow(color: Colors.white12, blurRadius: 10, offset: Offset(2.w, -10.h)),
-                    ],
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    elevation: 5.h,
-                    color: const Color(0xffFBF9FA),
-                    surfaceTintColor: const Color(0xffFBF9FA),
-                    shadowColor: Colors.white54,
-                    child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12).w,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 150.w,
+                    child: Stack(
                       children: [
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Search Drinks',
-                              hintStyle: TextStyle(fontSize: 13.sp),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10).r,
-                                borderSide: BorderSide(color: Colors.transparent, width: 1.w),
+                        Positioned(
+                          left: 20.w,
+                          width: 90.w,
+                          top: 3.h,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xffF0ECED),
+                              borderRadius: BorderRadius.circular(16).r,
+                            ),
+                            margin: const EdgeInsets.all(10).r,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 8.0.w, top: 2.h, bottom: 2.h),
+                              child: Text(
+                                'Alex',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                  backgroundColor: Colors.transparent,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10).r,
-                                borderSide: BorderSide(color: Colors.transparent, width: 1.w),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
                             ),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(12).r,
-                          child: SizedBox(
-                            width: 50.w,
-                            height: 45.h,
-                            child: Card(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12).r),
-                              color: const Color(0xff3F4A4E),
-                              child: const Icon(CupertinoIcons.search, color: Colors.white),
+                        Card(
+                          elevation: 5.h,
+                          color: Colors.white,
+                          surfaceTintColor: Colors.white,
+                          shadowColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80).r),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2).r,
+                            child: CircularImage(
+                              radius: 20.r,
+                              source: 'assets/profile.jpg',
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                  Icon(Icons.shopping_bag_outlined, size: 30.r, color: Color(0xff383838)),
+                ],
+              ),
+            ),
 
-                /// TEXT
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
-                  child: Text(
-                    'Drinks',
-                    style: Font.poppins(style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w700)),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
-                  child: Text(
-                    'Collection',
-                    style: Font.poppins(style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w500)),
-                  ),
-                ),
+            /// TEXT FIELD
 
-                SizedBox(height: 25.h),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Container(
+              height: 45.h,
+              margin: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 20.h),
+              decoration: BoxDecoration(
+                color: Colors.black12.withOpacity(.03),
+                borderRadius: BorderRadius.circular(12).r,
+                boxShadow: [
+                  BoxShadow(color: Colors.white12, blurRadius: 10, offset: Offset(-2.w, -2.h)),
+                  BoxShadow(color: Colors.white12, blurRadius: 10, offset: Offset(2.w, -10.h)),
+                ],
+              ),
+              width: MediaQuery.of(context).size.width,
+              child: Card(
+                margin: EdgeInsets.zero,
+                elevation: 5.h,
+                color: const Color(0xffFBF9FA),
+                surfaceTintColor: const Color(0xffFBF9FA),
+                shadowColor: Colors.white54,
+                child: Row(
                   children: [
-                    SizedBox(
-                      height: 35.h,
-                      width: MediaQuery.of(context).size.width - 80.w,
-                      child: DefaultTabController(
-                        length: 3,
-                        child: TabBar(
-                          dividerHeight: 0,
-                          indicatorPadding: EdgeInsets.only(left: 4.w, right: 4.w),
-                          indicatorColor: Colors.black,
-                          labelColor: Colors.black,
-                          unselectedLabelColor: Colors.black,
-                          labelStyle: Font.poppins(style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)),
-                          labelPadding: EdgeInsets.only(top: 5.h, left: 20.w, right: 20.w),
-                          isScrollable: true,
-                          tabAlignment: TabAlignment.start,
-                          tabs: const [
-                            Text('All'),
-                            Text('Trending'),
-                            Text('Popular'),
-                          ],
-                          controller: tabController,
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search Drinks',
+                          hintStyle: TextStyle(fontSize: 13.sp),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10).r,
+                            borderSide: BorderSide(color: Colors.transparent, width: 1.w),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10).r,
+                            borderSide: BorderSide(color: Colors.transparent, width: 1.w),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 6.h, right: 12.w),
-                      child: Row(
-                        children: [
-                          Text(
-                            '$_currentIndex_1',
-                            style: Font.poppins(style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)),
-                          ),
-                          Text(
-                            '/6',
-                            style: Font.poppins(
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.grey),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-
-                SizedBox(height: 25.h),
-
-                SizedBox(
-                  height: 270.h,
-                  child: TabBarView(controller: tabController, children: [
-                    buildDrinksCollection(),
-                    buildDrinksCollection(),
-                    buildDrinksCollection(),
-                  ]),
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
-                      child: Text(
-                        'On Sale',
-                        style: Font.poppins(style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.w500)),
+                    InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(12).r,
+                      child: SizedBox(
+                        width: 50.w,
+                        height: 45.h,
+                        child: Card(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12).r),
+                          color: const Color(0xff3F4A4E),
+                          child: const Icon(CupertinoIcons.search, color: Colors.white),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 6.h, right: 12.w),
-                      child: Row(
-                        children: [
-                          Text(
-                            '$_currentIndex_2',
-                            style: Font.poppins(style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)),
-                          ),
-                          Text(
-                            '/4',
-                            style: Font.poppins(
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.grey),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 ),
+              ),
+            ),
 
+            /// TEXT
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
+              child: Text(
+                'Drinks',
+                style: Font.poppins(style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w700)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
+              child: Text(
+                'Collection',
+                style: Font.poppins(style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w500)),
+              ),
+            ),
+
+            SizedBox(height: 25.h),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 SizedBox(
-                  height: 180.h,
-                  child: ListView.builder(
-                    itemCount: 4,
-                    itemExtent: MediaQuery.of(context).size.width,
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    controller: _controller_2,
-                    itemBuilder: (context, index) {
-                      return const SaleItem(
-                        name: 'Carpene Malvolti Prosecco',
-                        image: 'assets/wine-10.png',
-                        price: 17.40,
-                        rating: 3,
-                        color: Color(0xffC37D7D),
-                      );
-                    },
+                  height: 35.h,
+                  width: MediaQuery.of(context).size.width - 80.w,
+                  child: DefaultTabController(
+                    length: 3,
+                    child: TabBar(
+                      dividerHeight: 0,
+                      indicatorPadding: EdgeInsets.only(left: 4.w, right: 4.w),
+                      indicatorColor: Colors.black,
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.black,
+                      labelStyle: Font.poppins(style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)),
+                      labelPadding: EdgeInsets.only(top: 5.h, left: 20.w, right: 20.w),
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      tabs: const [
+                        Text('All'),
+                        Text('Trending'),
+                        Text('Popular'),
+                      ],
+                      controller: tabController,
+                    ),
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(top: 6.h, right: 12.w),
+                  child: Row(
+                    children: [
+                      Text(
+                        '$_currentIndex_1',
+                        style: Font.poppins(style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)),
+                      ),
+                      Text(
+                        '/6',
+                        style: Font.poppins(
+                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
-          ),
+
+            SizedBox(height: 25.h),
+
+            SizedBox(
+              height: 270.h,
+              child: TabBarView(controller: tabController, children: [
+                buildDrinksCollection(),
+                buildDrinksCollection(),
+                buildDrinksCollection(),
+              ]),
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0).w,
+                  child: Text(
+                    'On Sale',
+                    style: Font.poppins(style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.w500)),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 6.h, right: 12.w),
+                  child: Row(
+                    children: [
+                      Text(
+                        '$_currentIndex_2',
+                        style: Font.poppins(style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)),
+                      ),
+                      Text(
+                        '/4',
+                        style: Font.poppins(
+                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+
+            SizedBox(
+              height: 180.h,
+              child: ListView.builder(
+                itemCount: 4,
+                itemExtent: MediaQuery.of(context).size.width,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                controller: _controller_2,
+                itemBuilder: (context, index) {
+                  return const SaleItem(
+                    name: 'Carpene Malvolti Prosecco',
+                    image: 'assets/wine-10.png',
+                    price: 17.40,
+                    rating: 3,
+                    color: Color(0xffC37D7D),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
