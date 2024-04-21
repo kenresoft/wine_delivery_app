@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/page_1/rate_bar.dart';
 
 class SaleItem extends StatelessWidget {
@@ -21,26 +22,26 @@ class SaleItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned(
-        top: 60,
-        left: 10,
+        top: 60.h,
+        left: 10.w,
         child: SizedBox(
-          width: MediaQuery.of(context).size.width - 20,
-          height: 105,
+          width: MediaQuery.of(context).size.width - 20.w,
+          height: 105.h,
           child: Card(
             color: color,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15).r),
             child: Padding(
-              padding: const EdgeInsets.only(left: 80, right: 16),
+              padding: EdgeInsets.only(left: 80.w, right: 16.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: const TextStyle(color: Colors.white, fontSize: 19)),
-                  const SizedBox(height: 2),
-                  Text('\$$price', style: const TextStyle(color: Colors.white, fontSize: 16)),
-                  const SizedBox(height: 2),
+                  Text(name, style: TextStyle(color: Colors.white, fontSize: 19.sp)),
+                  SizedBox(height: 2.h),
+                  Text('\$$price', style: TextStyle(color: Colors.white, fontSize: 16.sp)),
+                  SizedBox(height: 2.h),
                   RateBar(rating: rating),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                 ],
               ),
             ),
@@ -48,14 +49,14 @@ class SaleItem extends StatelessWidget {
         ),
       ),
       Positioned(
-        top: 15,
-        left: -14,
+        top: 15.h,
+        left: -14.w,
         child: Align(
           alignment: Alignment.centerLeft,
           child: Image.asset(
             image,
-            height: 155,
-            width: 140,
+            height: 155.h,
+            width: 140.w,
           ),
         ),
       ),
