@@ -15,10 +15,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(448, 998),
-      minTextAdapt: false,
-      ensureScreenSize: false,
-      useInheritedMediaQuery: true,
+      designSize: const Size(360, 825),
+      minTextAdapt: true,
+      ensureScreenSize: true,
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
