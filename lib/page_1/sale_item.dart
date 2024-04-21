@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/page_1/home.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/page_1/rate_bar.dart';
 
@@ -38,7 +37,12 @@ class SaleItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: TextStyle(color: Colors.white, fontSize: 17.sp)),
+                  Text(
+                    name,
+                    style: TextStyle(color: Colors.white, fontSize: 17.sp),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   SizedBox(height: 2.h),
                   Text('\$$price', style: TextStyle(color: Colors.white, fontSize: 16.sp)),
                   SizedBox(height: 2.h),
