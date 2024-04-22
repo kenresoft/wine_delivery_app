@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-//import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/page_1/rate_bar.dart';
+import 'package:wine_delivery_app/views/home/rate_bar.dart';
 
 class SaleItem extends StatelessWidget {
   const SaleItem({
