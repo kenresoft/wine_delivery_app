@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-//import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/page_1/clipper.dart';
-import 'package:wine_delivery_app/page_1/rate_bar.dart';
+import 'package:wine_delivery_app/views/home/rate_bar.dart';
+
+import 'clipper.dart';
 
 class DrinksCollection extends StatelessWidget {
   const DrinksCollection({
