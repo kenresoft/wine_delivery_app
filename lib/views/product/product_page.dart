@@ -1,9 +1,13 @@
 import 'package:circular_image/circular_image.dart';
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wine_delivery_app/page_1/drink_collection.dart';
-import 'package:wine_delivery_app/page_1/rate_bar.dart';
+import 'package:wine_delivery_app/home/drink_collection.dart';
+import 'package:wine_delivery_app/home/rate_bar.dart';
 import 'package:wine_delivery_app/page_2/product_button.dart';
+import 'package:wine_delivery_app/utils/utils.dart';
+
+import '../service/cart_manager.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -162,13 +166,19 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
                                         scrollDirection: Axis.horizontal,
                                         itemBuilder: (context, index) {
                                           return Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(left: index == 0 ? 0 : 8, right: index == 5 ? 0 : 8),
+                                            padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(
+                                              left: index == 0 ? 0 : 8,
+                                              right: index == 5 ? 0 : 8,
+                                            ),
                                             child: Container(
                                               width: 50,
                                               height: 50,
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                border: Border.all(color: index != 5 ? reviewColors[index] : const Color(0xff3E494D), width: 1.5),
+                                                border: Border.all(
+                                                  color: index != 5 ? reviewColors[index] : const Color(0xff3E494D),
+                                                  width: 1.5,
+                                                ),
                                                 borderRadius: BorderRadius.circular(30),
                                               ),
                                               padding: const EdgeInsets.all(2),
@@ -227,11 +237,16 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
                         ),
                       ),
                     ),
-                    const Expanded(
+                    Expanded(
                       child: ProductButton(
+                        onPressed: () => addToCartButtonPressed(
+                          drinksCollection.name[index],
+                          drinksCollection.price[index],
+                          1,
+                        ),
                         text: ' Add to cart',
                         color: Colors.white,
-                        icon: Icon(Icons.add, color: Colors.black, size: 16),
+                        icon: const Icon(Icons.add, color: Colors.black, size: 16),
                       ),
                     )
                   ],
@@ -242,5 +257,12 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
         ),
       ),
     );
+  }
+
+  void addToCartButtonPressed(String itemName, double itemPrice, int quantity) {
+    cartManager.addToCart(itemName, itemPrice, quantity);
+    '$itemName added to cart'.toast;
+
+    // Optionally show a snackbar or toast message to confirm item added to cart
   }
 }

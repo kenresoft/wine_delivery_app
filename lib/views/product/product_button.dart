@@ -10,6 +10,7 @@ class ProductButton extends StatelessWidget {
     this.borderRadius = 15,
     this.isOutlined = false,
     this.icon,
+    this.onPressed,
   });
 
   final String text;
@@ -19,6 +20,7 @@ class ProductButton extends StatelessWidget {
   final double? borderRadius;
   final bool isOutlined;
   final Icon? icon;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class ProductButton extends StatelessWidget {
       margin: const EdgeInsets.only(right: 16),
       child: isOutlined
           ? OutlinedButton(
-              onPressed: () {},
+              onPressed: onPressed,
               style: ButtonStyle(
                 padding: const MaterialStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 12),
@@ -56,7 +58,7 @@ class ProductButton extends StatelessWidget {
               ),
             )
           : FilledButton(
-              onPressed: () {},
+              onPressed: onPressed,
               style: ButtonStyle(
                 padding: const MaterialStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 12),
