@@ -1,9 +1,10 @@
+import 'order_item.dart';
 import 'order_status.dart';
 
 class Order {
   final String orderId;
   final DateTime orderDate;
-  final List<String> items;
+  final List<OrderItem> items; // Updated to a list of OrderItem objects
   OrderStatus status;
 
   Order({
@@ -13,3 +14,4 @@ class Order {
     required this.status,
   });
 }
+
