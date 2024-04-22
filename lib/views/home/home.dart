@@ -2,10 +2,8 @@ import 'package:circular_image/circular_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fontresoft/fontresoft.dart';
-import 'package:wine_delivery_app/page_1/sale_item.dart';
+import 'package:wine_delivery_app/views/home/sale_item.dart';
 
 import 'drink_collection.dart';
 
@@ -115,7 +113,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  Icon(Icons.shopping_bag_outlined, size: 30.r, color: Color(0xff383838)),
+                  Icon(Icons.shopping_bag_outlined, size: 30.r, color: const Color(0xff383838)),
                 ],
               ),
             ),
