@@ -47,7 +47,7 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
 
     return Scaffold(
       appBar: AppBar(backgroundColor: const Color(0xffF4F4F4), toolbarHeight: 0, scrolledUnderElevation: 0),
-      backgroundColor: const Color(0xffFfffff),
+      backgroundColor: const Color(0xFFFAF9F6),
       body: Center(
         child: Stack(
           children: [
@@ -151,7 +151,7 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
                             child: Container(
                               height: 250,
                               margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 16),
-                              decoration: const BoxDecoration(color: Colors.white),
+                              decoration: const BoxDecoration(color: Color(0xFFFAF9F6)),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
