@@ -254,7 +254,9 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
                         onPressed: () => addToCartButtonPressed(
                           drinksCollection.name[index],
                           drinksCollection.price[index],
+                          drinksCollection.image[index],
                           1,
+                          1.5,
                         ),
                         text: ' Add to cart',
                         color: Colors.white,
@@ -271,8 +273,8 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
     );
   }
 
-  void addToCartButtonPressed(String itemName, double itemPrice, int quantity) {
-    cartManager.addToCart(itemName, itemPrice, quantity);
+  void addToCartButtonPressed(String itemName, double itemPrice, String imageUrl, int quantity, double purchaseCost) {
+    cartManager.addToCart(itemName, itemPrice, imageUrl, quantity, purchaseCost);
     '$itemName added to cart'.toast;
 
     // Optionally show a snackbar or toast message to confirm item added to cart
