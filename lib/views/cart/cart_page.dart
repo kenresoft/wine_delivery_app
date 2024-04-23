@@ -19,8 +19,8 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shopping Cart'),
-        backgroundColor: const Color(0xffFfffff),
-        surfaceTintColor: const Color(0xffFfffff),
+        backgroundColor: const Color(0xFFFAF9F6),
+        surfaceTintColor: const Color(0xFFFAF9F6),
         leading: GestureDetector(
           onTap: () => Navigator.pop(context),
           child: Container(
@@ -30,60 +30,179 @@ class _CartPageState extends State<CartPage> {
           ),
         ),
       ),
-      backgroundColor: const Color(0xffFfffff),
-      body: ListView.builder(
-        itemCount: cartManager.cartItems.length,
-        itemBuilder: (context, index) {
-          final cartItem = cartManager.cartItems[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
-            color: const Color(0xffF4F4F4),
-            surfaceTintColor: const Color(0xffF4F4F4),
-            child: ListTile(
-              leading: Image.asset(cartItem.imageUrl),
-              title: Text(cartItem.itemName),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Price: \$${cartItem.itemPrice}'),
-                  Text('(\$${cartItem.itemPrice} x ${cartItem.quantity})'),
-                ],
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove, color: Color(0xffBD7879)),
-                    onPressed: () {
-                      setState(() {
-                        cartManager.decreaseQuantity(index);
-                      });
-                    },
+      backgroundColor: const Color(0xFFFAF9F6),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: cartManager.cartItems.length,
+              itemBuilder: (context, index) {
+                final cartItem = cartManager.cartItems[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+                  color: const Color(0xffF4F4F4),
+                  surfaceTintColor: const Color(0xffF4F4F4),
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        child: Image.asset(cartItem.imageUrl, width: 42, fit: BoxFit.contain),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16, left: 8),
+                              child: Text(
+                                cartItem.itemName,
+                                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                              ),
+                            ),
+                            ListTile(
+                              /*title: const Text(
+                                'Sparkling wine',
+                                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
+                              ),*/
+                              minVerticalPadding: 0,
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Price: ',
+                                        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
+                                      ),
+                                      Text(
+                                        '\$${cartItem.itemPrice}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Color(0xffBD7879),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  //const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Quantity: ',
+                                        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
+                                      ),
+                                      Text(
+                                        '${cartItem.quantity}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Color(0xffBD7879),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: 0),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.white)),
+                                    icon: const Icon(Icons.remove, color: Color(0xffBD7879)),
+                                    onPressed: () {
+                                      setState(() {
+                                        cartManager.decreaseQuantity(index);
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                    child: Text(
+                                      '${cartItem.quantity}',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.white)),
+                                    icon: const Icon(Icons.add, color: Color(0xff7D557A)),
+                                    onPressed: () {
+                                      setState(() {
+                                        cartManager.increaseQuantity(index);
+                                      });
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(CupertinoIcons.delete, color: Color(0xffBD7879)),
+                                    onPressed: () {
+                                      setState(() {
+                                        cartManager.removeFromCart(cartItem.itemName);
+                                        '${cartItem.itemName} removed from cart!'.toast;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 16, left: 8),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Discount: ',
+                                    style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
+                                  ),
+                                  Text(
+                                    '${cartItem.purchaseCost}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: Color(0xff394346),
+                                      color: Color(0xffBD7879),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  Text('${cartItem.quantity}'),
-                  IconButton(
-                    icon: const Icon(Icons.add, color: Color(0xff7D557A)),
-                    onPressed: () {
-                      setState(() {
-                        cartManager.increaseQuantity(index);
-                      });
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(CupertinoIcons.delete, color: Colors.red),
-                    onPressed: () {
-                      setState(() {
-                        cartManager.removeFromCart(cartItem.itemName);
-                        '${cartItem.itemName} removed from cart!'.toast;
-                      });
-                    },
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+          Container(
+            child: ListTile(
+              leading: const Icon(CupertinoIcons.money_dollar_circle, size: 26),
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Estimated Price:', style: TextStyle(fontSize: 17)),
+                  Text(
+                    '\$${cartManager.getTotalPrice().toStringAsFixed(2)}',
+                    style: const TextStyle(color: Color(0xffBD7879)),
+                  ),
+                ],
+              ),
+              subtitle: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('VAT:'),
+                  Text(
+                    '\$${cartManager.calculatePurchaseCost().toStringAsFixed(2)}',
+                    style: const TextStyle(color: Color(0xffBD7879)),
+                  ),
+                ],
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Card(
         color: const Color(0xff394346),
@@ -97,63 +216,29 @@ class _CartPageState extends State<CartPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyMedium,
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const TextSpan(
-                            text: 'Estimated Cost: ',
-                            style: TextStyle(color: Colors.white54, fontWeight: FontWeight.bold),
+                          const Text(
+                            'Total: ',
+                            style: TextStyle(fontSize: 28, color: Colors.white54, fontWeight: FontWeight.bold),
                           ),
-                          TextSpan(
-                            text: '\$${cartManager.getTotalPrice()}',
-                            style: const TextStyle(color: Color(0xffBD7879)),
+                          Text(
+                            '\$${double.parse(cartManager.getTotalPrice().toStringAsFixed(2)) + cartManager.calculatePurchaseCost()}',
+                            style: const TextStyle(fontSize: 28, color: Color(0xffBD7879)),
                           ),
                         ],
                       ),
                     ),
-                    RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        children: [
-                          const TextSpan(
-                            text: 'Purchase Cost: ',
-                            style: TextStyle(color: Colors.white54, fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(
-                            text: '\$${cartManager.calculatePurchaseCost()}',
-                            style: const TextStyle(color: Color(0xff886883)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        children: [
-                          const TextSpan(
-                            text: 'Total Cost: ',
-                            style: TextStyle(fontSize: 18, color: Colors.white54, fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(
-                            text: '\$${cartManager.getTotalPrice() + cartManager.calculatePurchaseCost()}',
-                            style: const TextStyle(fontSize: 18, color: Color(0xffF69202)),
-                          ),
-                        ],
-                      ),
-                    ),
+                    const SizedBox(width: 16),
                     ProductButton(
-                      width: 180,
+                      width: 150,
                       margin: EdgeInsets.zero,
                       onPressed: () {
                         setState(() {});
