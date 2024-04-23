@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+          brightness: Brightness.light,
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffBD7879)),
           useMaterial3: true,
           fontFamily: FontResoft.poppins,
           textTheme: const TextTheme(bodyMedium: TextStyle(color: Color(0xff252525))),
