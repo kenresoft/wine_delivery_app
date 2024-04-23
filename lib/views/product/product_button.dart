@@ -11,6 +11,7 @@ class ProductButton extends StatelessWidget {
     this.isOutlined = false,
     this.icon,
     this.onPressed,
+    this.margin,
   });
 
   final String text;
@@ -21,13 +22,14 @@ class ProductButton extends StatelessWidget {
   final bool isOutlined;
   final Icon? icon;
   final void Function()? onPressed;
+  final EdgeInsetsGeometry? margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: height,
       width: width,
-      margin: const EdgeInsets.only(right: 16),
+      margin: margin ?? const EdgeInsets.only(right: 16),
       child: isOutlined
           ? OutlinedButton(
               onPressed: onPressed,
