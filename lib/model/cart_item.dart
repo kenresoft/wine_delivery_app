@@ -4,8 +4,8 @@ class CartItem extends Equatable {
   final String itemName;
   final double itemPrice;
   final int quantity;
-  final String imageUrl; // New field for drink image URL
-  final double purchaseCost; // New field for purchase cost
+  final String imageUrl;
+  final double purchaseCost;
 
   const CartItem({
     required this.itemName,

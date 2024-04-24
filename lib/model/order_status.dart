@@ -1,7 +1,7 @@
 enum OrderStatus {
-  Processing,
-  Packaging,
-  Shipping,
-  Delivered,
-  Cancelled,
+  processing,
+  packaging,
+  shipping,
+  delivered,
+  cancelled,
 }
