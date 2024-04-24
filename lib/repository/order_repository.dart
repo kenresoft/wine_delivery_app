@@ -3,17 +3,17 @@ import 'package:wine_delivery_app/utils/utils.dart';
 import '../model/order.dart';
 import '../model/order_item.dart';
 import '../model/order_status.dart';
-import 'cart_manager.dart';
+import 'cart_repository.dart';
 
-class OrderManager {
+class OrderRepository {
   // Private constructor
-  OrderManager._();
+  OrderRepository._();
 
   // Static private instance variable
-  static final OrderManager _instance = OrderManager._();
+  static final OrderRepository _instance = OrderRepository._();
 
   // Getter for the singleton instance
-  static OrderManager getInstance() {
+  static OrderRepository getInstance() {
     return _instance;
   }
 
@@ -47,4 +47,4 @@ class OrderManager {
 
 // Usage:
 // Access the singleton instance using OrderManager.getInstance()
-final OrderManager orderManager = OrderManager.getInstance();
+final OrderRepository orderManager = OrderRepository.getInstance();
