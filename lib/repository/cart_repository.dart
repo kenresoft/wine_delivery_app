@@ -1,14 +1,12 @@
 import '../model/cart_item.dart';
 
-class CartManager {
-  // Private constructor
-  CartManager._();
+class CartRepository {
+  CartRepository._();
 
-  // Static private instance variable
-  static final CartManager _instance = CartManager._();
+  static final CartRepository _instance = CartRepository._();
 
   // Getter for the singleton instance
-  static CartManager getInstance() {
+  static CartRepository getInstance() {
     return _instance;
   }
 
@@ -29,9 +27,8 @@ class CartManager {
         itemName: itemName,
         itemPrice: itemPrice,
         quantity: quantity,
-        // Set initial quantity to 1 for new items
         imageUrl: imageUrl,
-        purchaseCost: purchaseCost, // Set purchase cost per unique item
+        purchaseCost: purchaseCost,
       ));
     }
   }
@@ -73,4 +70,4 @@ class CartManager {
 
 // Usage:
 // Access the singleton instance using CartManager.getInstance()
-final CartManager cartManager = CartManager.getInstance();
+final CartRepository cartManager = CartRepository.getInstance();
