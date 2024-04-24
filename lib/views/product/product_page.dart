@@ -1,11 +1,16 @@
 import 'package:circular_image/circular_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
+import 'package:wine_delivery_app/bloc/cart/cart_event.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 import 'package:wine_delivery_app/views/home/rate_bar.dart';
 import 'package:wine_delivery_app/views/product/product_button.dart';
 
+import '../../bloc/cart/cart_state.dart';
+import '../../model/cart_item.dart';
 import '../../service/cart_manager.dart';
 import '../home/drink_collection.dart';
 
@@ -73,30 +78,30 @@ class _ProductPageState extends State<ProductPage>
                           child: const Icon(CupertinoIcons.chevron_left),
                         ),
                         GestureDetector(
-                          onTap: () =>
-                              Navigator.pushNamed(context, 'cart_page'),
+                          onTap: () => Navigator.pushNamed(context, 'cart_page'),
                           child: Stack(
                             children: [
-                              Icon(Icons.shopping_bag_outlined,
-                                  size: 30.r, color: const Color(0xff383838)),
+                              Icon(Icons.shopping_bag_outlined, size: 30.r, color: const Color(0xff383838)),
                               Positioned(
                                 right: 0,
                                 top: 0,
                                 child: Container(
                                   alignment: Alignment.center,
-                                  width: 16,
-                                  height: 16,
+                                  width: 16.w,
+                                  height: 16.w,
                                   padding: const EdgeInsets.all(1),
                                   decoration: BoxDecoration(
                                       color: const Color(0xffBD7879),
                                       borderRadius: BorderRadius.circular(40)),
                                   child: FittedBox(
-                                    child: Text(
-                                      '${cartManager.cartItems.length}',
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                          fontSize: 10, color: Colors.white),
-                                    ),
+                                    child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                                      return Text(
+                                        //'${cartManager.cartItems.length}',
+                                        '${state.cartItems.length}',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontSize: 10, color: Colors.white),
+                                      );
+                                    }),
                                   ),
                                 ),
                               ),
@@ -202,7 +207,7 @@ class _ProductPageState extends State<ProductPage>
                                     child: Text(
                                       'There is no better conversation starter or mood setter than alcohol. '
                                       'But having to leave a party to get more booze, that\'s just bad. '
-                                      'But with online alcohol delivery service, anyone can order booze, '
+                                      'But with online alcohol delivery repository, anyone can order booze, '
                                       'liquor, or alcohol with an app.',
                                       style: TextStyle(
                                           fontSize: 15,
@@ -312,13 +317,43 @@ class _ProductPageState extends State<ProductPage>
                     ),
                     Expanded(
                       child: ProductButton(
-                        onPressed: () => addToCartButtonPressed(
-                          drinksCollection.name[index],
-                          drinksCollection.price[index],
-                          drinksCollection.image[index],
-                          1,
-                          1.5,
-                        ),
+                        onPressed: () {
+                          /*addToCartButtonPressed(
+                            drinksCollection.name[index],
+                            drinksCollection.price[index],
+                            drinksCollection.image[index],
+                            1,
+                            1.5,
+                          );
+                          setState(() {});*/
+                          /*context.select<CartBloc, CartItem>(
+                            ( value) => value.add(
+                              AddToCartEvent(
+                                CartItem(
+                                  itemName: drinksCollection.name[index],
+                                  itemPrice: drinksCollection.price[index],
+                                  quantity: 1,
+                                  // Set initial quantity to 1 for new items
+                                  imageUrl: drinksCollection.image[index],
+                                  purchaseCost: 1.5, // Set purchase cost per unique item
+                                ),
+                              ),
+                            ),
+                          );*/
+                          //var item = Provider.of<CartBloc>(context, listen: false);
+                          context.read<CartBloc>().add(
+                                AddToCartEvent(
+                                  CartItem(
+                                    itemName: drinksCollection.name[index],
+                                    itemPrice: drinksCollection.price[index],
+                                    quantity: 1,
+                                    // Set initial quantity to 1 for new items
+                                    imageUrl: drinksCollection.image[index],
+                                    purchaseCost: 1.5, // Set purchase cost per unique item
+                                  ),
+                                ),
+                              );
+                        },
                         text: ' Add to cart',
                         color: Colors.white,
                         icon: const Icon(Icons.add,
