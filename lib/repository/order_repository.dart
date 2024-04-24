@@ -31,7 +31,7 @@ class OrderManager {
           quantity: cartItem.quantity,
         );
       }).toList(),
-      status: OrderStatus.Processing,
+      status: OrderStatus.processing,
     );
     if (cartManager.cartItems.isNotEmpty) {
       orders.add(newOrder);
