@@ -2,8 +2,11 @@ import 'package:circular_image/circular_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fontresoft/fontresoft.dart';
+import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
+import 'package:wine_delivery_app/bloc/cart/cart_state.dart';
 import 'package:wine_delivery_app/service/cart_manager.dart';
 import 'package:wine_delivery_app/views/home/sale_item.dart';
 
@@ -126,25 +129,28 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       onTap: () => Navigator.pushNamed(context, 'cart_page'),
                       child: Stack(
                         children: [
-                          Icon(Icons.shopping_bag_outlined,
-                              size: 30.r, color: const Color(0xff383838)),
+                          Icon(Icons.shopping_bag_outlined, size: 30.r, color: const Color(0xff383838)),
                           Positioned(
                             right: 0,
                             top: 0,
                             child: Container(
                               alignment: Alignment.center,
-                              width: 16,
-                              height: 16,
+                              width: 16.w,
+                              height: 16.w,
                               padding: const EdgeInsets.all(1),
                               decoration: BoxDecoration(
                                   color: const Color(0xffBD7879),
                                   borderRadius: BorderRadius.circular(40)),
                               child: FittedBox(
-                                child: Text(
-                                  '${cartManager.cartItems.length}',
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      fontSize: 10, color: Colors.white),
+                                child: BlocBuilder<CartBloc, CartState>(
+                                  builder: (context, state) {
+                                    return Text(
+                                      //'${cartManager.cartItems.length}',
+                                      '${state.cartItems.length}',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 10, color: Colors.white),
+                                    );
+                                  }
                                 ),
                               ),
                             ),
