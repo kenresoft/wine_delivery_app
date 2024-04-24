@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SemiCircle extends CustomPainter {
   @override
@@ -13,7 +14,7 @@ class SemiCircle extends CustomPainter {
 
     path.moveTo(0, 0);
     path.arcTo(
-      const Rect.fromLTWH(0, 0, 90, 100),
+      Rect.fromLTWH(0, 0, 90.w, 100.h),
       pi,
       -pi,
       true,
