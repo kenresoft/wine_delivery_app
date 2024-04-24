@@ -36,7 +36,7 @@ class DrinksCollection extends StatelessWidget {
           onTap: () => onClick(index, this),
           child: Container(
             width: 145.w,
-            margin: const EdgeInsets.all(4.0).copyWith(
+            margin: const EdgeInsets.all(4.0).r.copyWith(
               left: index == 0 ? 15.w : 4.w,
               right: index == name.length - 1 ? 15.w : 4.w,
             ),
