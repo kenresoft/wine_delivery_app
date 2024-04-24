@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wine_delivery_app/service/order_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
+import 'package:wine_delivery_app/bloc/cart/cart_event.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 import 'package:wine_delivery_app/views/product/product_button.dart';
 
-import '../../service/cart_manager.dart';
+import '../../repository/cart_repository.dart';
+import '../../repository/order_repository.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -137,7 +140,8 @@ class _CartPageState extends State<CartPage> {
                                     icon: const Icon(CupertinoIcons.delete, color: Color(0xffBD7879)),
                                     onPressed: () {
                                       setState(() {
-                                        cartManager.removeFromCart(cartItem.itemName);
+                                        context.read<CartBloc>().add(RemoveFromCartEvent(cartItem.itemName));
+                                        //cartManager.removeFromCart(cartItem.itemName);
                                         '${cartItem.itemName} removed from cart!'.toast;
                                       });
                                     },
