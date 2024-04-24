@@ -19,12 +19,11 @@ class CartManager {
     bool itemExists = false;
     for (var item in cartItems) {
       if (item.itemName == itemName) {
-        item.quantity += quantity; // Increment quantity if item exists
         itemExists = true;
         break;
       }
     }
-    //bool itemExists = cartItems.any((item) => item.itemName == itemName);
+
     if (!itemExists) {
       cartItems.add(CartItem(
         itemName: itemName,
@@ -42,14 +41,12 @@ class CartManager {
   }
 
   void increaseQuantity(int index) {
-    cartItems[index].quantity++;
-    //cartItems[index].purchaseCost = cartItems[index].purchaseCost / cartItems[index].quantity;
+    cartItems[index] = cartItems[index].copyWith(quantity: cartItems[index].quantity + 1);
   }
 
   void decreaseQuantity(int index) {
     if (cartItems[index].quantity > 1) {
-      cartItems[index].quantity--;
-      //cartItems[index].purchaseCost = cartItems[index].purchaseCost / cartItems[index].quantity;
+      cartItems[index] = cartItems[index].copyWith(quantity: cartItems[index].quantity - 1);
     }
   }
 
@@ -72,7 +69,6 @@ class CartManager {
     }
     return totalPurchaseCost;
   }
-
 }
 
 // Usage:
