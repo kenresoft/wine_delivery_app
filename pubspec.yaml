@@ -40,6 +40,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.9.0
   fluttertoast: ^8.2.5
+  flutter_bloc: ^8.1.5
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
