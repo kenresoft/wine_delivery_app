@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fontresoft/fontresoft.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_state.dart';
-import 'package:wine_delivery_app/service/cart_manager.dart';
 import 'package:wine_delivery_app/views/home/sale_item.dart';
 
 import 'drink_collection.dart';
@@ -50,7 +49,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   void _scrollListener_1() {
     setState(() {
-      _currentIndex_1 = (_controller_1.offset / 165).round() + 1;
+      _currentIndex_1 = (_controller_1.offset / 165.w).round() + 1;
     });
   }
 
@@ -429,7 +428,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       ],
       scrollController: _controller_1,
       onClick: (int index, DrinksCollection collection) {
-        print(collection.name[index]);
+        ///print(collection.name[index]);
         Navigator.of(context)
             .pushNamed('product_page', arguments: (index, collection));
       },
