@@ -11,7 +11,7 @@ import 'package:wine_delivery_app/views/product/product_button.dart';
 
 import '../../bloc/cart/cart_state.dart';
 import '../../model/cart_item.dart';
-import '../../service/cart_manager.dart';
+import '../../repository/cart_repository.dart';
 import '../home/drink_collection.dart';
 
 class ProductPage extends StatefulWidget {
@@ -55,9 +55,10 @@ class _ProductPageState extends State<ProductPage>
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: const Color(0xffF4F4F4),
-          toolbarHeight: 0,
-          scrolledUnderElevation: 0),
+        backgroundColor: const Color(0xffF4F4F4),
+        toolbarHeight: 0,
+        scrolledUnderElevation: 0,
+      ),
       backgroundColor: const Color(0xFFFAF9F6),
       body: Center(
         child: Stack(
@@ -69,7 +70,9 @@ class _ProductPageState extends State<ProductPage>
                   color: const Color(0xffF4F4F4),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -94,14 +97,16 @@ class _ProductPageState extends State<ProductPage>
                                       color: const Color(0xffBD7879),
                                       borderRadius: BorderRadius.circular(40)),
                                   child: FittedBox(
-                                    child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-                                      return Text(
-                                        //'${cartManager.cartItems.length}',
-                                        '${state.cartItems.length}',
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(fontSize: 10, color: Colors.white),
-                                      );
-                                    }),
+                                    child: BlocBuilder<CartBloc, CartState>(
+                                      builder: (context, state) {
+                                        return Text(
+                                          //'${cartManager.cartItems.length}',
+                                          '${state.cartItems.length}',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontSize: 10, color: Colors.white),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
