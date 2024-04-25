@@ -68,6 +68,4 @@ class CartRepository {
   }
 }
 
-// Usage:
-// Access the singleton instance using CartManager.getInstance()
 final CartRepository cartManager = CartRepository.getInstance();
