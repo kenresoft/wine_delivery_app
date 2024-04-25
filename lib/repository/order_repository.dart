@@ -19,32 +19,99 @@ class OrderRepository {
 
   List<Order> orders = [];
 
+  int _orderIdCounter = 1000;
+
+  String _generateOrderId() {
+    String newOrderId = '';
+    bool isUnique = false;
+    while (!isUnique) {
+      newOrderId = 'ORD${_orderIdCounter++}';
+      isUnique = !orders.any((order) => order.orderId == newOrderId);
+    }
+    return newOrderId;
+  }
+
   void createOrder() {
-    // Assuming orders list exists and is accessible
-    Order newOrder = Order(
-      orderId: '123456', // Generate a unique order ID
-      orderDate: DateTime.now(),
-      items: cartManager.cartItems.map((cartItem) {
-        return OrderItem(
-          itemName: cartItem.itemName,
-          itemPrice: cartItem.itemPrice,
-          quantity: cartItem.quantity,
-        );
-      }).toList(),
-      status: OrderStatus.processing,
-    );
     if (cartManager.cartItems.isNotEmpty) {
+      Order newOrder = Order(
+        orderId: _generateOrderId(), // Generate ID only if cart has items
+        orderDate: DateTime.now(),
+        items: cartManager.cartItems.map((cartItem) {
+          return OrderItem(
+            itemName: cartItem.itemName,
+            itemPrice: cartItem.itemPrice,
+            quantity: cartItem.quantity,
+            imageUrl: cartItem.imageUrl,
+          );
+        }).toList(),
+        status: OrderStatus.processing,
+      );
       orders.add(newOrder);
       'Order created !'.toast;
-      // Clear cart after creating order
       cartManager.cartItems.clear();
     } else {
       'Cart is Empty !'.toast;
     }
-    // Optionally show a confirmation message to the user
+  }
+
+  void deleteOrder(String orderId) {
+    Order? orderToDelete = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
+    if (orderToDelete.status != OrderStatus.pending) {
+      orders.remove(orderToDelete);
+      'Order deleted !'.toast;
+    } else {
+      'Order not found !'.toast;
+    }
+  }
+
+  void deleteAllOrders() {
+    orders.clear();
+    'All orders deleted !'.toast;
+  }
+
+  void updateOrderStatus(String orderId, OrderStatus newStatus) {
+    Order? orderToUpdate = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
+    if (orderToUpdate.status != OrderStatus.pending) {
+      Order updatedOrder = orderToUpdate.copyWith(status: newStatus);
+      orders[orders.indexWhere((order) => order.orderId == orderId)] = updatedOrder;
+      'Order status updated !'.toast;
+    } else {
+      'Order not found !'.toast;
+    }
+  }
+
+  Order getOrderById(String orderId) {
+    Order? order = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
+    if (order.status != OrderStatus.pending) {
+      return order;
+    } else {
+      return Order.empty();
+    }
+  }
+
+  List<OrderItem> getOrderItems(String orderId) {
+    Order? order = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
+    if (order.status != OrderStatus.pending) {
+      return order.items;
+    } else {
+      return [];
+    }
+  }
+
+  void editOrder(String orderId, {DateTime? orderDate, List<OrderItem>? items, OrderStatus? status}) {
+    Order? orderToUpdate = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
+    if (orderToUpdate.status != OrderStatus.pending) {
+      Order updatedOrder = orderToUpdate.copyWith(
+        orderDate: orderDate ?? orderToUpdate.orderDate,
+        items: items ?? orderToUpdate.items,
+        status: status ?? orderToUpdate.status,
+      );
+      orders[orders.indexWhere((order) => order.orderId == orderId)] = updatedOrder;
+      'Order updated !'.toast;
+    } else {
+      'Order not found !'.toast;
+    }
   }
 }
 
-// Usage:
-// Access the singleton instance using OrderManager.getInstance()
 final OrderRepository orderManager = OrderRepository.getInstance();
