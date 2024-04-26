@@ -9,6 +9,7 @@ import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_state.dart';
 import 'package:wine_delivery_app/views/home/sale_item.dart';
 
+import '../../auth_modal.dart';
 import 'drink_collection.dart';
 
 class Home extends StatefulWidget {
@@ -106,18 +107,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          Card(
-                            elevation: 5.h,
-                            color: Colors.white,
-                            surfaceTintColor: Colors.white,
-                            shadowColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(80).r),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2).r,
-                              child: CircularImage(
-                                radius: 20.r,
-                                source: 'assets/profile.jpg',
+                          GestureDetector(
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const AuthModal();
+                              },
+                            ),
+                            child: Card(
+                              elevation: 5.h,
+                              color: Colors.white,
+                              surfaceTintColor: Colors.white,
+                              shadowColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80).r),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2).r,
+                                child: CircularImage(
+                                  radius: 20.r,
+                                  source: 'assets/profile.jpg',
+                                ),
                               ),
                             ),
                           ),
