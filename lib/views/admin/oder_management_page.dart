@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/example.dart';
 import 'package:wine_delivery_app/model/order_item.dart';
 
 import '../../bloc/cart/cart_bloc.dart';
 import '../../bloc/cart/cart_state.dart';
+import '../../auth_modal.dart';
 import '../../model/order_status.dart';
 import '../../repository/order_repository.dart';
 
