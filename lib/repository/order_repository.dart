@@ -1,8 +1,6 @@
 import 'package:wine_delivery_app/utils/utils.dart';
 
-import '../model/order.dart';
-import '../model/order_item.dart';
-import '../model/order_status.dart';
+import '../model/order/order.dart';
 import 'cart_repository.dart';
 
 class OrderRepository {

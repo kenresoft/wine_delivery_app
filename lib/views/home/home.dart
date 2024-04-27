@@ -6,10 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fontresoft/fontresoft.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
-import 'package:wine_delivery_app/bloc/cart/cart_state.dart';
 import 'package:wine_delivery_app/views/home/sale_item.dart';
 
-import '../../auth_modal.dart';
+import '../auth/auth_modal.dart';
 import 'drink_collection.dart';
 
 class Home extends StatefulWidget {

@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
-import 'package:wine_delivery_app/bloc/cart/cart_event.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 import 'package:wine_delivery_app/views/home/rate_bar.dart';
 import 'package:wine_delivery_app/views/product/product_button.dart';
 
-import '../../bloc/cart/cart_state.dart';
 import '../../model/cart_item.dart';
 import '../../repository/cart_repository.dart';
 import '../home/drink_collection.dart';

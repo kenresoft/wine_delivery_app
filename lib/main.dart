@@ -38,9 +38,9 @@ class MyApp extends StatelessWidget {
             '/': (context) => const Home(),
             'product_page': (context) => const ProductPage(),
             'cart_page': (context) => const CartPage(),
+            //'order_page': (context) => const OrderPage(),
             'order_management_page': (context) => const OrderManagementPage(),
           },
-          //home: const Home(),
         ),
       ),
     );

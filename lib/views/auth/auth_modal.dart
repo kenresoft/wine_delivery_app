@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wine_delivery_app/auth_button.dart';
+import 'package:wine_delivery_app/views/auth/auth_button.dart';
 
 class AuthModal extends StatelessWidget {
   const AuthModal({super.key});
