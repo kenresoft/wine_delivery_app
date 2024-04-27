@@ -1,7 +1,7 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fontresoft/fontresoft.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/bloc/order/order_bloc.dart';
 import 'package:wine_delivery_app/utils/app_theme.dart';
@@ -11,6 +11,8 @@ import 'package:wine_delivery_app/views/home/home.dart';
 import 'package:wine_delivery_app/views/product/product_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferencesService.init();
   runApp(const MyApp());
 }
 
