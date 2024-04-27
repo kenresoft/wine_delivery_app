@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/example.dart';
 import 'package:wine_delivery_app/model/order_item.dart';
 
 import '../../bloc/cart/cart_bloc.dart';
 import '../../bloc/cart/cart_state.dart';
-import '../../auth_modal.dart';
 import '../../model/order_status.dart';
 import '../../repository/order_repository.dart';
 
@@ -227,11 +225,15 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   'Order Summary',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffBD7879)),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme(context).primary,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -246,10 +248,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         final item = orderItems[index];
                         return Card(
                           margin: EdgeInsets.only(left: index == 0 ? 16 : 8, right: index == orderItems.length - 1 ? 16 : 8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            side: const BorderSide(color: Color(0xffBD7879), width: 1),
-                          ),
                           child: Container(
                             margin: const EdgeInsets.all(1),
                             padding: const EdgeInsets.all(12),
@@ -266,8 +264,14 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    const Text('Quantity: ',
-                                      style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),),
+                                    Text(
+                                      'Quantity: ',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: colorScheme(context).primaryContainer,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
                                     Text(
                                       '${item.quantity}',
                                       style: const TextStyle(),
@@ -276,8 +280,14 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    const Text('Price: ',
-                                      style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),),
+                                    Text(
+                                      'Price: ',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: colorScheme(context).primaryContainer,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
                                     Text(
                                       '\$${item.itemPrice}',
                                       style: const TextStyle(),
@@ -300,18 +310,18 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Divider(),
-                    const Text(
+                    Text(
                       'Order Details',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffBD7879)),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme(context).primary,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: const BorderSide(color: Color(0xffBD7879), width: 1),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(16.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           children: [
                             Row(
@@ -319,9 +329,13 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                               children: [
                                 Text(
                                   'Subtotal:',
-                                  style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: colorScheme(context).primaryContainer,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                                 ),
-                                Text('\$30.00'),
+                                const Text('\$30.00'),
                               ],
                             ),
                             Row(
@@ -329,9 +343,13 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                               children: [
                                 Text(
                                   'Value Added Tax:',
-                                  style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: colorScheme(context).primaryContainer,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                                 ),
-                                Text('\$3.00'),
+                                const Text('\$3.00'),
                               ],
                             ),
                             Row(
@@ -339,18 +357,25 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                               children: [
                                 Text(
                                   'Delivery Fee:',
-                                  style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: colorScheme(context).primaryContainer,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                                 ),
-                                Text('\$5.00'),
+                                const Text('\$5.00'),
                               ],
                             ),
-                            Divider(),
-                            Row(
+                            const Divider(),
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   'Total:',
-                                  style: TextStyle(fontSize: 18, color: Color(0xffBD7879), fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 Text(
                                   '\$38.00',
@@ -363,67 +388,79 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       'Delivery Information',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffBD7879)),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme(context).primary,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: Color(0xffBD7879), width: 1),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(16.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
                               'Delivery Address:',
-                              style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colorScheme(context).primaryContainer,
+                                fontWeight: FontWeight.w300,
+                              ),
                             ),
-                            Row(
+                            const Row(
                               children: [
                                 Icon(Icons.location_on_outlined, color: Color(0xffBD7879)),
                                 Text(' 123 Main St, Anytown'),
                               ],
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Text(
                               'Estimated Delivery Time:',
-                              style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colorScheme(context).primaryContainer,
+                                fontWeight: FontWeight.w300,
+                              ),
                             ),
-                            Row(
+                            const Row(
                               children: [
                                 Icon(Icons.access_time_outlined, color: Color(0xffBD7879)),
                                 Text(' 30 minutes'),
                               ],
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                           ],
                         ),
                       ),
                     ),
-                    const Text(
+                    Text(
                       'Payment Information',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffBD7879)),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme(context).primary,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: Color(0xffBD7879), width: 1),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(16.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
                               'Payment Method:',
-                              style: TextStyle(fontSize: 16, color: Color(0xffBD7879), fontWeight: FontWeight.w300),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colorScheme(context).primaryContainer,
+                                fontWeight: FontWeight.w300,
+                              ),
                             ),
-                            Row(
+                            const Row(
                               children: [
                                 Icon(Icons.payment_outlined, color: Color(0xffBD7879)),
                                 Text(' Credit Card'),
@@ -437,26 +474,26 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             // Edit Order button action
                           },
-                          style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(Colors.white),
-                              side: MaterialStatePropertyAll(
-                                BorderSide(color: Color(0xffBD7879)),
-                              )),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: colorScheme(context).primary,
+                            foregroundColor: Colors.white,
+                            maximumSize: const Size(250, 148),
+                          ),
                           child: const Text('Edit Order'),
                         ),
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             // Edit Order button action
                           },
-                          style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(Colors.white),
-                              side: MaterialStatePropertyAll(
-                                BorderSide(color: Color(0xffBD7879)),
-                              )),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: colorScheme(context).primary,
+                            foregroundColor: Colors.white,
+                            maximumSize: const Size(250, 148),
+                          ),
                           child: const Text('Place Order'),
                         ),
                       ],
@@ -471,6 +508,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
       ),
     );
   }
+
+  ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
 }
 
 /*
