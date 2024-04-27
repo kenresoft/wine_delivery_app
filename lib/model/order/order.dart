@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import 'order_item.dart';
-import 'order_status.dart';
+part 'order_item.dart';
+
+part 'order_status.dart';
 
 class Order extends Equatable {
   final String orderId;

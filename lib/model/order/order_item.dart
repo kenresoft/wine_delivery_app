@@ -1,3 +1,5 @@
+part of 'order.dart';
+
 class OrderItem {
   final String itemName;
   final double itemPrice;

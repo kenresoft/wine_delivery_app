@@ -1,3 +1,5 @@
+part of 'order.dart';
+
 enum OrderStatus {
   pending,
   processing,
