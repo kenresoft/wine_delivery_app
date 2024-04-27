@@ -33,14 +33,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.themeData,
-          /*theme: ThemeData(
-            brightness: Brightness.light,
-            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffBD7879)),
-            fontFamily: FontResoft.poppins,
-            textTheme: const TextTheme(bodyMedium: TextStyle(color: Color(0xff252525))),
-            package: FontResoft.package,
-          ),*/
+          theme: AppTheme().themeData,
           routes: {
             '/': (context) => const Home(),
             'product_page': (context) => const ProductPage(),

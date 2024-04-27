@@ -1,8 +1,12 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wine_delivery_app/model/cart_item.dart';
 
 import '../../repository/cart_repository.dart';
-import 'cart_event.dart';
-import 'cart_state.dart';
+
+part 'cart_event.dart';
+
+part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(CartState(cartItems: cartManager.cartItems)) {
