@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:fontresoft/fontresoft.dart';
 
 class AppTheme {
-  static final ThemeData themeData = ThemeData(
-    primaryColor: const Color(0xffBD7879),
-    primaryColorDark: const Color(0xff394346),
+  AppTheme();
+
+  final ThemeData themeData = ThemeData(
+    primaryColor: const Color(0xff394346),
+    primaryColorDark: const Color(0xffBD7879),
     scaffoldBackgroundColor: const Color(0xFFFAF9F6),
     fontFamily: FontResoft.poppins,
     package: FontResoft.package,
-    textTheme: const TextTheme(bodyMedium: TextStyle(color: Color(0xff252525))),
+    textTheme: const TextTheme(bodyMedium: TextStyle(color: Color(0xff394346))),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -37,7 +39,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
         ),
         side: const BorderSide(
-          color: Color(0xff394346),
+          color: Color(0xffB3BDC0),
         ),
       ),
     ),
@@ -45,7 +47,8 @@ class AppTheme {
       border: OutlineInputBorder(),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: Color(0xff394346),
+          color: Color(0xffB3BDC0) /*Color(0xff394346)*/,
+          width: 2,
         ),
       ),
     ),
@@ -58,13 +61,26 @@ class AppTheme {
         ),
       ),
     ),
+    cardTheme: CardTheme(
+      color: const Color(0xffF4F4F4),
+      surfaceTintColor: const Color(0xffF4F4F4),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: Color(0xffB3BDC0), width: 1),
+      ),
+      elevation: 0,
+    ),
     brightness: Brightness.light,
     iconTheme: const IconThemeData(color: Color(0xff394346)),
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xffBD7879),
+      seedColor: const Color(0xff394346),
     ).copyWith(
+      primary: const Color(0xff394346),
+      primaryContainer: const Color(0xff687A80),
+      secondary: const Color(0xffBD7879),
+      tertiary: const Color(0xffB3BDC0),
       background: const Color(0xFFFAF9F6),
-      secondary: const Color(0xff394346),
+      surfaceTint: const Color(0xffF4F4F4),
     ),
   );
 }
