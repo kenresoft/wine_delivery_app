@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fontresoft/fontresoft.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/bloc/order/order_bloc.dart';
+import 'package:wine_delivery_app/utils/app_theme.dart';
 import 'package:wine_delivery_app/views/admin/oder_management_page.dart';
 import 'package:wine_delivery_app/views/cart/cart_page.dart';
 import 'package:wine_delivery_app/views/home/home.dart';
@@ -30,13 +31,14 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
+          theme: AppTheme.themeData,
+          /*theme: ThemeData(
             brightness: Brightness.light,
             colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffBD7879)),
             fontFamily: FontResoft.poppins,
             textTheme: const TextTheme(bodyMedium: TextStyle(color: Color(0xff252525))),
             package: FontResoft.package,
-          ),
+          ),*/
           routes: {
             '/': (context) => const Home(),
             'product_page': (context) => const ProductPage(),
