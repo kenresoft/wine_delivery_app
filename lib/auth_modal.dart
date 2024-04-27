@@ -40,21 +40,18 @@ class AuthModal extends StatelessWidget {
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'First Name',
-                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 10),
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Last Name',
-                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 10),
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 10),
@@ -72,22 +69,12 @@ class AuthModal extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Container(
-                //width: 120,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle create account button tap
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xffBD7879),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    minimumSize: const Size(260, 52),
-                  ),
-                  child: const Text('Create Account'),
-                ),
+              ElevatedButton(
+                onPressed: () {
+                  // Handle create account button tap
+                },
+                style: ElevatedButton.styleFrom(minimumSize: const Size(260, 52)),
+                child: const Text('Create Account'),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -97,7 +84,6 @@ class AuthModal extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const AuthButton(
                     icon: Icon(CupertinoIcons.globe),

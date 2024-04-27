@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wine_delivery_app/utils/app_theme.dart';
 
 class AuthButton extends StatelessWidget {
   const AuthButton({
@@ -17,17 +18,16 @@ class AuthButton extends StatelessWidget {
         // Handle Google sign-in
       },
       style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
         maximumSize: const Size(260, 52),
       ),
       child: SizedBox(
         height: 52,
         child: Row(
           children: [
-            icon,
+            Icon(
+              icon.icon,
+              color: AppTheme().themeData.iconTheme.color,
+            ),
             const SizedBox(width: 12),
             Text(text),
           ],
