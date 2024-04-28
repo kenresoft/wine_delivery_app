@@ -36,12 +36,16 @@ dependencies:
   fontresoft: ^0.0.5
   extensionresoft: ^0.0.6
   cupertino_icons: ^1.0.8
+  http: ^1.2.1
+
+  flutter_bloc: ^8.1.5
+  equatable: ^2.0.5
+
   circular_image: ^0.0.6
   flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.9.0
   fluttertoast: ^8.2.5
-  flutter_bloc: ^8.1.5
-  equatable: ^2.0.5
+
 
 dev_dependencies:
   flutter_test:
