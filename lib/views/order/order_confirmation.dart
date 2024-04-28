@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/views/order/shipping_form_address.dart';
 
 import '../../bloc/cart/cart_bloc.dart';
 import '../../repository/order_repository.dart';
@@ -381,7 +382,11 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // Edit Order button action
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ShippingAddressForm(),
+                              ),
+                            );
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: colorScheme(context).primary,
@@ -392,7 +397,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            // Edit Order button action
+                            // Todo
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: colorScheme(context).primary,
