@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/bloc/order/order_bloc.dart';
+import 'package:wine_delivery_app/bloc/shipping_address/shipping_address_bloc.dart';
 import 'package:wine_delivery_app/utils/app_theme.dart';
 import 'package:wine_delivery_app/views/admin/oder_management_page.dart';
 import 'package:wine_delivery_app/views/cart/cart_page.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<CartBloc>(create: (context) => CartBloc()),
           BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
+          BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc())
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
