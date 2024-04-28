@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wine_delivery_app/views/auth/auth_button.dart';
 
+import '../order/shipping_form_address.dart';
+
 class AuthModal extends StatelessWidget {
   const AuthModal({super.key});
 
@@ -72,8 +74,16 @@ class AuthModal extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Handle create account button tap
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ShippingAddressForm(),
+                    ),
+                  );
                 },
-                style: ElevatedButton.styleFrom(minimumSize: const Size(260, 52)),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(260, 52),
+                  backgroundColor: colorScheme(context).primary,
+                ),
                 child: const Text('Create Account'),
               ),
               const SizedBox(height: 20),
@@ -133,4 +143,6 @@ class AuthModal extends StatelessWidget {
       ),
     );
   }
+
+  ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
 }
