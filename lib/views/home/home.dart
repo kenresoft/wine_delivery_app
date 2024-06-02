@@ -64,7 +64,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
-      value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
       child: Scaffold(
         backgroundColor: const Color(0xFFFAF9F6),
         body: SingleChildScrollView(
@@ -376,7 +379,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   itemBuilder: (context, index) {
                     return const SaleItem(
                       name: 'Carpene Malvolti Prosecco',
-                      image: 'assets/wine-10.png',
+                      image: 'assets/images/wine-10.png',
                       price: 17.40,
                       rating: 3,
                       color: Color(0xffC37D7D),
@@ -402,12 +405,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         'Grover',
       ],
       image: const [
-        'assets/wine-8.png',
-        'assets/wine-9.png',
-        'assets/wine-3.png',
-        'assets/wine-4.png',
-        'assets/wine-6.png',
-        'assets/wine-2.png',
+        'assets/images/wine-8.png',
+        'assets/images/wine-9.png',
+        'assets/images/wine-3.png',
+        'assets/images/wine-4.png',
+        'assets/images/wine-6.png',
+        'assets/images/wine-2.png',
       ],
       price: const [
         28.45,
