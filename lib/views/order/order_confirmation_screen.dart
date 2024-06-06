@@ -11,13 +11,15 @@ class OrderConfirmationScreen extends StatelessWidget {
     {"name": "White Wine", "quantity": "1", "price": "\$25"},
   ];
 
+  OrderConfirmationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Confirmation'),
+        title: const Text('Order Confirmation'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Implement navigation back
           },
@@ -28,17 +30,20 @@ class OrderConfirmationScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            OrderSummary(orderNumber: orderNumber, orderDate: orderDate, orderTime: orderTime),
-            SizedBox(height: 20),
+            OrderSummary(
+                orderNumber: orderNumber,
+                orderDate: orderDate,
+                orderTime: orderTime),
+            const SizedBox(height: 20),
             OrderDetails(orderItems: orderItems),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ShippingInformation(shippingAddress: shippingAddress),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             PaymentInformation(paymentMethod: paymentMethod),
-            SizedBox(height: 20),
-            OrderStatus(),
-            SizedBox(height: 20),
-            CallToAction(),
+            const SizedBox(height: 20),
+            const OrderStatus(),
+            const SizedBox(height: 20),
+            const CallToAction(),
           ],
         ),
       ),
@@ -52,6 +57,7 @@ class OrderSummary extends StatelessWidget {
   final String orderTime;
 
   const OrderSummary({
+    super.key,
     required this.orderNumber,
     required this.orderDate,
     required this.orderTime,
@@ -67,11 +73,15 @@ class OrderSummary extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Order Number: $orderNumber', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Order Date: $orderDate', style: TextStyle(fontSize: 14)),
-            SizedBox(height: 4),
-            Text('Order Time: $orderTime', style: TextStyle(fontSize: 14)),
+            Text('Order Number: $orderNumber',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('Order Date: $orderDate',
+                style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 4),
+            Text('Order Time: $orderTime',
+                style: const TextStyle(fontSize: 14)),
           ],
         ),
       ),
@@ -82,7 +92,7 @@ class OrderSummary extends StatelessWidget {
 class OrderDetails extends StatelessWidget {
   final List<Map<String, String>> orderItems;
 
-  const OrderDetails({required this.orderItems});
+  const OrderDetails({super.key, required this.orderItems});
 
   @override
   Widget build(BuildContext context) {
@@ -94,13 +104,14 @@ class OrderDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Order Details', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Divider(),
+            const Text('Order Details',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Divider(),
             ...orderItems.map((item) => ListTile(
-              title: Text(item["name"]!),
-              subtitle: Text('Quantity: ${item["quantity"]}'),
-              trailing: Text(item["price"]!),
-            )),
+                  title: Text(item["name"]!),
+                  subtitle: Text('Quantity: ${item["quantity"]}'),
+                  trailing: Text(item["price"]!),
+                )),
           ],
         ),
       ),
@@ -111,7 +122,7 @@ class OrderDetails extends StatelessWidget {
 class ShippingInformation extends StatelessWidget {
   final String shippingAddress;
 
-  const ShippingInformation({required this.shippingAddress});
+  const ShippingInformation({super.key, required this.shippingAddress});
 
   @override
   Widget build(BuildContext context) {
@@ -123,9 +134,10 @@ class ShippingInformation extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Shipping Information', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Divider(),
-            Text(shippingAddress, style: TextStyle(fontSize: 14)),
+            const Text('Shipping Information',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Divider(),
+            Text(shippingAddress, style: const TextStyle(fontSize: 14)),
           ],
         ),
       ),
@@ -136,7 +148,7 @@ class ShippingInformation extends StatelessWidget {
 class PaymentInformation extends StatelessWidget {
   final String paymentMethod;
 
-  const PaymentInformation({required this.paymentMethod});
+  const PaymentInformation({super.key, required this.paymentMethod});
 
   @override
   Widget build(BuildContext context) {
@@ -148,9 +160,10 @@ class PaymentInformation extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Payment Information', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Divider(),
-            Text(paymentMethod, style: TextStyle(fontSize: 14)),
+            const Text('Payment Information',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Divider(),
+            Text(paymentMethod, style: const TextStyle(fontSize: 14)),
           ],
         ),
       ),
@@ -159,19 +172,23 @@ class PaymentInformation extends StatelessWidget {
 }
 
 class OrderStatus extends StatelessWidget {
+  const OrderStatus({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      child: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Order Status', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('Order Status',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             Divider(),
-            Text('Your order is being processed', style: TextStyle(fontSize: 14)),
+            Text('Your order is being processed',
+                style: TextStyle(fontSize: 14)),
           ],
         ),
       ),
@@ -180,6 +197,8 @@ class OrderStatus extends StatelessWidget {
 }
 
 class CallToAction extends StatelessWidget {
+  const CallToAction({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -189,13 +208,13 @@ class CallToAction extends StatelessWidget {
           onPressed: () {
             // Implement order tracking navigation
           },
-          child: Text('Track Order'),
+          child: const Text('Track Order'),
         ),
         ElevatedButton(
           onPressed: () {
             // Implement return to home navigation
           },
-          child: Text('Return to Home'),
+          child: const Text('Return to Home'),
         ),
       ],
     );
