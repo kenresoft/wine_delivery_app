@@ -41,14 +41,16 @@ class _CartPageState extends State<CartPage> {
               itemBuilder: (context, index) {
                 final cartItem = cartManager.cartItems[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
                   color: const Color(0xffF4F4F4),
                   surfaceTintColor: const Color(0xffF4F4F4),
                   child: Row(
                     children: [
                       Container(
                         margin: const EdgeInsets.only(left: 8),
-                        child: Image.asset(cartItem.imageUrl, width: 42, fit: BoxFit.contain),
+                        child: Image.asset(cartItem.imageUrl,
+                            width: 42, fit: BoxFit.contain),
                       ),
                       Expanded(
                         child: Column(
@@ -58,7 +60,8 @@ class _CartPageState extends State<CartPage> {
                               padding: const EdgeInsets.only(top: 16, left: 8),
                               child: Text(
                                 cartItem.itemName,
-                                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 20),
                               ),
                             ),
                             ListTile(
@@ -74,7 +77,9 @@ class _CartPageState extends State<CartPage> {
                                     children: [
                                       const Text(
                                         'Price: ',
-                                        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 16),
                                       ),
                                       Text(
                                         '\$${cartItem.itemPrice}',
@@ -91,7 +96,9 @@ class _CartPageState extends State<CartPage> {
                                     children: [
                                       const Text(
                                         'Quantity: ',
-                                        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 16),
                                       ),
                                       Text(
                                         '${cartItem.quantity}',
@@ -105,13 +112,18 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                 ],
                               ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: 0),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 8)
+                                      .copyWith(bottom: 0),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.white)),
-                                    icon: const Icon(Icons.remove, color: Color(0xffBD7879)),
+                                    style: const ButtonStyle(
+                                        backgroundColor: WidgetStatePropertyAll(
+                                            Colors.white)),
+                                    icon: const Icon(Icons.remove,
+                                        color: Color(0xffBD7879)),
                                     onPressed: () {
                                       setState(() {
                                         cartManager.decreaseQuantity(index);
@@ -123,12 +135,17 @@ class _CartPageState extends State<CartPage> {
                                     child: Text(
                                       '${cartItem.quantity}',
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                   IconButton(
-                                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.white)),
-                                    icon: const Icon(Icons.add, color: Color(0xff7D557A)),
+                                    style: const ButtonStyle(
+                                        backgroundColor: WidgetStatePropertyAll(
+                                            Colors.white)),
+                                    icon: const Icon(Icons.add,
+                                        color: Color(0xff7D557A)),
                                     onPressed: () {
                                       setState(() {
                                         cartManager.increaseQuantity(index);
@@ -136,12 +153,16 @@ class _CartPageState extends State<CartPage> {
                                     },
                                   ),
                                   IconButton(
-                                    icon: const Icon(CupertinoIcons.delete, color: Color(0xffBD7879)),
+                                    icon: const Icon(CupertinoIcons.delete,
+                                        color: Color(0xffBD7879)),
                                     onPressed: () {
                                       setState(() {
-                                        context.read<CartBloc>().add(RemoveFromCartEvent(cartItem.itemName));
+                                        context.read<CartBloc>().add(
+                                            RemoveFromCartEvent(
+                                                cartItem.itemName));
                                         //cartManager.removeFromCart(cartItem.itemName);
-                                        '${cartItem.itemName} removed from cart!'.toast;
+                                        '${cartItem.itemName} removed from cart!'
+                                            .toast;
                                       });
                                     },
                                   ),
@@ -149,12 +170,15 @@ class _CartPageState extends State<CartPage> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 16, left: 8),
+                              padding:
+                                  const EdgeInsets.only(bottom: 16, left: 8),
                               child: Row(
                                 children: [
                                   const Text(
                                     'Discount: ',
-                                    style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 16),
                                   ),
                                   Text(
                                     '${cartItem.purchaseCost}',
@@ -185,7 +209,8 @@ class _CartPageState extends State<CartPage> {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Estimated Price:', style: TextStyle(fontSize: 17)),
+                  const Text('Estimated Price:',
+                      style: TextStyle(fontSize: 17)),
                   Text(
                     '\$${cartManager.getTotalPrice().toStringAsFixed(2)}',
                     style: const TextStyle(color: Color(0xffBD7879)),
@@ -202,7 +227,8 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ],
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
             ),
           ),
         ],
@@ -210,7 +236,8 @@ class _CartPageState extends State<CartPage> {
       bottomNavigationBar: Card(
         color: const Color(0xff394346),
         margin: EdgeInsets.zero,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
         child: BottomAppBar(
           height: 110,
           color: Colors.transparent,
@@ -230,11 +257,15 @@ class _CartPageState extends State<CartPage> {
                         children: [
                           const Text(
                             'Total: ',
-                            style: TextStyle(fontSize: 28, color: Colors.white54, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 28,
+                                color: Colors.white54,
+                                fontWeight: FontWeight.bold),
                           ),
                           Text(
                             '\$${double.parse(cartManager.getTotalPrice().toStringAsFixed(2)) + cartManager.calculatePurchaseCost()}',
-                            style: const TextStyle(fontSize: 28, color: Color(0xffBD7879)),
+                            style: const TextStyle(
+                                fontSize: 28, color: Color(0xffBD7879)),
                           ),
                         ],
                       ),
