@@ -83,7 +83,7 @@ class AppTheme {
       primaryContainer: const Color(0xff687A80),
       secondary: const Color(0xffBD7879),
       tertiary: const Color(0xffB3BDC0),
-      background: const Color(0xFFFAF9F6),
+      surface: const Color(0xFFFAF9F6),
       surfaceTint: const Color(0xffF4F4F4),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
