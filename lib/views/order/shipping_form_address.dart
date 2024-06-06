@@ -41,18 +41,22 @@ class _ShippingAddressFormState extends State<ShippingAddressForm> {
               BlocBuilder<ShippingAddressBloc, ShippingAddressState>(
                 builder: (context, state) {
                   return switch (state) {
-                    ShippingAddressLoading() => const CircularProgressIndicator(),
-                    ShippingAddressError() => const Text('Something went wrong!'),
+                    ShippingAddressLoading() =>
+                      const CircularProgressIndicator(),
+                    ShippingAddressError() =>
+                      const Text('Something went wrong!'),
                     ShippingAddressLoaded() => DropdownButtonFormField<String>(
                         menuMaxHeight: .9.sh,
                         iconEnabledColor: colorScheme(context).secondary,
-                        dropdownColor: colorScheme(context).background,
+                        dropdownColor: colorScheme(context).surface,
                         selectedItemBuilder: (BuildContext context) {
-                          return state.countriesState.keys.map((String country) {
+                          return state.countriesState.keys
+                              .map((String country) {
                             return Text(country);
                           }).toList();
                         },
-                        decoration: const InputDecoration(labelText: 'Country/Region'),
+                        decoration:
+                            const InputDecoration(labelText: 'Country/Region'),
                         value: selectedCountry,
                         items: state.countriesState.keys.map((String country) {
                           return DropdownMenuItem<String>(
@@ -65,7 +69,8 @@ class _ShippingAddressFormState extends State<ShippingAddressForm> {
                         onChanged: (value) {
                           setState(() {
                             selectedCountry = value!;
-                            selectedState = state.countriesState[selectedCountry]![0];
+                            selectedState =
+                                state.countriesState[selectedCountry]![0];
                           });
                         },
                       ),
@@ -136,17 +141,21 @@ class _ShippingAddressFormState extends State<ShippingAddressForm> {
               BlocBuilder<ShippingAddressBloc, ShippingAddressState>(
                 builder: (context, state) {
                   return switch (state) {
-                    ShippingAddressLoading() => const CircularProgressIndicator(),
-                    ShippingAddressError() => const Text('Something went wrong!'),
+                    ShippingAddressLoading() =>
+                      const CircularProgressIndicator(),
+                    ShippingAddressError() =>
+                      const Text('Something went wrong!'),
                     ShippingAddressLoaded() => DropdownButtonFormField<String>(
                         decoration: const InputDecoration(labelText: 'State'),
                         value: selectedState,
                         menuMaxHeight: .9.sh,
                         iconEnabledColor: colorScheme(context).secondary,
-                        dropdownColor: colorScheme(context).background,
+                        dropdownColor: colorScheme(context).surface,
                         selectedItemBuilder: (context) {
-                          return state.countriesState.containsKey(selectedCountry)
-                              ? state.countriesState[selectedCountry]!.map((String state) {
+                          return state.countriesState
+                                  .containsKey(selectedCountry)
+                              ? state.countriesState[selectedCountry]!
+                                  .map((String state) {
                                   return DropdownMenuItem<String>(
                                     value: state,
                                     child: Text(state),
@@ -155,7 +164,8 @@ class _ShippingAddressFormState extends State<ShippingAddressForm> {
                               : [];
                         },
                         items: state.countriesState.containsKey(selectedCountry)
-                            ? state.countriesState[selectedCountry]!.map((String state) {
+                            ? state.countriesState[selectedCountry]!
+                                .map((String state) {
                                 return DropdownMenuItem<String>(
                                   value: state,
                                   child: Card(
@@ -207,5 +217,6 @@ class _ShippingAddressFormState extends State<ShippingAddressForm> {
     );
   }
 
-  ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
+  ColorScheme colorScheme(BuildContext context) =>
+      Theme.of(context).colorScheme;
 }
