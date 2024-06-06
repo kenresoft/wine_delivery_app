@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
+  const ShoppingCartScreen({super.key});
+
   @override
   State<ShoppingCartScreen> createState() => _ShoppingCartScreenState();
 }
@@ -80,14 +82,15 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double subtotal = cartItems.fold(0, (sum, item) => sum + (item['price'] * item['quantity']));
+    double subtotal = cartItems.fold(
+        0, (sum, item) => sum + (item['price'] * item['quantity']));
 
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        title: Text('Shopping Cart'),
+        title: const Text('Shopping Cart'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Implement navigation back
           },
@@ -99,7 +102,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           children: [
             Expanded(child: CartItemsList(cartItems: cartItems)),
             SubtotalSection(subtotal: subtotal),
-            PromoCodeInput(),
+            const PromoCodeInput(),
             CheckoutButton(subtotal: subtotal),
           ],
         ),
@@ -133,7 +136,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
 class CartItemsList extends StatelessWidget {
   final List<Map<String, dynamic>> cartItems;
 
-  const CartItemsList({required this.cartItems});
+  const CartItemsList({super.key, required this.cartItems});
 
   @override
   Widget build(BuildContext context) {
@@ -143,13 +146,18 @@ class CartItemsList extends StatelessWidget {
         final item = cartItems[index];
         return Card(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           margin: const EdgeInsets.symmetric(vertical: 8),
           child: ListTile(
-            leading: Image.asset(item['image'], width: 50, height: 50, fit: BoxFit.cover),
-            title: Text(item['name'], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            leading: Image.asset(item['image'],
+                width: 50, height: 50, fit: BoxFit.cover),
+            title: Text(item['name'],
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             subtitle: Text('Quantity: ${item['quantity']}'),
-            trailing: Text('\$${(item['price'] * item['quantity']).toStringAsFixed(2)}'),
+            trailing: Text(
+                '\$${(item['price'] * item['quantity']).toStringAsFixed(2)}'),
           ),
         );
       },
@@ -160,7 +168,7 @@ class CartItemsList extends StatelessWidget {
 class SubtotalSection extends StatelessWidget {
   final double subtotal;
 
-  const SubtotalSection({required this.subtotal});
+  const SubtotalSection({super.key, required this.subtotal});
 
   @override
   Widget build(BuildContext context) {
@@ -173,8 +181,11 @@ class SubtotalSection extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Subtotal', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Text('\$${subtotal.toStringAsFixed(2)}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text('Subtotal',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('\$${subtotal.toStringAsFixed(2)}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -183,6 +194,8 @@ class SubtotalSection extends StatelessWidget {
 }
 
 class PromoCodeInput extends StatelessWidget {
+  const PromoCodeInput({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -192,7 +205,7 @@ class PromoCodeInput extends StatelessWidget {
           hintText: 'Enter promo code',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           suffixIcon: IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: () {
               // Implement promo code application
             },
@@ -206,7 +219,7 @@ class PromoCodeInput extends StatelessWidget {
 class CheckoutButton extends StatelessWidget {
   final double subtotal;
 
-  const CheckoutButton({required this.subtotal});
+  const CheckoutButton({super.key, required this.subtotal});
 
   @override
   Widget build(BuildContext context) {
@@ -216,13 +229,14 @@ class CheckoutButton extends StatelessWidget {
         onPressed: () {
           // Implement checkout navigation
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Text('Proceed to Checkout', style: TextStyle(fontSize: 18)),
-        ),
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          minimumSize: Size(double.infinity, 50),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          minimumSize: const Size(double.infinity, 50),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16.0),
+          child: Text('Proceed to Checkout', style: TextStyle(fontSize: 18)),
         ),
       ),
     );
