@@ -34,15 +34,15 @@ class ProductButton extends StatelessWidget {
           ? OutlinedButton(
               onPressed: onPressed,
               style: ButtonStyle(
-                padding: const MaterialStatePropertyAll(
+                padding: const WidgetStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 12),
                 ),
-                shape: MaterialStatePropertyAll(
+                shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(borderRadius!),
                   ),
                 ),
-                backgroundColor: MaterialStatePropertyAll(color),
+                backgroundColor: WidgetStatePropertyAll(color),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -62,15 +62,15 @@ class ProductButton extends StatelessWidget {
           : FilledButton(
               onPressed: onPressed,
               style: ButtonStyle(
-                padding: const MaterialStatePropertyAll(
+                padding: const WidgetStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 12),
                 ),
-                shape: MaterialStatePropertyAll(
+                shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(borderRadius!),
                   ),
                 ),
-                backgroundColor: MaterialStatePropertyAll(color),
+                backgroundColor: WidgetStatePropertyAll(color),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +79,8 @@ class ProductButton extends StatelessWidget {
                   Text(
                     text,
                     style: TextStyle(
-                      color: color == Colors.white ? Colors.black : Colors.white,
+                      color:
+                          color == Colors.white ? Colors.black : Colors.white,
                       fontWeight: FontWeight.w500,
                       fontSize: 19,
                     ),
