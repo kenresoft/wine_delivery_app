@@ -1,0 +1,4 @@
+{
+    "flutter-preview.target": "lib/main.dart",
+    "flutter-preview.port": 5555
+}
