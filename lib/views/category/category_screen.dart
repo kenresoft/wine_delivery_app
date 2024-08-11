@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:wine_delivery_app/model/enums/wine_category.dart';
 
 class CategoryScreen extends StatefulWidget {
-  final String categoryName;
+  // final String categoryName;
   final List<Wine> wines;
+
+  //final List<String> categories;
 
   const CategoryScreen({
     super.key,
-    required this.categoryName,
+    // required this.categoryName,
     required this.wines,
+    //required this.categories,
   });
 
   @override
-  _CategoryScreenState createState() => _CategoryScreenState();
+  State<CategoryScreen> createState() => _CategoryScreenState();
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
   String _searchQuery = '';
   String _selectedSort = 'Popularity';
+  late WineCategory _selectedCategory;
   double _minPrice = 0;
   double _maxPrice = 1000;
   double _minRating = 0;
@@ -25,17 +30,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
   double _maxAlcoholContent = 20;
 
   @override
+  void initState() {
+    super.initState();
+    _selectedCategory = WineCategory.natural;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<Wine> filteredWines = widget.wines
-        .where((wine) =>
-            wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
-            wine.price >= _minPrice &&
-            wine.price <= _maxPrice &&
-            wine.rating >= _minRating &&
-            wine.rating <= _maxRating &&
-            wine.alcoholContent >= _minAlcoholContent &&
-            wine.alcoholContent <= _maxAlcoholContent)
-        .toList();
+    List<Wine> filteredWines = widget.wines.where((wine) {
+      return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
+          wine.category.displayName == _selectedCategory.displayName &&
+          wine.price >= _minPrice &&
+          wine.price <= _maxPrice &&
+          wine.rating >= _minRating &&
+          wine.rating <= _maxRating &&
+          wine.alcoholContent >= _minAlcoholContent &&
+          wine.alcoholContent <= _maxAlcoholContent;
+    }).toList();
 
     switch (_selectedSort) {
       case 'Price':
@@ -51,7 +62,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${widget.categoryName} Wines',
+          '${_selectedCategory.displayName} Wines',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -214,7 +225,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Padding(
+        return Container(
+          height: 450,
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,6 +237,25 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButton<WineCategory>(
+                value: _selectedCategory,
+                items: WineCategory.values.map(
+                  (category) {
+                    return DropdownMenuItem<WineCategory>(
+                      value: category,
+                      child: Text(category.displayName),
+                    );
+                  },
+                ).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedCategory = newValue!;
+                  });
+                },
+                isExpanded: true,
+                hint: const Text('Select a Category'),
               ),
               const SizedBox(height: 16),
               CategoryFilterSlider(
@@ -289,7 +320,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Padding(
+        return Container(
+          height: 300,
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,11 +363,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-/*Widget _buildSlider({
-
-  }) {
-    return CategoryFilterSlider();
-  }*/
 }
 
 class CategoryFilterSlider extends StatefulWidget {
@@ -456,21 +483,23 @@ class WineSearchDelegate extends SearchDelegate<String> {
 // Define the Wine model class
 class Wine {
   final String name;
-  final String image;
+  final WineCategory category;
   final double price;
   final double rating;
-  final double popularity;
   final double alcoholContent;
+  final String image;
   final String description;
+  final int popularity;
 
   const Wine({
     required this.name,
-    required this.image,
+    required this.category,
     required this.price,
     required this.rating,
-    required this.popularity,
     required this.alcoholContent,
+    required this.image,
     required this.description,
+    required this.popularity,
   });
 }
 
