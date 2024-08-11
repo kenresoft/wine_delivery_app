@@ -4,11 +4,11 @@ sealed class CarouselState extends Equatable {
   const CarouselState();
 }
 
-final class CarouselInitial extends CarouselState {
-  final CarouselController carouselController;
+final class CarouselPosition extends CarouselState {
+  final int currentItem;
 
-  const CarouselInitial(this.carouselController);
+  const CarouselPosition({required this.currentItem});
 
   @override
-  List<Object> get props => [carouselController];
+  List<Object> get props => [currentItem];
 }
