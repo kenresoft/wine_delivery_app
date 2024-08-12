@@ -8,13 +8,16 @@ import '../../bloc/category/category_filter/category_filter_bloc.dart';
 import '../../model/wine.dart';
 
 class CategoryScreen extends StatefulWidget {
-  //final List<Wine>? wines;
-  final bool applyFiltersOnChange; // Add this flag to the constructor
+  static const priceMax = 50.0;
+  static const ratingMax = 10.0;
+  static const alcoholMax = 20.0;
+
+  final bool applyFiltersOnChange;
 
   const CategoryScreen({
     super.key,
     //this.wines,
-    this.applyFiltersOnChange = false, // Default to true
+    this.applyFiltersOnChange = true, // Default to true
   });
 
   @override
@@ -28,16 +31,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
   String _searchQuery = '';
   String _selectedSort = 'Popularity';
   double _minPrice = 0;
-  double _maxPrice = 1000;
+  double _maxPrice = CategoryScreen.priceMax;
   double _minRating = 0;
-  double _maxRating = 5;
+  double _maxRating = CategoryScreen.ratingMax;
   double _minAlcoholContent = 0;
-  double _maxAlcoholContent = 20;
+  double _maxAlcoholContent = CategoryScreen.alcoholMax;
 
   @override
   void initState() {
     super.initState();
-    _selectedCategory = WineCategory.natural;
+    _selectedCategory = WineCategory.rose;
     bloc = context.read<WinesBloc>();
     bloc.add(WinesReady());
   }
@@ -50,9 +53,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = (bloc.state as WinesLoaded);
-    final isLoading = state.isEmpty;
-    final hasLoadingError = state.hasError;
+    final state = bloc.state;
+    print(state.status);
 
     List<Wine> filteredWines = state.wines.where((wine) {
       return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
@@ -118,9 +120,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: switch ((isLoading, hasLoadingError)) {
+        child: switch ((state.isLoading, state.hasError)) {
           (true, _) => const Center(child: CircularProgressIndicator()),
-          (false, true) => const Center(child: Text('Error Loading Stock!')),
+          (false, true) => Center(child: Text('Error Loading Stock! ${state.errorMessage}')),
           (false, false) => condition(
               filteredWines.isNotEmpty,
               ListView.builder(
@@ -296,7 +298,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               CategoryFilterSlider(
                 label: 'Price Range',
                 min: 0,
-                max: 1000,
+                max: CategoryScreen.priceMax,
                 currentMin: _minPrice,
                 currentMax: _maxPrice,
                 onChanged: (newValue) {
@@ -315,7 +317,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               CategoryFilterSlider(
                 label: 'Rating Range',
                 min: 0,
-                max: 5,
+                max: CategoryScreen.ratingMax,
                 currentMin: _minRating,
                 currentMax: _maxRating,
                 onChanged: (newValue) {
@@ -334,7 +336,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               CategoryFilterSlider(
                 label: 'Alcohol Content (%)',
                 min: 0,
-                max: 20,
+                max: CategoryScreen.alcoholMax,
                 currentMin: _minAlcoholContent,
                 currentMax: _maxAlcoholContent,
                 onChanged: (newValue) {
@@ -482,7 +484,10 @@ class WineSearchDelegate extends SearchDelegate<String> {
   final List<Wine> wines;
   final ValueChanged<String> onSearch;
 
-  WineSearchDelegate({required this.wines, required this.onSearch});
+  WineSearchDelegate({
+    required this.wines,
+    required this.onSearch,
+  });
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -507,20 +512,46 @@ class WineSearchDelegate extends SearchDelegate<String> {
   }
 
   @override
-  void close(BuildContext context, String result) {
-    super.close(context, result);
-    onSearch(query);
-  }
-
-  @override
   Widget buildResults(BuildContext context) {
-    onSearch(query);
-    return Container();
+    final results = wines.where((wine) {
+      return wine.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    if (results.isEmpty) {
+      return const Center(
+        child: Text(
+          'No matching wines found',
+          style: TextStyle(fontSize: 18),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        final wine = results[index];
+        return ListTile(
+          title: Text(wine.name),
+          subtitle: Text('\$${wine.price.toStringAsFixed(2)}'),
+          onTap: () {
+            close(context, wine.name);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WineDetailScreen(wine: wine),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestions = wines.where((wine) => wine.name.toLowerCase().contains(query.toLowerCase())).toList();
+    final suggestions = wines.where((wine) {
+      return wine.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
 
     return ListView.builder(
       itemCount: suggestions.length,
@@ -531,15 +562,13 @@ class WineSearchDelegate extends SearchDelegate<String> {
           subtitle: Text('\$${wine.price.toStringAsFixed(2)}'),
           onTap: () {
             query = wine.name;
-            close(context, query);
-            //showResults(context);
+            showResults(context);
           },
         );
       },
     );
   }
 }
-
 
 class WineDetailScreen extends StatelessWidget {
   final Wine wine;
