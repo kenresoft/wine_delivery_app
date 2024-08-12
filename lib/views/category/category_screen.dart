@@ -54,7 +54,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     final state = bloc.state;
-    print(state.status);
 
     List<Wine> filteredWines = state.wines.where((wine) {
       return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
@@ -73,6 +72,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
         break;
       case 'Rating':
         filteredWines.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case 'Name (A-Z)':
+        filteredWines.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case 'Name (Z-A)':
+        filteredWines.sort((a, b) => b.name.compareTo(a.name));
         break;
       default:
         filteredWines.sort((a, b) => b.popularity.compareTo(a.popularity));
@@ -376,7 +381,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-          height: 300,
+          height: 350,
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,6 +394,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              _buildSortOption('Name (A-Z)'),
+              _buildSortOption('Name (Z-A)'),
               _buildSortOption('Popularity'),
               _buildSortOption('Price'),
               _buildSortOption('Rating'),
