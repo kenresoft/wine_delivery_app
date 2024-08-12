@@ -66,22 +66,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           wine.alcoholContent <= _maxAlcoholContent;
     }).toList();
 
-    switch (_selectedSort) {
-      case 'Price':
-        filteredWines.sort((a, b) => a.price.compareTo(b.price));
-        break;
-      case 'Rating':
-        filteredWines.sort((a, b) => b.rating.compareTo(a.rating));
-        break;
-      case 'Name (A-Z)':
-        filteredWines.sort((a, b) => a.name.compareTo(b.name));
-        break;
-      case 'Name (Z-A)':
-        filteredWines.sort((a, b) => b.name.compareTo(a.name));
-        break;
-      default:
-        filteredWines.sort((a, b) => b.popularity.compareTo(a.popularity));
-    }
+    _applySorting(filteredWines);
 
     return Scaffold(
       appBar: AppBar(
@@ -118,7 +103,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           IconButton(
             icon: const Icon(Icons.sort),
             onPressed: () {
-              _showSortOptions(context);
+              _showSortOptions(context, filteredWines);
             },
           ),
         ],
@@ -255,6 +240,25 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
+  void _applySorting(List<Wine> filteredWines) {
+    setState(() {
+      switch (_selectedSort) {
+        case 'Price':
+          filteredWines.sort((a, b) => _isAscending ? a.price.compareTo(b.price) : b.price.compareTo(a.price));
+          break;
+        case 'Rating':
+          filteredWines.sort((a, b) => _isAscending ? a.rating.compareTo(b.rating) : b.rating.compareTo(a.rating));
+          break;
+        case 'Name (A-Z)':
+        case 'Name (Z-A)':
+          filteredWines.sort((a, b) => _isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
+          break;
+        default:
+          filteredWines.sort((a, b) => _isAscending ? a.popularity.compareTo(b.popularity) : b.popularity.compareTo(a.popularity));
+      }
+    });
+  }
+
   void _showFilters(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -376,7 +380,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  void _showSortOptions(BuildContext context) {
+  void _showSortOptions(BuildContext context, List<Wine> filteredWines) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -394,11 +398,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              _buildSortOption('Name (A-Z)'),
-              _buildSortOption('Name (Z-A)'),
-              _buildSortOption('Popularity'),
-              _buildSortOption('Price'),
-              _buildSortOption('Rating'),
+              _buildSortOption('Name (A-Z)', filteredWines),
+              _buildSortOption('Popularity', filteredWines),
+              _buildSortOption('Price', filteredWines),
+              _buildSortOption('Rating', filteredWines),
             ],
           ),
         );
@@ -406,25 +409,50 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  Widget _buildSortOption(String sortOption) {
+  bool _isAscending = true;
+
+  Widget _buildSortOption(String sortOption, List<Wine> filteredWines) {
+    String displayText = sortOption;
+
+    // Update the label for Name sorting based on the current order
+    if (sortOption == 'Name (A-Z)' || sortOption == 'Name (Z-A)') {
+      displayText = _isAscending ? 'Name (A-Z)' : 'Name (Z-A)';
+    }
+
     return ListTile(
       title: Text(
-        sortOption,
+        displayText,
         style: TextStyle(
           fontSize: 16,
           fontWeight: _selectedSort == sortOption ? FontWeight.bold : FontWeight.normal,
         ),
       ),
-      trailing: _selectedSort == sortOption ? const Icon(Icons.check, color: Colors.amber) : null,
+      trailing: _selectedSort == sortOption
+          ? Icon(
+              _isAscending ? Icons.arrow_upward : Icons.arrow_downward,
+              color: Colors.amber,
+            )
+          : null,
       onTap: () {
-        setState(() {
-          _selectedSort = sortOption;
-        });
-        Navigator.pop(context);
+        _onTapSortOption(sortOption, filteredWines);
       },
     );
   }
 
+  _onTapSortOption(String sortOption, List<Wine> filteredWines) {
+    setState(() {
+      if (_selectedSort == sortOption) {
+        // Toggle sort order if the same option is selected
+        _isAscending = !_isAscending;
+      } else {
+        // Set new sort option and default to ascending order
+        _selectedSort = sortOption;
+        _isAscending = true;
+      }
+      _applySorting(filteredWines);
+    });
+    Navigator.pop(context);
+  }
 }
 
 class CategoryFilterSlider extends StatefulWidget {
