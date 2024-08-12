@@ -8,9 +8,9 @@ import '../../bloc/category/category_filter/category_filter_bloc.dart';
 import '../../model/wine.dart';
 
 class CategoryScreen extends StatefulWidget {
-  static const priceMax = 50.0;
-  static const ratingMax = 10.0;
-  static const alcoholMax = 20.0;
+  static const double priceMax = 50.0;
+  static const double ratingMax = 10.0;
+  static const double alcoholMax = 20.0;
 
   final bool applyFiltersOnChange;
 
@@ -36,6 +36,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   double _maxRating = CategoryScreen.ratingMax;
   double _minAlcoholContent = 0;
   double _maxAlcoholContent = CategoryScreen.alcoholMax;
+
+  bool _isAscending = true;
 
   @override
   void initState() {
@@ -69,174 +71,194 @@ class _CategoryScreenState extends State<CategoryScreen> {
     _applySorting(filteredWines);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '${_selectedCategory.displayName} Wines',
+      appBar: buildAppBar(context, state, filteredWines),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: _buildBody(state, filteredWines),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  AppBar buildAppBar(BuildContext context, WinesState state, List<Wine> filteredWines) {
+    return AppBar(
+      title: Text(
+        '${_selectedCategory.displayName} Wines',
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {
+            showSearch(
+              context: context,
+              delegate: WineSearchDelegate(
+                wines: state.wines,
+                onSearch: (query) {
+                  setState(() {
+                    _searchQuery = query;
+                  });
+                },
+              ),
+            );
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.filter_list),
+          onPressed: () => _showFilters(context),
+        ),
+        IconButton(
+          icon: const Icon(Icons.sort),
+          onPressed: () => _showSortOptions(context, filteredWines),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBody(WinesState state, List<Wine> filteredWines) {
+    return switch ((state.isLoading, state.hasError)) {
+      (true, _) => const Center(child: CircularProgressIndicator()),
+      (false, true) => Center(child: Text('Error Loading Stock! ${state.errorMessage}')),
+      (false, false) => condition(
+          filteredWines.isNotEmpty,
+          ListView.builder(
+            itemCount: filteredWines.length,
+            itemBuilder: (context, index) {
+              final wine = filteredWines[index];
+              return _buildWineCard(wine);
+            },
+          ),
+          const Center(
+            child: Text(
+              'No wines match your search or filter criteria.',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+    };
+  }
+
+  Widget _buildWineCard(Wine wine) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WineDetailScreen(wine: wine),
+          ),
+        );
+      },
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            _buildWineImage(wine),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: _buildWineDetails(wine),
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, color: Colors.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWineImage(Wine wine) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(10),
+        bottomLeft: Radius.circular(10),
+      ),
+      child: Hero(
+        tag: wine.image,
+        transitionOnUserGestures: true,
+        child: Image.asset(
+          wine.image,
+          height: 100,
+          width: 100,
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWineDetails(Wine wine) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          wine.name,
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: WineSearchDelegate(
-                  wines: state.wines,
-                  onSearch: (query) {
-                    setState(() {
-                      _searchQuery = query;
-                    });
-                  },
-                ),
-              );
-            },
+        const SizedBox(height: 8),
+        Text(
+          '\$${wine.price.toStringAsFixed(2)}',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.amber[800],
+            fontWeight: FontWeight.bold,
           ),
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              _showFilters(context);
-            },
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Rating: ${wine.rating.toStringAsFixed(1)}',
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
           ),
-          IconButton(
-            icon: const Icon(Icons.sort),
-            onPressed: () {
-              _showSortOptions(context, filteredWines);
-            },
+        ),
+        const SizedBox(height: 8),
+        Text(
+          wine.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: switch ((state.isLoading, state.hasError)) {
-          (true, _) => const Center(child: CircularProgressIndicator()),
-          (false, true) => Center(child: Text('Error Loading Stock! ${state.errorMessage}')),
-          (false, false) => condition(
-              filteredWines.isNotEmpty,
-              ListView.builder(
-                itemCount: filteredWines.length,
-                itemBuilder: (context, index) {
-                  final wine = filteredWines[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WineDetailScreen(wine: wine),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              bottomLeft: Radius.circular(10),
-                            ),
-                            child: Hero(
-                              tag: wine.image,
-                              transitionOnUserGestures: true,
-                              child: Image.asset(
-                                wine.image,
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    wine.name,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    '\$${wine.price.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.amber[800],
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Rating: ${wine.rating.toStringAsFixed(1)}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    wine.description,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const Center(
-                child: Text(
-                  'No wines match your search or filter criteria.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'Categories',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 1,
-        selectedItemColor: Colors.amber[800],
-        onTap: (index) {
-          // Implement navigation logic here
-        },
-      ),
+        ),
+      ],
+    );
+  }
+
+  BottomNavigationBar _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.category),
+          label: 'Categories',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_cart),
+          label: 'Cart',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+      ],
+      currentIndex: 1,
+      selectedItemColor: Colors.amber[800],
+      onTap: (index) {
+        // Implement navigation logic here
+      },
     );
   }
 
@@ -266,117 +288,121 @@ class _CategoryScreenState extends State<CategoryScreen> {
         return Container(
           height: 450,
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Filter by:',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              BlocBuilder<CategoryFilterBloc, CategoryFilterState>(
-                builder: (context, state) {
-                  return DropdownButton<WineCategory>(
-                    value: state.selectedCategory,
-                    menuWidth: 300,
-                    items: WineCategory.values.map((category) {
-                      return DropdownMenuItem<WineCategory>(
-                        onTap: () => context.read<CategoryFilterBloc>().add(CategoryFilterTap(category)),
-                        value: category,
-                        child: Text(category.displayName), // Assuming .toString() works for WineCategory
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      if (!widget.applyFiltersOnChange) {
-                        _selectedCategory = newValue!;
-                      } else {
-                        setState(() {
-                          _selectedCategory = newValue!;
-                        });
-                      }
-                    },
-                    isExpanded: true,
-                    hint: const Text('Select a Category'),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              CategoryFilterSlider(
-                label: 'Price Range',
-                min: 0,
-                max: CategoryScreen.priceMax,
-                currentMin: _minPrice,
-                currentMax: _maxPrice,
-                onChanged: (newValue) {
-                  if (!widget.applyFiltersOnChange) {
-                    _minPrice = newValue.start;
-                    _maxPrice = newValue.end;
-                  } else {
-                    setState(() {
-                      _minPrice = newValue.start;
-                      _maxPrice = newValue.end;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              CategoryFilterSlider(
-                label: 'Rating Range',
-                min: 0,
-                max: CategoryScreen.ratingMax,
-                currentMin: _minRating,
-                currentMax: _maxRating,
-                onChanged: (newValue) {
-                  if (!widget.applyFiltersOnChange) {
-                    _minRating = newValue.start;
-                    _maxRating = newValue.end;
-                  } else {
-                    setState(() {
-                      _minRating = newValue.start;
-                      _maxRating = newValue.end;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              CategoryFilterSlider(
-                label: 'Alcohol Content (%)',
-                min: 0,
-                max: CategoryScreen.alcoholMax,
-                currentMin: _minAlcoholContent,
-                currentMax: _maxAlcoholContent,
-                onChanged: (newValue) {
-                  if (!widget.applyFiltersOnChange) {
-                    _minAlcoholContent = newValue.start;
-                    _maxAlcoholContent = newValue.end;
-                  } else {
-                    setState(() {
-                      _minAlcoholContent = newValue.start;
-                      _maxAlcoholContent = newValue.end;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (!widget.applyFiltersOnChange) {
-                      _applyFilters();
-                    }
-                    //Navigator.pop(context);
-                  },
-                  child: const Text('Apply Filters'),
-                ),
-              ),
-            ],
-          ),
+          child: _buildFilterOptions(context),
         );
       },
+    );
+  }
+
+  Column _buildFilterOptions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Filter by:',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        BlocBuilder<CategoryFilterBloc, CategoryFilterState>(
+          builder: (context, state) {
+            return DropdownButton<WineCategory>(
+              value: state.selectedCategory,
+              menuWidth: 300,
+              items: WineCategory.values.map((category) {
+                return DropdownMenuItem<WineCategory>(
+                  onTap: () => context.read<CategoryFilterBloc>().add(CategoryFilterTap(category)),
+                  value: category,
+                  child: Text(category.displayName), // Assuming .toString() works for WineCategory
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                if (!widget.applyFiltersOnChange) {
+                  _selectedCategory = newValue!;
+                } else {
+                  setState(() {
+                    _selectedCategory = newValue!;
+                  });
+                }
+              },
+              isExpanded: true,
+              hint: const Text('Select a Category'),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        CategoryFilterSlider(
+          label: 'Price Range',
+          min: 0,
+          max: CategoryScreen.priceMax,
+          currentMin: _minPrice,
+          currentMax: _maxPrice,
+          onChanged: (newValue) {
+            if (!widget.applyFiltersOnChange) {
+              _minPrice = newValue.start;
+              _maxPrice = newValue.end;
+            } else {
+              setState(() {
+                _minPrice = newValue.start;
+                _maxPrice = newValue.end;
+              });
+            }
+          },
+        ),
+        const SizedBox(height: 16),
+        CategoryFilterSlider(
+          label: 'Rating Range',
+          min: 0,
+          max: CategoryScreen.ratingMax,
+          currentMin: _minRating,
+          currentMax: _maxRating,
+          onChanged: (newValue) {
+            if (!widget.applyFiltersOnChange) {
+              _minRating = newValue.start;
+              _maxRating = newValue.end;
+            } else {
+              setState(() {
+                _minRating = newValue.start;
+                _maxRating = newValue.end;
+              });
+            }
+          },
+        ),
+        const SizedBox(height: 16),
+        CategoryFilterSlider(
+          label: 'Alcohol Content (%)',
+          min: 0,
+          max: CategoryScreen.alcoholMax,
+          currentMin: _minAlcoholContent,
+          currentMax: _maxAlcoholContent,
+          onChanged: (newValue) {
+            if (!widget.applyFiltersOnChange) {
+              _minAlcoholContent = newValue.start;
+              _maxAlcoholContent = newValue.end;
+            } else {
+              setState(() {
+                _minAlcoholContent = newValue.start;
+                _maxAlcoholContent = newValue.end;
+              });
+            }
+          },
+        ),
+        const SizedBox(height: 16),
+        Align(
+          alignment: Alignment.centerRight,
+          child: ElevatedButton(
+            onPressed: () {
+              if (!widget.applyFiltersOnChange) {
+                _applyFilters();
+              }
+              //Navigator.pop(context);
+            },
+            child: const Text('Apply Filters'),
+          ),
+        ),
+      ],
     );
   }
 
@@ -408,8 +434,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
       },
     );
   }
-
-  bool _isAscending = true;
 
   Widget _buildSortOption(String sortOption, List<Wine> filteredWines) {
     String displayText = sortOption;
@@ -616,7 +640,8 @@ class WineDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(wine.name),
       ),
-      body: Padding(
+      body: Container(
+        alignment: Alignment.center,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -625,35 +650,28 @@ class WineDetailScreen extends StatelessWidget {
               tag: wine.image,
               child: Image.asset(
                 wine.image,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
+                height: 300,
+                width: 300,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               wine.name,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               '\$${wine.price.toStringAsFixed(2)}',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 color: Colors.amber[800],
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               'Rating: ${wine.rating.toStringAsFixed(1)}',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: const TextStyle(fontSize: 18, color: Colors.grey),
             ),
             const SizedBox(height: 8),
             Text(
@@ -666,9 +684,8 @@ class WineDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               wine.description,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
