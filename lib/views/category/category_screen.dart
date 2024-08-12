@@ -1,17 +1,20 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wine_delivery_app/bloc/category/category_list/wines_bloc.dart';
 import 'package:wine_delivery_app/model/enums/wine_category.dart';
 
-class CategoryScreen extends StatefulWidget {
-  // final String categoryName;
-  final List<Wine> wines;
+import '../../bloc/category/category_filter/category_filter_bloc.dart';
+import '../../model/wine.dart';
 
-  //final List<String> categories;
+class CategoryScreen extends StatefulWidget {
+  //final List<Wine>? wines;
+  final bool applyFiltersOnChange; // Add this flag to the constructor
 
   const CategoryScreen({
     super.key,
-    // required this.categoryName,
-    required this.wines,
-    //required this.categories,
+    //this.wines,
+    this.applyFiltersOnChange = false, // Default to true
   });
 
   @override
@@ -19,9 +22,11 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
+  late WineCategory _selectedCategory;
+  late WinesBloc bloc;
+
   String _searchQuery = '';
   String _selectedSort = 'Popularity';
-  late WineCategory _selectedCategory;
   double _minPrice = 0;
   double _maxPrice = 1000;
   double _minRating = 0;
@@ -33,11 +38,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
   void initState() {
     super.initState();
     _selectedCategory = WineCategory.natural;
+    bloc = context.read<WinesBloc>();
+    bloc.add(WinesReady());
+  }
+
+  void _applyFilters() {
+    setState(() {
+      // Mark filters as applied
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Wine> filteredWines = widget.wines.where((wine) {
+    final state = (bloc.state as WinesLoaded);
+    final isLoading = state.isEmpty;
+    final hasLoadingError = state.hasError;
+
+    List<Wine> filteredWines = state.wines.where((wine) {
       return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
           wine.category.displayName == _selectedCategory.displayName &&
           wine.price >= _minPrice &&
@@ -75,7 +92,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               showSearch(
                 context: context,
                 delegate: WineSearchDelegate(
-                  wines: widget.wines,
+                  wines: state.wines,
                   onSearch: (query) {
                     setState(() {
                       _searchQuery = query;
@@ -101,8 +118,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: filteredWines.isNotEmpty
-            ? ListView.builder(
+        child: switch ((isLoading, hasLoadingError)) {
+          (true, _) => const Center(child: CircularProgressIndicator()),
+          (false, true) => const Center(child: Text('Error Loading Stock!')),
+          (false, false) => condition(
+              filteredWines.isNotEmpty,
+              ListView.builder(
                 itemCount: filteredWines.length,
                 itemBuilder: (context, index) {
                   final wine = filteredWines[index];
@@ -128,11 +149,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               topLeft: Radius.circular(10),
                               bottomLeft: Radius.circular(10),
                             ),
-                            child: Image.asset(
-                              wine.image,
-                              height: 100,
-                              width: 100,
-                              fit: BoxFit.cover,
+                            child: Hero(
+                              tag: wine.image,
+                              transitionOnUserGestures: true,
+                              child: Image.asset(
+                                wine.image,
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                           Expanded(
@@ -185,13 +210,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     ),
                   );
                 },
-              )
-            : const Center(
+              ),
+              const Center(
                 child: Text(
                   'No wines match your search or filter criteria.',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
+            ),
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -239,23 +266,31 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              DropdownButton<WineCategory>(
-                value: _selectedCategory,
-                items: WineCategory.values.map(
-                  (category) {
-                    return DropdownMenuItem<WineCategory>(
-                      value: category,
-                      child: Text(category.displayName),
-                    );
-                  },
-                ).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _selectedCategory = newValue!;
-                  });
+              BlocBuilder<CategoryFilterBloc, CategoryFilterState>(
+                builder: (context, state) {
+                  return DropdownButton<WineCategory>(
+                    value: state.selectedCategory,
+                    menuWidth: 300,
+                    items: WineCategory.values.map((category) {
+                      return DropdownMenuItem<WineCategory>(
+                        onTap: () => context.read<CategoryFilterBloc>().add(CategoryFilterTap(category)),
+                        value: category,
+                        child: Text(category.displayName), // Assuming .toString() works for WineCategory
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      if (!widget.applyFiltersOnChange) {
+                        _selectedCategory = newValue!;
+                      } else {
+                        setState(() {
+                          _selectedCategory = newValue!;
+                        });
+                      }
+                    },
+                    isExpanded: true,
+                    hint: const Text('Select a Category'),
+                  );
                 },
-                isExpanded: true,
-                hint: const Text('Select a Category'),
               ),
               const SizedBox(height: 16),
               CategoryFilterSlider(
@@ -265,10 +300,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 currentMin: _minPrice,
                 currentMax: _maxPrice,
                 onChanged: (newValue) {
-                  setState(() {
+                  if (!widget.applyFiltersOnChange) {
                     _minPrice = newValue.start;
                     _maxPrice = newValue.end;
-                  });
+                  } else {
+                    setState(() {
+                      _minPrice = newValue.start;
+                      _maxPrice = newValue.end;
+                    });
+                  }
                 },
               ),
               const SizedBox(height: 16),
@@ -279,10 +319,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 currentMin: _minRating,
                 currentMax: _maxRating,
                 onChanged: (newValue) {
-                  setState(() {
+                  if (!widget.applyFiltersOnChange) {
                     _minRating = newValue.start;
                     _maxRating = newValue.end;
-                  });
+                  } else {
+                    setState(() {
+                      _minRating = newValue.start;
+                      _maxRating = newValue.end;
+                    });
+                  }
                 },
               ),
               const SizedBox(height: 16),
@@ -293,10 +338,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 currentMin: _minAlcoholContent,
                 currentMax: _maxAlcoholContent,
                 onChanged: (newValue) {
-                  setState(() {
+                  if (!widget.applyFiltersOnChange) {
                     _minAlcoholContent = newValue.start;
                     _maxAlcoholContent = newValue.end;
-                  });
+                  } else {
+                    setState(() {
+                      _minAlcoholContent = newValue.start;
+                      _maxAlcoholContent = newValue.end;
+                    });
+                  }
                 },
               ),
               const SizedBox(height: 16),
@@ -304,7 +354,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    if (!widget.applyFiltersOnChange) {
+                      _applyFilters();
+                    }
+                    //Navigator.pop(context);
                   },
                   child: const Text('Apply Filters'),
                 ),
@@ -454,6 +507,12 @@ class WineSearchDelegate extends SearchDelegate<String> {
   }
 
   @override
+  void close(BuildContext context, String result) {
+    super.close(context, result);
+    onSearch(query);
+  }
+
+  @override
   Widget buildResults(BuildContext context) {
     onSearch(query);
     return Container();
@@ -472,7 +531,8 @@ class WineSearchDelegate extends SearchDelegate<String> {
           subtitle: Text('\$${wine.price.toStringAsFixed(2)}'),
           onTap: () {
             query = wine.name;
-            showResults(context);
+            close(context, query);
+            //showResults(context);
           },
         );
       },
@@ -480,28 +540,6 @@ class WineSearchDelegate extends SearchDelegate<String> {
   }
 }
 
-// Define the Wine model class
-class Wine {
-  final String name;
-  final WineCategory category;
-  final double price;
-  final double rating;
-  final double alcoholContent;
-  final String image;
-  final String description;
-  final int popularity;
-
-  const Wine({
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.rating,
-    required this.alcoholContent,
-    required this.image,
-    required this.description,
-    required this.popularity,
-  });
-}
 
 class WineDetailScreen extends StatelessWidget {
   final Wine wine;
@@ -519,11 +557,14 @@ class WineDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              wine.image,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            Hero(
+              tag: wine.image,
+              child: Image.asset(
+                wine.image,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
