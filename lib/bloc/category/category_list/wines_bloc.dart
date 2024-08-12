@@ -7,19 +7,19 @@ import 'package:flutter/services.dart';
 import '../../../model/wine.dart';
 
 part 'wines_event.dart';
-
 part 'wines_state.dart';
 
 class WinesBloc extends Bloc<WinesEvent, WinesState> {
-  WinesBloc() : super(const WinesLoaded(wines: [])) {
+  WinesBloc() : super(const WinesState(status: WinesLoadStatus.loading)) {
     on<WinesReady>((event, emit) async {
       try {
         final jsonString = await rootBundle.loadString('assets/winest.json');
         final List<dynamic> decodedData = jsonDecode(jsonString) as List<dynamic>;
         final List<Wine> wines = decodedData.map((dynamic item) => Wine.fromJson(item)).toList();
-        emit(WinesLoaded(wines: wines));
+
+        emit(WinesState(status: WinesLoadStatus.success, wines: wines));
       } catch (e) {
-        emit(WinesLoaded(wines: [Wine.error()]));
+        emit(WinesState(status: WinesLoadStatus.error, errorMessage: e.toString()));
       }
     });
   }

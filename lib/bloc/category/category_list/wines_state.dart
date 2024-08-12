@@ -1,18 +1,21 @@
 part of 'wines_bloc.dart';
 
-sealed class WinesState extends Equatable {
-  const WinesState();
-}
+enum WinesLoadStatus { loading, success, error }
 
-final class WinesLoaded extends WinesState {
+class WinesState extends Equatable {
+  final WinesLoadStatus status;
   final List<Wine> wines;
+  final String? errorMessage;
 
-  const WinesLoaded({required this.wines});
-
-  bool get isEmpty => wines.isEmpty;
-
-  bool get hasError => wines.contains(Wine.error());
+  const WinesState({
+    required this.status,
+    this.wines = const [],
+    this.errorMessage,
+  });
 
   @override
-  List<Object> get props => [wines, isEmpty];
+  List<Object?> get props => [status, wines, errorMessage];
+
+  bool get isLoading => status == WinesLoadStatus.loading;
+  bool get hasError => status == WinesLoadStatus.error;
 }
