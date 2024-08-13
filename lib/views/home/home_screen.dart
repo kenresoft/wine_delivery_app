@@ -2,22 +2,87 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/bloc/carousel/carousel_bloc.dart';
-import 'package:wine_delivery_app/views/category/category_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/views/cart/shopping_cart.dart';
 
-import '../../bloc/route/route_bloc.dart';
-import '../../bloc/route/route_event.dart';
-import '../../bloc/route/route_state.dart';
+import '../../bloc/carousel/carousel_bloc.dart';
+import '../../bloc/cart/cart_bloc.dart';
+import '../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../model/enums/wine_category.dart';
+import '../cart/cart_page.dart';
+import '../category/category_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  final List<Widget> _pages = const [
+    HomePage(),
+    CategoryScreen(),
+    CartPage(),
+    ShoppingCartScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    //final routerDelegate = Router.of(context).routerDelegate as TabRouterDelegate;
+    return BlocBuilder<NavigationBloc, NavigationState>(
+      builder: (context, state) {
+        int currentIndex = 0;
+        if (state is PageChanged) {
+          currentIndex = state.selectedIndex;
+        }
+
+        return Scaffold(
+          body: PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) {
+              if (_pages[currentIndex].toString() != 'HomePage') {
+                print('$didPop + $result + ${_pages[currentIndex]}');
+                BlocProvider.of<NavigationBloc>(context).add(const PageTapped(0));
+              }
+            },
+            child: _pages[currentIndex],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.category),
+                label: 'Categories',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart),
+                label: 'Cart',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+            currentIndex: currentIndex,
+            selectedItemColor: Colors.amber[800],
+            type: BottomNavigationBarType.fixed,
+            onTap: (index) {
+              BlocProvider.of<NavigationBloc>(context).add(PageTapped(index));
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: AppBar(
+      appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -35,13 +100,6 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.notifications),
             onPressed: () {
               // Implement notification functionality
-              Navigator.pushNamed(context, 'home');
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              // Navigate to cart
             },
           ),
           GestureDetector(
@@ -49,7 +107,6 @@ class HomeScreen extends StatelessWidget {
             child: Container(
               width: 50,
               height: 50,
-              // color: Colors.green,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -67,14 +124,15 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: FittedBox(
-                        child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-                          return Text(
-                            //'${cartManager.cartItems.length}',
-                            '${state.cartItems.length}',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 10, color: Colors.white),
-                          );
-                        }),
+                        child: BlocBuilder<CartBloc, CartState>(
+                          builder: (context, state) {
+                            return Text(
+                              '${state.cartItems.length}',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 10, color: Colors.white),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -83,84 +141,20 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),*/
-      //body: _widgetOptions[_selectedIndex],
-
-      body: BlocBuilder<NavigationBloc, NavigationState>(
-        builder: (context, state) {
-          return const HomePage(); // Your current screen's body
-        },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      body: const SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FeaturedWinesCarousel(),
+              SizedBox(height: 20),
+              CategoryGrid(),
+              SizedBox(height: 10),
+              TopPicksSection(),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'Categories',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _getSelectedIndex(context),
-        selectedItemColor: Colors.amber[800],
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              context.read<NavigationBloc>().add(NavigateToHome());
-              break;
-            case 1:
-              context.read<NavigationBloc>().add(NavigateToCategories());
-              break;
-            case 2:
-              context.read<NavigationBloc>().add(NavigateToCart());
-              break;
-            case 3:
-              context.read<NavigationBloc>().add(NavigateToProfile());
-              break;
-          }
-        },
-      ),
-    );
-  }
-
-  int _getSelectedIndex(BuildContext context) {
-    final state = context.read<NavigationBloc>().state;
-    if (state is HomePageState) return 0;
-    if (state is CategoriesPageState) return 1;
-    if (state is CartPageState) return 2;
-    if (state is ProfilePageState) return 3;
-    return 0;
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FeaturedWinesCarousel(),
-            SizedBox(height: 20),
-            CategoryGrid(),
-            SizedBox(height: 10),
-            TopPicksSection(),
-          ],
         ),
       ),
     );

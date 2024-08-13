@@ -2,15 +2,21 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/bloc/carousel/carousel_bloc.dart';
-import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
-import 'package:wine_delivery_app/bloc/order/order_bloc.dart';
-import 'package:wine_delivery_app/bloc/shipping_address/shipping_address_bloc.dart';
+import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
 import 'package:wine_delivery_app/utils/app_theme.dart';
 import 'package:wine_delivery_app/views/admin/oder_management_page.dart';
-import 'package:wine_delivery_app/views/cart/cart_page.dart';
-import 'package:wine_delivery_app/views/home/home_screen.dart';
-import 'package:wine_delivery_app/views/product/product_page.dart';
+
+import 'bloc/carousel/carousel_bloc.dart';
+import 'bloc/cart/cart_bloc.dart';
+import 'bloc/category/category_filter/category_filter_bloc.dart';
+import 'bloc/category/category_list/wines_bloc.dart';
+import 'bloc/order/order_bloc.dart';
+import 'bloc/shipping_address/shipping_address_bloc.dart';
+import 'views/cart/cart_page.dart';
+import 'views/category/category_screen.dart';
+import 'views/home/home.dart';
+import 'views/home/home_screen.dart';
+import 'views/product/product_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,25 +35,28 @@ class MyApp extends StatelessWidget {
       ensureScreenSize: true,
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<NavigationBloc>(create: (context) => NavigationBloc()),
           BlocProvider<CartBloc>(create: (context) => CartBloc()),
           BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
           BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc()),
           BlocProvider<CarouselBloc>(create: (context) => CarouselBloc()),
+          BlocProvider<CategoryFilterBloc>(create: (context) => CategoryFilterBloc()),
+          BlocProvider<WinesBloc>(create: (context) => WinesBloc()),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
           theme: AppTheme().themeData,
           routes: {
-            // '/': (context) => const Home(),
+            '/': (context) => const HomeScreen(),
             // '/': (context) => OrderConfirmationScreen(),
             // '/': (context) => ShoppingCartScreen(),
-            '/': (context) => const HomeScreen(),
-            // '/': (context) => const ShoppingCartScreen(),
+            'home': (context) => const Home(),
             'product_page': (context) => const ProductPage(),
             'cart_page': (context) => const CartPage(),
             //'order_page': (context) => const OrderPage(),
             'order_management_page': (context) => const OrderManagementPage(),
+            'category': (context) => const CategoryScreen(),
           },
         ),
       ),
