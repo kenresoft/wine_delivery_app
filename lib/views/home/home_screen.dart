@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/bloc/carousel/carousel_bloc.dart';
 import 'package:wine_delivery_app/views/category/category_screen.dart';
 
+import '../../bloc/route/route_bloc.dart';
+import '../../bloc/route/route_event.dart';
+import '../../bloc/route/route_state.dart';
 import '../../model/enums/wine_category.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,8 +15,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //final routerDelegate = Router.of(context).routerDelegate as TabRouterDelegate;
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -31,6 +35,7 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.notifications),
             onPressed: () {
               // Implement notification functionality
+              Navigator.pushNamed(context, 'home');
             },
           ),
           IconButton(
@@ -39,22 +44,52 @@ class HomeScreen extends StatelessWidget {
               // Navigate to cart
             },
           ),
-        ],
-      ),
-      body: const SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FeaturedWinesCarousel(),
-              SizedBox(height: 20),
-              CategoryGrid(),
-              SizedBox(height: 10),
-              TopPicksSection(),
-            ],
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, 'cart_page'),
+            child: Container(
+              width: 50,
+              height: 50,
+              // color: Colors.green,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(Icons.shopping_cart, size: 24.r, color: const Color(0xff383838)),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 16.w,
+                      height: 16.w,
+                      padding: const EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffBD7879),
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: FittedBox(
+                        child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                          return Text(
+                            //'${cartManager.cartItems.length}',
+                            '${state.cartItems.length}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 10, color: Colors.white),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
+      ),*/
+      //body: _widgetOptions[_selectedIndex],
+
+      body: BlocBuilder<NavigationBloc, NavigationState>(
+        builder: (context, state) {
+          return const HomePage(); // Your current screen's body
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -75,11 +110,58 @@ class HomeScreen extends StatelessWidget {
             label: 'Profile',
           ),
         ],
-        currentIndex: 0, // Home screen is selected
+        currentIndex: _getSelectedIndex(context),
         selectedItemColor: Colors.amber[800],
         onTap: (index) {
-          // Implement navigation logic here
+          switch (index) {
+            case 0:
+              context.read<NavigationBloc>().add(NavigateToHome());
+              break;
+            case 1:
+              context.read<NavigationBloc>().add(NavigateToCategories());
+              break;
+            case 2:
+              context.read<NavigationBloc>().add(NavigateToCart());
+              break;
+            case 3:
+              context.read<NavigationBloc>().add(NavigateToProfile());
+              break;
+          }
         },
+      ),
+    );
+  }
+
+  int _getSelectedIndex(BuildContext context) {
+    final state = context.read<NavigationBloc>().state;
+    if (state is HomePageState) return 0;
+    if (state is CategoriesPageState) return 1;
+    if (state is CartPageState) return 2;
+    if (state is ProfilePageState) return 3;
+    return 0;
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FeaturedWinesCarousel(),
+            SizedBox(height: 20),
+            CategoryGrid(),
+            SizedBox(height: 10),
+            TopPicksSection(),
+          ],
+        ),
       ),
     );
   }
@@ -276,14 +358,54 @@ class _CategoryGridState extends State<CategoryGrid> {
   }
 }
 
-class TopPicksSection extends StatelessWidget {
+class TopPicksSection extends StatefulWidget {
+  const TopPicksSection({super.key});
+
+  @override
+  State<TopPicksSection> createState() => _TopPicksSectionState();
+}
+
+class _TopPicksSectionState extends State<TopPicksSection> with TickerProviderStateMixin {
   final List<Map<String, dynamic>> topPicks = const [
     {"name": "Red Wine", "price": 20.0, "image": "assets/images/wine-2.png"},
     {"name": "White Wine", "price": 25.0, "image": "assets/images/wine-3.png"},
     {"name": "Sparkling Wine", "price": 30.0, "image": "assets/images/wine-4.png"},
   ];
 
-  const TopPicksSection({super.key});
+  late List<AnimationController> _controllers;
+  late List<Animation<double>> _animations;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = topPicks.map((_) {
+      return AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 3),
+      );
+    }).toList();
+
+    _animations = _controllers.map((controller) {
+      return Tween<double>(begin: 0.9, end: 1.05).animate(
+        CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+      );
+    }).toList();
+
+    // Start each animation with a varying delay
+    for (int i = 0; i < _controllers.length; i++) {
+      Future.delayed(Duration(seconds: i * 10), () {
+        _controllers[i].repeat(reverse: true);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -301,9 +423,13 @@ class TopPicksSection extends StatelessWidget {
           itemCount: topPicks.length,
           itemBuilder: (context, index) {
             final item = topPicks[index];
+            final animation = _animations[index];
             return Container(
               height: 130,
-              decoration: BoxDecoration(color: Colors.orangeAccent, borderRadius: BorderRadius.circular(70)),
+              decoration: BoxDecoration(
+                color: Colors.orangeAccent,
+                borderRadius: BorderRadius.circular(70),
+              ),
               margin: const EdgeInsets.symmetric(vertical: 8),
               alignment: Alignment.center,
               child: Row(
@@ -312,11 +438,28 @@ class TopPicksSection extends StatelessWidget {
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset(item['image'], width: 80, height: 110, fit: BoxFit.contain),
+                      AnimatedBuilder(
+                        animation: animation,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: animation.value,
+                            child: child,
+                          );
+                        },
+                        child: Image.asset(
+                          item['image'],
+                          width: 80,
+                          height: 110,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                       Container(
                         height: 130,
                         width: 130,
-                        decoration: const BoxDecoration(color: Color(0x6669625d), shape: BoxShape.circle),
+                        decoration: const BoxDecoration(
+                          color: Color(0x6669625d),
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ],
                   ),
@@ -324,13 +467,15 @@ class TopPicksSection extends StatelessWidget {
                     width: 120,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      item['name'] + '',
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),
+                      item['name'],
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Container(
                     width: 60,
-                    // color: Colors.green,
                     alignment: Alignment.centerRight,
                     margin: const EdgeInsets.only(right: 20),
                     child: Text(
