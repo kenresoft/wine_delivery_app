@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/bloc/carousel/carousel_bloc.dart';
+import 'package:wine_delivery_app/views/category/category_screen.dart';
+
+import '../../model/enums/wine_category.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -47,7 +50,7 @@ class HomeScreen extends StatelessWidget {
               FeaturedWinesCarousel(),
               SizedBox(height: 20),
               CategoryGrid(),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               TopPicksSection(),
             ],
           ),
@@ -203,50 +206,72 @@ class WineCard extends StatelessWidget {
   }
 }
 
-class CategoryGrid extends StatelessWidget {
-  final List<Map<String, dynamic>> categories = const [
-    {"name": "Red Wine", "icon": Icons.local_bar},
-    {"name": "White Wine", "icon": Icons.wine_bar},
-    {"name": "Sparkling", "icon": Icons.bubble_chart},
-    {"name": "Rosé", "icon": Icons.local_drink},
-  ];
-
+class CategoryGrid extends StatefulWidget {
   const CategoryGrid({super.key});
 
   @override
+  State<CategoryGrid> createState() => _CategoryGridState();
+}
+
+class _CategoryGridState extends State<CategoryGrid> {
+  bool _showAll = false;
+
+  @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 3 / 2,
-      ),
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            // Implement navigation to category
-          },
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(categories[index]['icon'], size: 50, color: Colors.amber[800]),
-                const SizedBox(height: 10),
-                Text(
-                  categories[index]['name'],
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
+    const categories = WineCategory.values;
+    final displayedCategories = _showAll ? categories : categories.take(4).toList();
+
+    return Column(
+      children: [
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 3 / 2,
           ),
-        );
-      },
+          itemCount: displayedCategories.length,
+          itemBuilder: (context, index) {
+            final category = displayedCategories[index];
+            return GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CategoryScreen(category: category); // Your CategoryScreen widget
+                  },
+                ),
+              ),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(category.icon, size: 50, color: Colors.amber[800]),
+                    const SizedBox(height: 10),
+                    Text(
+                      category.displayName,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _showAll = !_showAll;
+            });
+          },
+          child: Text(_showAll ? 'View Less' : 'View All'),
+        ),
+      ],
     );
   }
 }
@@ -276,14 +301,44 @@ class TopPicksSection extends StatelessWidget {
           itemCount: topPicks.length,
           itemBuilder: (context, index) {
             final item = topPicks[index];
-            return Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            return Container(
+              height: 130,
+              decoration: BoxDecoration(color: Colors.orangeAccent, borderRadius: BorderRadius.circular(70)),
               margin: const EdgeInsets.symmetric(vertical: 8),
-              child: ListTile(
-                leading: Image.asset(item['image'], width: 50, height: 50, fit: BoxFit.cover),
-                title: Text(item['name'], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                trailing: Text('\$${item['price'].toStringAsFixed(2)}'),
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset(item['image'], width: 80, height: 110, fit: BoxFit.contain),
+                      Container(
+                        height: 130,
+                        width: 130,
+                        decoration: const BoxDecoration(color: Color(0x6669625d), shape: BoxShape.circle),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: 120,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      item['name'] + '',
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),
+                    ),
+                  ),
+                  Container(
+                    width: 60,
+                    // color: Colors.green,
+                    alignment: Alignment.centerRight,
+                    margin: const EdgeInsets.only(right: 20),
+                    child: Text(
+                      '\$${item['price'].toStringAsFixed(2)}',
+                      style: const TextStyle(fontSize: 18, color: Colors.green),
+                    ),
+                  ),
+                ],
               ),
             );
           },
