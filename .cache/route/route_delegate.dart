@@ -19,7 +19,7 @@ class TabRouterDelegate extends RouterDelegate<NavigationState> with ChangeNotif
 
   //@override
   //Future<bool> popRoute() async {
-    /*final shouldPop = await showDialog(
+  /*final shouldPop = await showDialog(
       context: navigatorKey.currentContext!,
       builder: (context) => AlertDialog(
         title: const Text('Confirm Exit'),
@@ -37,22 +37,8 @@ class TabRouterDelegate extends RouterDelegate<NavigationState> with ChangeNotif
       ),
     );*/
 
-     /*return shouldPop ?? false*/
+  /*return shouldPop ?? false*/
   //}
-
-  @override
-  Future<bool> popRoute() async {
-    // Your logic to handle back press
-    if (canPop()) {
-      // Perform custom actions before popping
-      // ...
-      notifyListeners(); // Notify listeners of state change
-      return true; // Allow pop
-    } else {
-      // Handle the case where you don't want to pop
-      return false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,8 @@
 // navigation_bloc.dart
 import 'package:bloc/bloc.dart';
-import 'package:wine_delivery_app/bloc/route/route_event.dart';
-import 'package:wine_delivery_app/bloc/route/route_state.dart';
+
+import 'route_event.dart';
+import 'route_state.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(HomePageState()) {
