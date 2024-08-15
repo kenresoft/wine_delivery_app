@@ -1,5 +1,866 @@
 [
   {
+    "id": 1,
+    "name": "Chardonnay",
+    "category": "vegan",
+    "image": "assets/images/wine-1.png",
+    "price": 25.00,
+    "rating": 4.2,
+    "alcoholContent": 13.5,
+    "description": "A rich, full-bodied white wine with hints of vanilla and oak.",
+    "reviews": [
+      {
+        "userid": "chardonnayLover",
+        "review": "Smooth and creamy with a wonderful vanilla finish."
+      },
+      {
+        "userid": "oakFan",
+        "review": "The oak influence is just right, adding depth."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Cabernet Sauvignon",
+    "category": "nonAlcoholic",
+    "image": "assets/images/wine-2.png",
+    "price": 30.00,
+    "rating": 4.5,
+    "alcoholContent": 14.0,
+    "description": "A bold red wine with rich flavors of blackcurrant and a touch of spice.",
+    "reviews": [
+      {
+        "userid": "cabFan",
+        "review": "Full-bodied with intense blackcurrant flavors."
+      },
+      {
+        "userid": "spiceLover",
+        "review": "The spice notes are well-balanced and complement the fruit."
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Pinot Noir",
+    "category": "nonAlcoholic",
+    "image": "assets/images/wine-3.png",
+    "price": 35.00,
+    "rating": 4.3,
+    "alcoholContent": 13.0,
+    "description": "A light-bodied red wine with flavors of cherry and raspberry.",
+    "reviews": [
+      {
+        "userid": "pinotNoirFan",
+        "review": "Elegant with a delicate balance of cherry and raspberry."
+      },
+      {
+        "userid": "fruitLover",
+        "review": "The fruit flavors are vibrant and fresh."
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Sauvignon Blanc",
+    "category": "vegan",
+    "image": "assets/images/wine-4.png",
+    "price": 18.00,
+    "rating": 4.0,
+    "alcoholContent": 12.5,
+    "description": "A zesty white wine with citrus and green apple notes.",
+    "reviews": [
+      {
+        "userid": "sauvignonFan",
+        "review": "Bright and refreshing with crisp citrus flavors."
+      },
+      {
+        "userid": "appleLover",
+        "review": "The green apple notes are prominent and delightful."
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Merlot",
+    "category": "nonAlcoholic",
+    "image": "assets/images/wine-5.png",
+    "price": 22.00,
+    "rating": 4.1,
+    "alcoholContent": 13.5,
+    "description": "A smooth red wine with flavors of plum and chocolate.",
+    "reviews": [
+      {
+        "userid": "merlotLover",
+        "review": "Velvety smooth with rich plum and chocolate notes."
+      },
+      {
+        "userid": "chocolateFan",
+        "review": "The chocolate finish is divine and adds complexity."
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Riesling",
+    "category": "vegan",
+    "image": "assets/images/wine-6.png",
+    "price": 20.00,
+    "rating": 4.2,
+    "alcoholContent": 12.0,
+    "description": "A sweet white wine with floral and peach notes.",
+    "reviews": [
+      {
+        "userid": "rieslingFan",
+        "review": "Sweet and aromatic with a pleasant peach flavor."
+      },
+      {
+        "userid": "floralLover",
+        "review": "The floral notes are subtle but add a nice touch."
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Zinfandel",
+    "category": "biodynamic",
+    "image": "assets/images/wine-7.png",
+    "price": 25.00,
+    "rating": 4.3,
+    "alcoholContent": 14.0,
+    "description": "A rich red wine with berry and peppery spice flavors.",
+    "reviews": [
+      {
+        "userid": "zinfandelFan",
+        "review": "Bold and spicy with robust berry flavors."
+      },
+      {
+        "userid": "spiceLover",
+        "review": "The peppery spice adds a nice kick."
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Chianti",
+    "category": "red",
+    "image": "assets/images/wine-8.png",
+    "price": 28.00,
+    "rating": 4.4,
+    "alcoholContent": 13.5,
+    "description": "A dry red wine with notes of cherry and herbs.",
+    "reviews": [
+      {
+        "userid": "chiantiFan",
+        "review": "Herbaceous and dry with a lovely cherry finish."
+      },
+      {
+        "userid": "herbLover",
+        "review": "The herbal notes are well-pronounced and complement the cherry."
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Tempranillo",
+    "category": "red",
+    "image": "assets/images/wine-9.png",
+    "price": 26.00,
+    "rating": 4.2,
+    "alcoholContent": 13.5,
+    "description": "A smooth red wine with flavors of cherry and plum.",
+    "reviews": [
+      {
+        "userid": "tempranilloFan",
+        "review": "Smooth and rich with lovely cherry and plum notes."
+      },
+      {
+        "userid": "plumLover",
+        "review": "The plum flavors are rich and satisfying."
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Port",
+    "category": "fortified",
+    "image": "assets/images/wine-10.png",
+    "price": 35.00,
+    "rating": 4.6,
+    "alcoholContent": 20.0,
+    "description": "A fortified wine with rich chocolate and berry flavors.",
+    "reviews": [
+      {
+        "userid": "portFan",
+        "review": "Intense and rich with deep chocolate and berry notes."
+      },
+      {
+        "userid": "chocolateLover",
+        "review": "The chocolate finish is decadent and satisfying."
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Sauvignon Blanc",
+    "category": "vegan",
+    "image": "assets/images/wine-11.png",
+    "price": 18.00,
+    "rating": 4.0,
+    "alcoholContent": 12.0,
+    "description": "A fresh white wine with crisp citrus and herbal notes.",
+    "reviews": [
+      {
+        "userid": "sauvignonFan",
+        "review": "Crisp and refreshing with a hint of herbs."
+      },
+      {
+        "userid": "citrusLover",
+        "review": "The citrus flavors are vibrant and invigorating."
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Shiraz",
+    "category": "biodynamic",
+    "image": "assets/images/wine-12.png",
+    "price": 32.00,
+    "rating": 4.4,
+    "alcoholContent": 14.0,
+    "description": "A bold red wine with spicy and smoky flavors.",
+    "reviews": [
+      {
+        "userid": "shirazFan",
+        "review": "Intense and spicy with a smoky finish."
+      },
+      {
+        "userid": "smokyLover",
+        "review": "The smoky notes add depth and character."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Gewürztraminer",
+    "category": "white",
+    "image": "assets/images/wine-13.png",
+    "price": 22.00,
+    "rating": 4.1,
+    "alcoholContent": 13.0,
+    "description": "An aromatic white wine with notes of lychee and rose.",
+    "reviews": [
+      {
+        "userid": "gewurzFan",
+        "review": "Fragrant and spicy with vibrant lychee notes."
+      },
+      {
+        "userid": "roseLover",
+        "review": "The rose notes add a lovely floral touch."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Malbec",
+    "category": "organic",
+    "image": "assets/images/wine-14.png",
+    "price": 30.00,
+    "rating": 4.5,
+    "alcoholContent": 14.0,
+    "description": "A robust red wine with dark fruit and chocolate flavors.",
+    "reviews": [
+      {
+        "userid": "malbecFan",
+        "review": "Rich and intense with dark fruit and chocolate."
+      },
+      {
+        "userid": "darkFruitLover",
+        "review": "The chocolate finish adds complexity."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Prosecco",
+    "category": "sparkling",
+    "image": "assets/images/wine-15.png",
+    "price": 24.00,
+    "rating": 4.3,
+    "alcoholContent": 11.0,
+    "description": "A sparkling wine with bright citrus and green apple notes.",
+    "reviews": [
+      {
+        "userid": "proseccoFan",
+        "review": "Light and bubbly with refreshing citrus flavors."
+      },
+      {
+        "userid": "appleLover",
+        "review": "The green apple notes are crisp and lively."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Tempranillo",
+    "category": "organic",
+    "image": "assets/images/wine-16.png",
+    "price": 26.00,
+    "rating": 4.2,
+    "alcoholContent": 13.5,
+    "description": "A red wine with flavors of cherry and plum.",
+    "reviews": [
+      {
+        "userid": "tempranilloFan",
+        "review": "Smooth with rich cherry and plum notes."
+      },
+      {
+        "userid": "plumLover",
+        "review": "The plum flavors are prominent and satisfying."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Rosé",
+    "category": "rose",
+    "image": "assets/images/wine-17.png",
+    "price": 20.00,
+    "rating": 4.1,
+    "alcoholContent": 12.5,
+    "description": "A dry rosé with flavors of strawberry and watermelon.",
+    "reviews": [
+      {
+        "userid": "roseFan",
+        "review": "Light and refreshing with a hint of strawberry."
+      },
+      {
+        "userid": "fruitLover",
+        "review": "The watermelon notes add a nice touch."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Barolo",
+    "category": "organic",
+    "image": "assets/images/wine-18.png",
+    "price": 60.00,
+    "rating": 4.7,
+    "alcoholContent": 14.5,
+    "description": "A complex red wine with flavors of cherry, tar, and rose.",
+    "reviews": [
+      {
+        "userid": "baroloFan",
+        "review": "Complex with deep cherry and tar notes."
+      },
+      {
+        "userid": "tarLover",
+        "review": "The rose notes add elegance and balance."
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Champagne",
+    "category": "sparkling",
+    "image": "assets/images/wine-19.png",
+    "price": 75.00,
+    "rating": 4.8,
+    "alcoholContent": 12.0,
+    "description": "A luxurious sparkling wine with flavors of apple and brioche.",
+    "reviews": [
+      {
+        "userid": "champagneFan",
+        "review": "Elegant and refined with apple and brioche notes."
+      },
+      {
+        "userid": "luxuryLover",
+        "review": "The brioche finish is rich and satisfying."
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Sauternes",
+    "category": "dessert",
+    "image": "assets/images/wine-20.png",
+    "price": 80.00,
+    "rating": 4.9,
+    "alcoholContent": 14.5,
+    "description": "A sweet dessert wine with rich honey and apricot flavors.",
+    "reviews": [
+      {
+        "userid": "sauternesFan",
+        "review": "Luxuriously sweet with honey and apricot notes."
+      },
+      {
+        "userid": "apricotLover",
+        "review": "The honey finish is delectable."
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Bordeaux",
+    "category": "natural",
+    "image": "assets/images/wine-21.png",
+    "price": 45.00,
+    "rating": 4.6,
+    "alcoholContent": 13.5,
+    "description": "A classic red wine with notes of blackcurrant, cedar, and tobacco.",
+    "reviews": [
+      {
+        "userid": "bordeauxFan",
+        "review": "Classic with a rich blend of blackcurrant and cedar."
+      },
+      {
+        "userid": "tobaccoLover",
+        "review": "The tobacco notes add depth and complexity."
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Chablis",
+    "category": "vegan",
+    "image": "assets/images/wine-22.png",
+    "price": 30.00,
+    "rating": 4.4,
+    "alcoholContent": 12.0,
+    "description": "A crisp white wine with mineral and green apple notes.",
+    "reviews": [
+      {
+        "userid": "chablisFan",
+        "review": "Crisp and clean with a mineral edge."
+      },
+      {
+        "userid": "appleLover",
+        "review": "The green apple notes are fresh and lively."
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Gewürztraminer",
+    "category": "white",
+    "image": "assets/images/wine-23.png",
+    "price": 22.00,
+    "rating": 4.1,
+    "alcoholContent": 13.0,
+    "description": "A fragrant white wine with notes of lychee and rose.",
+    "reviews": [
+      {
+        "userid": "gewurzFan",
+        "review": "Aromatic with vibrant lychee and rose notes."
+      },
+      {
+        "userid": "floralLover",
+        "review": "The rose notes are delicate and charming."
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Chenin Blanc",
+    "category": "white",
+    "image": "assets/images/wine-24.png",
+    "price": 20.00,
+    "rating": 4.0,
+    "alcoholContent": 12.5,
+    "description": "A versatile white wine with flavors of honey and apple.",
+    "reviews": [
+      {
+        "userid": "cheninFan",
+        "review": "Versatile with a lovely honey and apple character."
+      },
+      {
+        "userid": "appleLover",
+        "review": "The apple notes are refreshing and bright."
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Malbec",
+    "category": "natural",
+    "image": "assets/images/wine-25.png",
+    "price": 30.00,
+    "rating": 4.5,
+    "alcoholContent": 14.0,
+    "description": "A robust red wine with dark fruit and chocolate flavors.",
+    "reviews": [
+      {
+        "userid": "malbecFan",
+        "review": "Rich and complex with dark fruit and chocolate."
+      },
+      {
+        "userid": "chocolateLover",
+        "review": "The chocolate finish adds depth."
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Petite Sirah",
+    "category": "natural",
+    "image": "assets/images/wine-26.png",
+    "price": 28.00,
+    "rating": 4.3,
+    "alcoholContent": 14.0,
+    "description": "A full-bodied red wine with blackberry and pepper notes.",
+    "reviews": [
+      {
+        "userid": "petiteSirahFan",
+        "review": "Full-bodied with rich blackberry and pepper."
+      },
+      {
+        "userid": "pepperLover",
+        "review": "The peppery notes add an extra layer of spice."
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Grenache",
+    "category": "kosher",
+    "image": "assets/images/wine-27.png",
+    "price": 24.00,
+    "rating": 4.1,
+    "alcoholContent": 13.5,
+    "description": "A medium-bodied red wine with strawberry and spice notes.",
+    "reviews": [
+      {
+        "userid": "grenacheFan",
+        "review": "Medium-bodied with fresh strawberry and spice."
+      },
+      {
+        "userid": "strawberryLover",
+        "review": "The strawberry notes are bright and inviting."
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Torrontés",
+    "category": "white",
+    "image": "assets/images/wine-28.png",
+    "price": 18.00,
+    "rating": 4.2,
+    "alcoholContent": 12.5,
+    "description": "An aromatic white wine with floral and citrus notes.",
+    "reviews": [
+      {
+        "userid": "torrontesFan",
+        "review": "Floral and aromatic with citrus and rose."
+      },
+      {
+        "userid": "citrusLover",
+        "review": "The citrus notes are refreshing and bright."
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Barbera",
+    "category": "kosher",
+    "image": "assets/images/wine-29.png",
+    "price": 22.00,
+    "rating": 4.0,
+    "alcoholContent": 13.0,
+    "description": "A red wine with flavors of cherry and a touch of earthiness.",
+    "reviews": [
+      {
+        "userid": "barberaFan",
+        "review": "Cherry-forward with a nice earthy undertone."
+      },
+      {
+        "userid": "earthLover",
+        "review": "The earthy notes add complexity."
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Zinfandel",
+    "category": "kosher",
+    "image": "assets/images/wine-30.png",
+    "price": 27.00,
+    "rating": 4.2,
+    "alcoholContent": 14.0,
+    "description": "A bold red wine with rich berry and pepper flavors.",
+    "reviews": [
+      {
+        "userid": "zinfandelFan",
+        "review": "Bold with rich berry and pepper notes."
+      },
+      {
+        "userid": "berryLover",
+        "review": "The peppery finish adds an extra kick."
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Tannat",
+    "category": "kosher",
+    "image": "assets/images/wine-31.png",
+    "price": 30.00,
+    "rating": 4.3,
+    "alcoholContent": 14.5,
+    "description": "A robust red wine with flavors of dark fruit and tannins.",
+    "reviews": [
+      {
+        "userid": "tannatFan",
+        "review": "Full-bodied with dark fruit and firm tannins."
+      },
+      {
+        "userid": "fruitLover",
+        "review": "The tannins are well-integrated and balanced."
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Sancerre",
+    "category": "white",
+    "image": "assets/images/wine-32.png",
+    "price": 32.00,
+    "rating": 4.5,
+    "alcoholContent": 12.5,
+    "description": "A crisp white wine with minerally and citrus notes.",
+    "reviews": [
+      {
+        "userid": "sancerreFan",
+        "review": "Crisp and refreshing with a minerally finish."
+      },
+      {
+        "userid": "citrusLover",
+        "review": "The citrus notes are vibrant and clean."
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Vinho Verde",
+    "category": "white",
+    "image": "assets/images/wine-33.png",
+    "price": 15.00,
+    "rating": 4.0,
+    "alcoholContent": 10.5,
+    "description": "A light and effervescent white wine with citrus and green apple flavors.",
+    "reviews": [
+      {
+        "userid": "vinhoVerdeFan",
+        "review": "Light and refreshing with a hint of effervescence."
+      },
+      {
+        "userid": "appleLover",
+        "review": "The green apple notes are fresh and lively."
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Bourbon Barrel Cabernet",
+    "category": "lowSulfur",
+    "image": "assets/images/wine-34.png",
+    "price": 40.00,
+    "rating": 4.4,
+    "alcoholContent": 14.5,
+    "description": "A bold red wine aged in bourbon barrels with notes of vanilla and oak.",
+    "reviews": [
+      {
+        "userid": "bourbonFan",
+        "review": "Aged to perfection with vanilla and oak notes."
+      },
+      {
+        "userid": "oakLover",
+        "review": "The bourbon barrel aging adds a unique touch."
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Tokaji",
+    "category": "dessert",
+    "image": "assets/images/wine-35.png",
+    "price": 55.00,
+    "rating": 4.7,
+    "alcoholContent": 15.0,
+    "description": "A sweet dessert wine with honey, orange, and apricot notes.",
+    "reviews": [
+      {
+        "userid": "tokajiFan",
+        "review": "Luxuriously sweet with honey and apricot flavors."
+      },
+      {
+        "userid": "orangeLover",
+        "review": "The orange notes add a delightful touch."
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Cava",
+    "category": "sparkling",
+    "image": "assets/images/wine-36.png",
+    "price": 28.00,
+    "rating": 4.2,
+    "alcoholContent": 12.0,
+    "description": "A Spanish sparkling wine with citrus and toast notes.",
+    "reviews": [
+      {
+        "userid": "cavaFan",
+        "review": "Crisp and effervescent with citrus and toast."
+      },
+      {
+        "userid": "toastLover",
+        "review": "The toast notes are subtle and pleasant."
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Grüner Veltliner",
+    "category": "white",
+    "image": "assets/images/wine-37.png",
+    "price": 22.00,
+    "rating": 4.1,
+    "alcoholContent": 12.0,
+    "description": "A fresh white wine with pepper and citrus notes.",
+    "reviews": [
+      {
+        "userid": "grunerFan",
+        "review": "Peppery and fresh with citrus undertones."
+      },
+      {
+        "userid": "citrusLover",
+        "review": "The citrus notes are bright and invigorating."
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Petite Sirah",
+    "category": "lowSulfur",
+    "image": "assets/images/wine-38.png",
+    "price": 28.00,
+    "rating": 4.3,
+    "alcoholContent": 14.0,
+    "description": "A bold red wine with blackberry and pepper notes.",
+    "reviews": [
+      {
+        "userid": "petiteSirahFan",
+        "review": "Full-bodied with rich blackberry and pepper."
+      },
+      {
+        "userid": "berryLover",
+        "review": "The peppery finish adds an extra layer of spice."
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Orange Wine",
+    "category": "natural",
+    "image": "assets/images/wine-39.png",
+    "price": 50.00,
+    "rating": 4.6,
+    "alcoholContent": 13.0,
+    "description": "An orange wine with tannic structure and notes of dried fruit.",
+    "reviews": [
+      {
+        "userid": "orangeFan",
+        "review": "Unique with tannic structure and dried fruit notes."
+      },
+      {
+        "userid": "fruitLover",
+        "review": "The dried fruit notes are complex and intriguing."
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Organic Cabernet Sauvignon",
+    "category": "organic",
+    "image": "assets/images/wine-40.png",
+    "price": 35.00,
+    "rating": 4.4,
+    "alcoholContent": 14.0,
+    "description": "An organic red wine with bold blackcurrant and earthy notes.",
+    "reviews": [
+      {
+        "userid": "organicFan",
+        "review": "Bold and rich with organic integrity."
+      },
+      {
+        "userid": "earthLover",
+        "review": "The earthy notes add depth to the fruit."
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Syrah",
+    "category": "lowSulfur",
+    "image": "assets/images/wine-41.png",
+    "price": 32.00,
+    "rating": 4.3,
+    "alcoholContent": 13.5,
+    "description": "A robust red wine with blackberry and smoky notes.",
+    "reviews": [
+      {
+        "userid": "syrahFan",
+        "review": "Robust with blackberry and a touch of smoke."
+      },
+      {
+        "userid": "smokyLover",
+        "review": "The smoky notes are well-balanced."
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "name": "Tempranillo",
+    "category": "lowSulfur",
+    "image": "assets/images/wine-42.png",
+    "price": 28.00,
+    "rating": 4.2,
+    "alcoholContent": 13.0,
+    "description": "A red wine with notes of cherry and plum.",
+    "reviews": [
+      {
+        "userid": "tempranilloFan",
+        "review": "Smooth with rich cherry and plum notes."
+      },
+      {
+        "userid": "plumLover",
+        "review": "The plum flavors are prominent and satisfying."
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Zinfandel",
+    "category": "biodynamic",
+    "image": "assets/images/wine-43.png",
+    "price": 27.00,
+    "rating": 4.2,
+    "alcoholContent": 14.0,
+    "description": "A bold red wine with rich berry and pepper flavors.",
+    "reviews": [
+      {
+        "userid": "zinfandelFan",
+        "review": "Bold with rich berry and pepper notes."
+      },
+      {
+        "userid": "berryLover",
+        "review": "The peppery finish adds an extra kick."
+      }
+    ]
+  },
+  {
+    "id": 44,
     "name": "Chardonnay",
     "category": "white",
     "image": "assets/images/wine-1.png",
@@ -7,9 +868,19 @@
     "rating": 4.2,
     "alcoholContent": 13.0,
     "description": "A crisp and refreshing white wine with flavors of apple and citrus.",
-    "popularity": 75
+    "reviews": [
+      {
+        "userid": "user123",
+        "review": "Delightfully refreshing, perfect for a summer evening!"
+      },
+      {
+        "userid": "wineLover98",
+        "review": "Great value for the price. Loved the apple notes."
+      }
+    ]
   },
   {
+    "id": 45,
     "name": "Rosé d'Anjou",
     "category": "rose",
     "image": "assets/images/wine-2.png",
@@ -17,9 +888,19 @@
     "rating": 4.1,
     "alcoholContent": 12.5,
     "description": "A fruity and floral rosé with notes of strawberry and rose petals.",
-    "popularity": 60
+    "reviews": [
+      {
+        "userid": "roseFan22",
+        "review": "A very fruity rosé, perfect for a casual get-together."
+      },
+      {
+        "userid": "summerVibes",
+        "review": "Light and floral, just how I like my rosé."
+      }
+    ]
   },
   {
+    "id": 46,
     "name": "Prosecco",
     "category": "sparkling",
     "image": "assets/images/wine-3.png",
@@ -27,9 +908,19 @@
     "rating": 4.3,
     "alcoholContent": 11.5,
     "description": "A light and bubbly sparkling wine with hints of pear and apple.",
-    "popularity": 85
+    "reviews": [
+      {
+        "userid": "bubblesFan",
+        "review": "Crisp and bubbly, a great choice for celebrations!"
+      },
+      {
+        "userid": "proseccoLover",
+        "review": "The pear notes really stand out. Excellent!"
+      }
+    ]
   },
   {
+    "id": 47,
     "name": "Sauternes",
     "category": "dessert",
     "image": "assets/images/wine-4.png",
@@ -37,9 +928,19 @@
     "rating": 4.7,
     "alcoholContent": 14.0,
     "description": "A sweet and luscious dessert wine with flavors of apricot and honey.",
-    "popularity": 88
+    "reviews": [
+      {
+        "userid": "sweetTooth",
+        "review": "Incredibly sweet and smooth. Perfect for dessert."
+      },
+      {
+        "userid": "dessertWineFan",
+        "review": "The apricot and honey flavors are heavenly."
+      }
+    ]
   },
   {
+    "id": 47,
     "name": "Port Wine",
     "category": "fortified",
     "image": "assets/images/wine-5.png",
@@ -47,596 +948,255 @@
     "rating": 4.6,
     "alcoholContent": 20.0,
     "description": "A rich and full-bodied fortified wine with notes of dried fruits and spices.",
-    "popularity": 78
+    "reviews": [
+      {
+        "userid": "portLover",
+        "review": "Rich and full-bodied. Great with cheese."
+      },
+      {
+        "userid": "fortifiedFan",
+        "review": "Love the dried fruit and spice notes."
+      }
+    ]
   },
   {
-    "name": "Zinfandel",
-    "category": "organic",
-    "image": "assets/images/wine-6.png",
-    "price": 27.99,
-    "rating": 4.4,
-    "alcoholContent": 14.5,
-    "description": "An organic red wine with bold flavors of blackberry and pepper.",
-    "popularity": 65
-  },
-  {
-    "name": "Chenin Blanc",
-    "category": "biodynamic",
-    "image": "assets/images/wine-7.png",
-    "price": 19.99,
-    "rating": 4.2,
-    "alcoholContent": 13.0,
-    "description": "A vibrant biodynamic white wine with flavors of quince and honey.",
-    "popularity": 70
-  },
-  {
-    "name": "Riesling",
-    "category": "kosher",
-    "image": "assets/images/wine-8.png",
-    "price": 24.99,
-    "rating": 4.5,
-    "alcoholContent": 11.0,
-    "description": "A crisp and aromatic kosher white wine with notes of green apple and lime.",
-    "popularity": 83
-  },
-  {
-    "name": "Moscato d'Asti",
-    "category": "lowSulfur",
-    "image": "assets/images/wine-9.png",
-    "price": 20.99,
-    "rating": 4.3,
-    "alcoholContent": 5.5,
-    "description": "A sweet and lightly sparkling wine with flavors of peach and orange blossom.",
-    "popularity": 76
-  },
-  {
-    "name": "Alcohol-Free Merlot",
-    "category": "nonAlcoholic",
-    "image": "assets/images/wine-10.png",
-    "price": 10.99,
-    "rating": 3.8,
-    "alcoholContent": 0.0,
-    "description": "A non-alcoholic red wine with rich flavors of cherry and vanilla.",
-    "popularity": 54
-  },
-  {
-    "name": "Vegan Syrah",
-    "category": "vegan",
+    "id": 48,
+    "name": "Chardonnay",
+    "category": "white",
     "image": "assets/images/wine-1.png",
-    "price": 25.99,
-    "rating": 4.5,
-    "alcoholContent": 14.0,
-    "description": "A bold vegan red wine with spicy flavors of black pepper and dark chocolate.",
-    "popularity": 67
-  },
-  {
-    "name": "Pinot Grigio",
-    "category": "white",
-    "image": "assets/images/wine-2.png",
-    "price": 14.99,
-    "rating": 4.0,
-    "alcoholContent": 12.0,
-    "description": "A light and zesty white wine with notes of lemon and green apple.",
-    "popularity": 62
-  },
-  {
-    "name": "Garnacha Rosé",
-    "category": "rose",
-    "image": "assets/images/wine-3.png",
-    "price": 18.50,
-    "rating": 4.2,
-    "alcoholContent": 12.5,
-    "description": "A dry and vibrant rosé with flavors of raspberry and watermelon.",
-    "popularity": 74
-  },
-  {
-    "name": "Cava Brut",
-    "category": "sparkling",
-    "image": "assets/images/wine-4.png",
-    "price": 20.99,
-    "rating": 4.3,
-    "alcoholContent": 11.5,
-    "description": "A crisp and refreshing sparkling wine with notes of citrus and almond.",
-    "popularity": 80
-  },
-  {
-    "name": "Tokaji Aszú",
-    "category": "dessert",
-    "image": "assets/images/wine-5.png",
-    "price": 50.00,
-    "rating": 4.8,
-    "alcoholContent": 13.5,
-    "description": "A sweet and complex dessert wine with flavors of apricot, honey, and spice.",
-    "popularity": 90
-  },
-  {
-    "name": "Madeira",
-    "category": "fortified",
-    "image": "assets/images/wine-6.png",
-    "price": 40.00,
-    "rating": 4.7,
-    "alcoholContent": 19.0,
-    "description": "A rich and nutty fortified wine with flavors of caramel and dried fruits.",
-    "popularity": 82
-  },
-  {
-    "name": "Malbec",
-    "category": "organic",
-    "image": "assets/images/wine-7.png",
-    "price": 23.99,
-    "rating": 4.4,
-    "alcoholContent": 14.5,
-    "description": "A robust organic red wine with flavors of blackberry, plum, and spice.",
-    "popularity": 69
-  },
-  {
-    "name": "Viognier",
-    "category": "biodynamic",
-    "image": "assets/images/wine-8.png",
-    "price": 21.99,
-    "rating": 4.3,
-    "alcoholContent": 13.5,
-    "description": "A floral and aromatic biodynamic white wine with flavors of peach and apricot.",
-    "popularity": 72
-  },
-  {
-    "name": "Cabernet Sauvignon",
-    "category": "red",
-    "image": "assets/images/wine-9.png",
-    "price": 29.99,
-    "rating": 4.8,
-    "alcoholContent": 15.0,
-    "description": "A full-bodied red wine with rich flavors of blackcurrant, cedar, and tobacco.",
-    "popularity": 92
-  },
-  {
-    "name": "Pinot Noir",
-    "category": "lowSulfur",
-    "image": "assets/images/wine-10.png",
-    "price": 24.99,
-    "rating": 4.3,
-    "alcoholContent": 13.5,
-    "description": "A light and elegant red wine with notes of raspberry, strawberry, and earthy undertones.",
-    "popularity": 79
-  },
-  {
-    "name": "Merlot",
-    "category": "natural",
-    "image": "assets/images/wine-1.png",
-    "price": 22.99,
-    "rating": 4.5,
-    "alcoholContent": 14.5,
-    "description": "A smooth and easy-drinking red wine with flavors of cherry and plum.",
-    "popularity": 84
-  },
-  {
-    "name": "Champagne",
-    "category": "sparkling",
-    "image": "assets/images/wine-2.png",
-    "price": 55.00,
-    "rating": 4.7,
-    "alcoholContent": 12.0,
-    "description": "A luxurious and refined sparkling wine with flavors of brioche and citrus.",
-    "popularity": 95
-  },
-  {
-    "name": "Roussanne",
-    "category": "white",
-    "image": "assets/images/wine-3.png",
-    "price": 28.99,
-    "rating": 4.4,
-    "alcoholContent": 13.5,
-    "description": "A rich and full-bodied white wine with notes of pear, honey, and herbs.",
-    "popularity": 68
-  },
-  {
-    "name": "Tavel",
-    "category": "rose",
-    "image": "assets/images/wine-4.png",
-    "price": 26.99,
-    "rating": 4.5,
-    "alcoholContent": 14.0,
-    "description": "A dry and robust rosé with flavors of red berries, herbs, and spice.",
-    "popularity": 71
-  },
-  {
-    "name": "Spätburgunder",
-    "category": "red",
-    "image": "assets/images/wine-5.png",
-    "price": 35.00,
-    "rating": 4.6,
-    "alcoholContent": 13.0,
-    "description": "A delicate and complex red wine with flavors of cherry, raspberry, and spice.",
-    "popularity": 87
-  },
-  {
-    "name": "Verdicchio",
-    "category": "white",
-    "image": "assets/images/wine-6.png",
-    "price": 19.99,
-    "rating": 4.3,
-    "alcoholContent": 12.5,
-    "description": "A crisp and mineral-driven white wine with notes of lemon, almond, and herbs.",
-    "popularity": 66
-  },
-  {
-    "name": "Grenache Rosé",
-    "category": "rose",
-    "image": "assets/images/wine-7.png",
-    "price": 22.50,
-    "rating": 4.4,
-    "alcoholContent": 12.5,
-    "description": "A dry and refreshing rosé with flavors of strawberry, watermelon, and a hint of spice.",
-    "popularity": 73
-  },
-  {
-    "name": "Blanc de Blancs",
-    "category": "sparkling",
-    "image": "assets/images/wine-8.png",
-    "price": 48.00,
-    "rating": 4.6,
-    "alcoholContent": 12.0,
-    "description": "A refined and elegant sparkling wine made from 100% Chardonnay grapes.",
-    "popularity": 86
-  },
-  {
-    "name": "Recioto di Soave",
-    "category": "dessert",
-    "image": "assets/images/wine-9.png",
-    "price": 30.99,
-    "rating": 4.7,
-    "alcoholContent": 14.0,
-    "description": "A rich and sweet dessert wine with flavors of honey, apricot, and almonds.",
-    "popularity": 81
-  },
-  {
-    "name": "Sherry",
-    "category": "fortified",
-    "image": "assets/images/wine-10.png",
-    "price": 29.00,
-    "rating": 4.5,
-    "alcoholContent": 18.0,
-    "description": "A complex and versatile fortified wine with flavors of nuts, dried fruits, and spice.",
-    "popularity": 77
-  },
-  {
-    "name": "Tempranillo",
-    "category": "red",
-    "image": "assets/images/wine-1.png",
-    "price": 31.99,
-    "rating": 4.7,
-    "alcoholContent": 14.0,
-    "description": "A full-bodied red wine with flavors of black cherry, plum, and vanilla.",
-    "popularity": 89
-  },
-  {
-    "name": "Gewürztraminer",
-    "category": "white",
-    "image": "assets/images/wine-2.png",
-    "price": 23.99,
-    "rating": 4.5,
-    "alcoholContent": 13.5,
-    "description": "An aromatic white wine with notes of lychee, rose, and spice.",
-    "popularity": 85
-  },
-  {
-    "name": "Sangiovese Rosé",
-    "category": "rose",
-    "image": "assets/images/wine-3.png",
-    "price": 19.99,
-    "rating": 4.3,
-    "alcoholContent": 12.5,
-    "description": "A vibrant and dry rosé with flavors of cherry, red currant, and herbs.",
-    "popularity": 70
-  },
-  {
-    "name": "Franciacorta",
-    "category": "sparkling",
-    "image": "assets/images/wine-4.png",
-    "price": 42.00,
-    "rating": 4.6,
-    "alcoholContent": 12.5,
-    "description": "A high-quality sparkling wine with flavors of citrus, almond, and brioche.",
-    "popularity": 88
-  },
-  {
-    "name": "Vin Santo",
-    "category": "dessert",
-    "image": "assets/images/wine-5.png",
-    "price": 37.50,
-    "rating": 4.7,
-    "alcoholContent": 15.0,
-    "description": "A sweet and nutty dessert wine with flavors of dried figs, caramel, and honey.",
-    "popularity": 80
-  },
-  {
-    "name": "Marsala",
-    "category": "fortified",
-    "image": "assets/images/wine-6.png",
-    "price": 28.00,
-    "rating": 4.4,
-    "alcoholContent": 18.5,
-    "description": "A rich and flavorful fortified wine with notes of vanilla, brown sugar, and dried fruits.",
-    "popularity": 75
-  },
-  {
-    "name": "Barbera",
-    "category": "red",
-    "image": "assets/images/wine-7.png",
-    "price": 27.99,
-    "rating": 4.5,
-    "alcoholContent": 14.5,
-    "description": "A vibrant and juicy red wine with flavors of cherry, plum, and a hint of spice.",
-    "popularity": 79
-  },
-  {
-    "name": "Chablis",
-    "category": "white",
-    "image": "assets/images/wine-8.png",
-    "price": 32.99,
-    "rating": 4.6,
-    "alcoholContent": 12.5,
-    "description": "A crisp and mineral-driven white wine with flavors of green apple, lemon, and oyster shell.",
-    "popularity": 87
-  },
-  {
-    "name": "Côtes de Provence Rosé",
-    "category": "rose",
-    "image": "assets/images/wine-9.png",
-    "price": 21.50,
-    "rating": 4.3,
-    "alcoholContent": 13.0,
-    "description": "A delicate and dry rosé with flavors of peach, citrus, and herbs.",
-    "popularity": 71
-  },
-  {
-    "name": "Cremant d'Alsace",
-    "category": "sparkling",
-    "image": "assets/images/wine-10.png",
-    "price": 24.99,
-    "rating": 4.4,
-    "alcoholContent": 12.0,
-    "description": "A refreshing and lively sparkling wine with flavors of green apple, pear, and toast.",
-    "popularity": 82
-  },
-  {
-    "name": "Lambrusco",
-    "category": "red",
-    "image": "assets/images/wine-1.png",
-    "price": 16.99,
-    "rating": 4.0,
-    "alcoholContent": 11.5,
-    "description": "A lightly sparkling red wine with flavors of red berries, cherry, and a hint of sweetness.",
-    "popularity": 64
-  },
-  {
-    "name": "Grüner Veltliner",
-    "category": "white",
-    "image": "assets/images/wine-2.png",
-    "price": 20.99,
-    "rating": 4.3,
-    "alcoholContent": 12.5,
-    "description": "A fresh and peppery white wine with notes of green apple, lime, and white pepper.",
-    "popularity": 76
-  },
-  {
-    "name": "Cabernet Franc Rosé",
-    "category": "rose",
-    "image": "assets/images/wine-3.png",
-    "price": 23.50,
-    "rating": 4.4,
-    "alcoholContent": 13.0,
-    "description": "A dry and fruity rosé with flavors of raspberry, strawberry, and a touch of herbs.",
-    "popularity": 74
-  },
-  {
-    "name": "Crémant de Loire",
-    "category": "sparkling",
-    "image": "assets/images/wine-4.png",
-    "price": 22.99,
-    "rating": 4.3,
-    "alcoholContent": 12.5,
-    "description": "A crisp and elegant sparkling wine with notes of citrus, apple, and brioche.",
-    "popularity": 80
-  },
-  {
-    "name": "Moscato d'Asti",
-    "category": "dessert",
-    "image": "assets/images/wine-5.png",
     "price": 18.99,
     "rating": 4.2,
-    "alcoholContent": 5.5,
-    "description": "A sweet and lightly sparkling dessert wine with flavors of peach, apricot, and a hint of honey.",
-    "popularity": 83
+    "alcoholContent": 13.0,
+    "description": "A crisp and refreshing white wine with flavors of apple and citrus.",
+    "reviews": [
+      {
+        "userid": "user123",
+        "review": "Delightfully refreshing, perfect for a summer evening!"
+      },
+      {
+        "userid": "wineLover98",
+        "review": "Great value for the price. Loved the apple notes."
+      }
+    ]
   },
   {
-    "name": "Port",
-    "category": "fortified",
-    "image": "assets/images/wine-6.png",
-    "price": 40.00,
-    "rating": 4.8,
-    "alcoholContent": 20.0,
-    "description": "A rich and powerful fortified wine with flavors of blackberry, chocolate, and spice.",
-    "popularity": 90
-  },
-  {
-    "name": "Syrah",
-    "category": "red",
-    "image": "assets/images/wine-7.png",
-    "price": 26.99,
-    "rating": 4.6,
-    "alcoholContent": 14.5,
-    "description": "A bold and spicy red wine with flavors of blackberry, plum, and black pepper.",
-    "popularity": 85
-  },
-  {
-    "name": "Viognier",
-    "category": "white",
-    "image": "assets/images/wine-8.png",
-    "price": 25.50,
-    "rating": 4.5,
-    "alcoholContent": 13.5,
-    "description": "An aromatic and lush white wine with notes of peach, apricot, and floral undertones.",
-    "popularity": 81
-  },
-  {
-    "name": "Syrah Rosé",
+    "id": 49,
+    "name": "Rosé d'Anjou",
     "category": "rose",
-    "image": "assets/images/wine-9.png",
-    "price": 22.00,
-    "rating": 4.3,
-    "alcoholContent": 13.5,
-    "description": "A dry and robust rosé with flavors of blackberry, raspberry, and a hint of pepper.",
-    "popularity": 72
+    "image": "assets/images/wine-2.png",
+    "price": 15.99,
+    "rating": 4.1,
+    "alcoholContent": 12.5,
+    "description": "A fruity and floral rosé with notes of strawberry and rose petals.",
+    "reviews": [
+      {
+        "userid": "roseFan22",
+        "review": "A very fruity rosé, perfect for a casual get-together."
+      },
+      {
+        "userid": "summerVibes",
+        "review": "Light and floral, just how I like my rosé."
+      }
+    ]
   },
   {
+    "id": 50,
     "name": "Prosecco",
     "category": "sparkling",
-    "image": "assets/images/wine-10.png",
-    "price": 18.50,
-    "rating": 4.4,
-    "alcoholContent": 11.0,
-    "description": "A light and refreshing sparkling wine with notes of green apple, pear, and floral hints.",
-    "popularity": 86
-  },
-  {
-    "name": "Pedro Ximénez",
-    "category": "dessert",
-    "image": "assets/images/wine-1.png",
-    "price": 45.00,
-    "rating": 4.9,
-    "alcoholContent": 15.0,
-    "description": "An intensely sweet and rich dessert wine with flavors of raisins, molasses, and coffee.",
-    "popularity": 92
-  },
-  {
-    "name": "Madeira",
-    "category": "fortified",
-    "image": "assets/images/wine-2.png",
-    "price": 32.00,
-    "rating": 4.7,
-    "alcoholContent": 19.0,
-    "description": "A robust and complex fortified wine with notes of nuts, dried fruits, and caramel.",
-    "popularity": 85
-  },
-  {
-    "name": "Sangiovese",
-    "category": "red",
     "image": "assets/images/wine-3.png",
-    "price": 24.99,
-    "rating": 4.5,
-    "alcoholContent": 13.0,
-    "description": "A medium-bodied red wine with flavors of cherry, red currant, and a touch of spice.",
-    "popularity": 82
-  },
-  {
-    "name": "Albariño",
-    "category": "white",
-    "image": "assets/images/wine-4.png",
-    "price": 26.50,
-    "rating": 4.6,
-    "alcoholContent": 12.5,
-    "description": "A crisp and aromatic white wine with notes of citrus, peach, and floral undertones.",
-    "popularity": 84
-  },
-  {
-    "name": "Malbec Rosé",
-    "category": "rose",
-    "image": "assets/images/wine-5.png",
-    "price": 20.50,
+    "price": 22.50,
     "rating": 4.3,
-    "alcoholContent": 13.0,
-    "description": "A dry and fruity rosé with flavors of strawberry, cherry, and a hint of spice.",
-    "popularity": 78
-  },
-  {
-    "name": "Brut Rosé",
-    "category": "sparkling",
-    "image": "assets/images/wine-6.png",
-    "price": 35.00,
-    "rating": 4.7,
-    "alcoholContent": 12.0,
-    "description": "A refined and elegant sparkling rosé with flavors of raspberry, cherry, and floral notes.",
-    "popularity": 87
-  },
-  {
-    "name": "Tokaji",
-    "category": "dessert",
-    "image": "assets/images/wine-7.png",
-    "price": 39.99,
-    "rating": 4.8,
     "alcoholContent": 11.5,
-    "description": "A sweet and luscious dessert wine with flavors of honey, apricot, and a hint of spice.",
-    "popularity": 88
+    "description": "A light and bubbly sparkling wine with hints of pear and apple.",
+    "reviews": [
+      {
+        "userid": "bubblesFan",
+        "review": "Crisp and bubbly, a great choice for celebrations!"
+      },
+      {
+        "userid": "proseccoLover",
+        "review": "The pear notes really stand out. Excellent!"
+      }
+    ]
   },
   {
-    "name": "Vermouth",
-    "category": "fortified",
-    "image": "assets/images/wine-8.png",
-    "price": 19.50,
-    "rating": 4.2,
-    "alcoholContent": 16.0,
-    "description": "An aromatic and bittersweet fortified wine with flavors of herbs, spices, and citrus.",
-    "popularity": 74
-  },
-  {
-    "name": "Nebbiolo",
-    "category": "red",
-    "image": "assets/images/wine-9.png",
-    "price": 40.50,
-    "rating": 4.8,
-    "alcoholContent": 14.0,
-    "description": "A powerful and tannic red wine with flavors of cherry, rose, and tar.",
-    "popularity": 90
-  },
-  {
-    "name": "Sauvignon Blanc",
-    "category": "white",
-    "image": "assets/images/wine-10.png",
-    "price": 29.99,
-    "rating": 4.7,
-    "alcoholContent": 13.0,
-    "description": "A crisp and zesty white wine with notes of grapefruit, lime, and fresh herbs.",
-    "popularity": 89
-  },
-  {
-    "name": "Zinfandel Rosé",
-    "category": "rose",
-    "image": "assets/images/wine-1.png",
-    "price": 21.00,
-    "rating": 4.4,
-    "alcoholContent": 12.5,
-    "description": "A fruity and sweet rosé with flavors of strawberry, raspberry, and a hint of spice.",
-    "popularity": 76
-  },
-  {
-    "name": "Cava",
-    "category": "sparkling",
-    "image": "assets/images/wine-2.png",
-    "price": 24.00,
-    "rating": 4.5,
-    "alcoholContent": 11.5,
-    "description": "A crisp and refreshing sparkling wine with flavors of green apple, citrus, and toast.",
-    "popularity": 85
-  },
-  {
-    "name": "Ice Wine",
+    "id": 51,
+    "name": "Sauternes",
     "category": "dessert",
-    "image": "assets/images/wine-3.png",
-    "price": 50.00,
-    "rating": 4.9,
-    "alcoholContent": 10.0,
-    "description": "An intensely sweet and rare dessert wine with flavors of honey, peach, and tropical fruits.",
-    "popularity": 93
-  },
-  {
-    "name": "Banyuls",
-    "category": "fortified",
     "image": "assets/images/wine-4.png",
-    "price": 35.99,
+    "price": 45.00,
     "rating": 4.7,
-    "alcoholContent": 17.0,
-    "description": "A sweet and rich fortified wine with flavors of dark chocolate, plum, and spice.",
-    "popularity": 87
+    "alcoholContent": 14.0,
+    "description": "A sweet and luscious dessert wine with flavors of apricot and honey.",
+    "reviews": [
+      {
+        "userid": "sweetTooth",
+        "review": "Incredibly sweet and smooth. Perfect for dessert."
+      },
+      {
+        "userid": "dessertWineFan",
+        "review": "The apricot and honey flavors are heavenly."
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "name": "Port Wine",
+    "category": "fortified",
+    "image": "assets/images/wine-5.png",
+    "price": 35.00,
+    "rating": 4.6,
+    "alcoholContent": 20.0,
+    "description": "A rich and full-bodied fortified wine with notes of dried fruits and spices.",
+    "reviews": [
+      {
+        "userid": "portLover",
+        "review": "Rich and full-bodied. Great with cheese."
+      },
+      {
+        "userid": "fortifiedFan",
+        "review": "Love the dried fruit and spice notes."
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "name": "Cabernet Sauvignon",
+    "category": "red",
+    "image": "assets/images/wine-6.png",
+    "price": 25.00,
+    "rating": 4.5,
+    "alcoholContent": 14.5,
+    "description": "A full-bodied red wine with bold flavors of blackcurrant and oak.",
+    "reviews": [
+      {
+        "userid": "redWineLover",
+        "review": "Rich and complex, with great depth of flavor."
+      },
+      {
+        "userid": "cabSavFan",
+        "review": "The blackcurrant and oak notes are perfectly balanced."
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "name": "Pinot Noir",
+    "category": "red",
+    "image": "assets/images/wine-7.png",
+    "price": 28.50,
+    "rating": 4.4,
+    "alcoholContent": 13.5,
+    "description": "A smooth and elegant red wine with flavors of cherry and earthy undertones.",
+    "reviews": [
+      {
+        "userid": "pinotLover",
+        "review": "Smooth and delicate, with lovely cherry notes."
+      },
+      {
+        "userid": "earthyRedFan",
+        "review": "The earthy undertones really make this wine stand out."
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "name": "Shiraz",
+    "category": "red",
+    "image": "assets/images/wine-8.png",
+    "price": 30.00,
+    "rating": 4.6,
+    "alcoholContent": 15.0,
+    "description": "A bold and spicy red wine with flavors of blackberry and pepper.",
+    "reviews": [
+      {
+        "userid": "spiceLover",
+        "review": "Bold and spicy, perfect with a hearty meal."
+      },
+      {
+        "userid": "shirazFan",
+        "review": "The blackberry and pepper notes are fantastic."
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "name": "Champagne",
+    "category": "sparkling",
+    "image": "assets/images/wine-9.png",
+    "price": 50.00,
+    "rating": 4.8,
+    "alcoholContent": 12.0,
+    "description": "A luxurious and elegant sparkling wine with fine bubbles and notes of toast and citrus.",
+    "reviews": [
+      {
+        "userid": "celebrationLover",
+        "review": "Elegant and luxurious, a real treat for special occasions."
+      },
+      {
+        "userid": "champagneFan",
+        "review": "The fine bubbles and citrus notes are perfection."
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "name": "Merlot",
+    "category": "red",
+    "image": "assets/images/wine-10.png",
+    "price": 20.00,
+    "rating": 4.3,
+    "alcoholContent": 14.0,
+    "description": "A soft and velvety red wine with flavors of plum and chocolate.",
+    "reviews": [
+      {
+        "userid": "merlotFan",
+        "review": "Soft and velvety, with lovely plum and chocolate notes."
+      },
+      {
+        "userid": "chocolateLover",
+        "review": "The chocolate undertones make this wine so enjoyable."
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "name": "Riesling",
+    "category": "white",
+    "image": "assets/images/wine-11.png",
+    "price": 19.50,
+    "rating": 4.4,
+    "alcoholContent": 12.0,
+    "description": "A crisp and aromatic white wine with flavors of peach and lime.",
+    "reviews": [
+      {
+        "userid": "rieslingLover",
+        "review": "Crisp and refreshing, with lovely peach and lime flavors."
+      },
+      {
+        "userid": "aromaticFan",
+        "review": "A very aromatic wine with a perfect balance of sweetness and acidity."
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "name": "Zinfandel",
+    "category": "red",
+    "image": "assets/images/wine-12.png",
+    "price": 26.00,
+    "rating": 4.5,
+    "alcoholContent": 15.0,
+    "description": "A robust and jammy red wine with flavors of blackberry and spice.",
+    "reviews": [
+      {
+        "userid": "zinFan",
+        "review": "Jammy and robust, perfect for pairing with grilled meats."
+      },
+      {
+        "userid": "spiceLover",
+        "review": "The spice notes really come through. Excellent wine."
+      }
+    ]
   }
 ]
