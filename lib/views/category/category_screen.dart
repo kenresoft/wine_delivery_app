@@ -290,8 +290,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
         case 'Name (Z-A)':
           filteredWines.sort((a, b) => _isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
           break;
+        case 'Reviews':
+          filteredWines.sort((a, b) => _isAscending ? a.reviews.length.compareTo(b.reviews.length) : b.reviews.length.compareTo(a.reviews.length));
+          break;
         default:
-          filteredWines.sort((a, b) => _isAscending ? a.popularity.compareTo(b.popularity) : b.popularity.compareTo(a.popularity));
+          // Default sorting logic
+          filteredWines.sort((a, b) => _isAscending ? a.rating.compareTo(b.rating) : b.rating.compareTo(a.rating));
       }
     });
   }
@@ -644,331 +648,6 @@ class WineSearchDelegate extends SearchDelegate<String> {
   }
 }
 
-/*class WineDetailScreen extends StatelessWidget {
-  final Wine wine;
-
-  const WineDetailScreen({super.key, required this.wine});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(wine.name),
-      ),
-      body: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Hero(
-              tag: wine.image,
-              child: Image.asset(
-                wine.image,
-                height: 300,
-                width: 300,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              wine.name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '\$${wine.price.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.amber[800],
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Rating: ${wine.rating.toStringAsFixed(1)}',
-              style: const TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Alcohol Content: ${wine.alcoholContent.toStringAsFixed(1)}%',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              wine.description,
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}*/
-
-/*class WineDetailScreen extends StatelessWidget {
-  final Wine wine;
-
-  const WineDetailScreen({super.key, required this.wine});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          wine.name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Hero(
-                  tag: wine.image,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Image.asset(
-                      wine.image,
-                      height: 300,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                wine.name,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColorDark,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                '\$${wine.price.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.amber[800],
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(Icons.star, color: Colors.amber, size: 20),
-                  const SizedBox(width: 5),
-                  Text(
-                    wine.rating.toStringAsFixed(1),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Alcohol Content: ${wine.alcoholContent.toStringAsFixed(1)}%',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 20),
-              Divider(color: Colors.grey[300]),
-              const SizedBox(height: 20),
-              Text(
-                wine.description,
-                style: TextStyle(
-                  fontSize: 16,
-                  height: 1.5,
-                  color: Colors.grey[800],
-                ),
-                textAlign: TextAlign.justify,
-              ),
-              const SizedBox(height: 30),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Add to cart functionality
-                  },
-                  icon: const Icon(Icons.add_shopping_cart, color: Colors.white),
-                  label: const Text(
-                    'Add to Cart',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    backgroundColor: Theme.of(context).primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}*/
-
-/*class WineDetailScreen extends StatelessWidget {
-  final Wine wine;
-
-  const WineDetailScreen({super.key, required this.wine});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          wine.name,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.favorite_border),
-            onPressed: () {
-              // Handle adding to favorites
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Hero(
-                tag: wine.image,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: Image.asset(
-                    wine.image,
-                    height: 350,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              wine.name,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '\$${wine.price.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.redAccent,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.amber),
-                    Text(
-                      wine.rating.toStringAsFixed(1),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Alcohol Content: ${wine.alcoholContent.toStringAsFixed(1)}%',
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              wine.description,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 30),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle add to cart action
-          },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(15.0),
-            backgroundColor: Colors.redAccent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-          ),
-          child: const Text(
-            'Add to Cart',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}*/
-
 class WineDetailScreen extends StatelessWidget {
   final Wine wine;
 
@@ -1016,7 +695,12 @@ class WineDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
+            Container(
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                color: Color(0xffF4F4F4),
+                borderRadius: BorderRadius.only(bottomRight: Radius.circular(90)),
+              ),
               child: Hero(
                 tag: wine.image,
                 child: ClipRRect(
@@ -1044,7 +728,7 @@ class WineDetailScreen extends StatelessWidget {
               children: [
                 Text(
                   '\$${wine.price.toStringAsFixed(2)}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     color: Colors.redAccent,
                     fontWeight: FontWeight.bold,
@@ -1062,7 +746,7 @@ class WineDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      '$popularity - ({wine.reviews} reviews)',
+                      '(${wine.reviews.length} reviews)',
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -1082,16 +766,16 @@ class WineDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Ingredients: {wine.ingredients}',
+              'Popularity: $popularity',
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.black87,
               ),
             ),
             const SizedBox(height: 10),
-            Text(
-              'Available Sizes: {wine.availableSizes.join(", ")}',
-              style: const TextStyle(
+            const Text(
+              'Available Sizes: Small, Medium, Large',
+              style: TextStyle(
                 fontSize: 18,
                 color: Colors.black87,
               ),
@@ -1106,6 +790,58 @@ class WineDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             const Text(
+              'Reviews',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: wine.reviews.length,
+                itemBuilder: (context, index) {
+                  final review = wine.reviews[index]; //
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        // Navigate to similar wine detail page
+                      },
+                      child: Card(
+                        child: Container(
+                          width: 200,
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                review.userid,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                review.review,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // TODO
+            const Text(
               'Similar Wines',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
@@ -1117,7 +853,9 @@ class WineDetailScreen extends StatelessWidget {
                 itemCount: similarWines.length,
                 itemBuilder: (context, index) {
                   final similarWine = similarWines[index];
-                  print(similarWines); ///
+                  print(similarWines);
+
+                  ///4
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: GestureDetector(
