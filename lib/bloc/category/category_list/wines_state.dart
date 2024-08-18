@@ -4,7 +4,7 @@ enum WinesLoadStatus { loading, success, error }
 
 class WinesState extends Equatable {
   final WinesLoadStatus status;
-  final List<Wine> wines;
+  final List<Product> wines;
   final String? errorMessage;
 
   const WinesState({
