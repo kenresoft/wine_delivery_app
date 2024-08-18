@@ -5,7 +5,7 @@ import 'package:wine_delivery_app/bloc/category/category_list/wines_bloc.dart';
 import 'package:wine_delivery_app/model/enums/wine_category.dart';
 
 import '../../bloc/category/category_filter/category_filter_bloc.dart';
-import '../../model/wine.dart';
+import '../../model/product.dart';
 import '../../repository/popularity_repository.dart';
 import '../../repository/similar_wines_repository.dart';
 
@@ -56,13 +56,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  @override
+  /*@override
   Widget build(BuildContext context) {
     final state = bloc.state;
 
-    List<Wine> filteredWines = state.wines.where((wine) {
+    List<Product> filteredWines = state.wines.where((wine) {
       return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
-          wine.category.displayName == _selectedCategory.displayName &&
+          wine.category.name == _selectedCategory.displayName &&
           wine.price >= _minPrice &&
           wine.price <= _maxPrice &&
           wine.rating >= _minRating &&
@@ -83,9 +83,39 @@ class _CategoryScreenState extends State<CategoryScreen> {
         },
       ),
     );
+  }*/
+
+  @override
+  Widget build(BuildContext context) {
+    final state = bloc.state;
+
+    List<Product> filteredWines = state.wines.where((wine) {
+      return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
+          wine.category.name == 'roses'/*_selectedCategory.displayName*/ /*&&
+          wine.price >= _minPrice &&
+          wine.price <= _maxPrice &&
+          _calculateAverageRating(wine.reviews) >= _minRating &&
+          _calculateAverageRating(wine.reviews) <= _maxRating &&
+          wine.alcoholContent >= _minAlcoholContent &&
+          wine.alcoholContent <= _maxAlcoholContent*/;
+    }).toList();
+
+    _applySorting(filteredWines);
+
+    return Scaffold(
+      appBar: _buildAppBar(context, state, filteredWines),
+      body: BlocBuilder<WinesBloc, WinesState>(
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _buildBody(state, filteredWines),
+          );
+        },
+      ),
+    );
   }
 
-  AppBar _buildAppBar(BuildContext context, WinesState state, List<Wine> filteredWines) {
+  AppBar _buildAppBar(BuildContext context, WinesState state, List<Product> filteredWines) {
     return AppBar(
       title: Text(
         '${_selectedCategory.displayName} Wines',
@@ -123,7 +153,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  Widget _buildBody(WinesState state, List<Wine> filteredWines) {
+  Widget _buildBody(WinesState state, List<Product> filteredWines) {
     return switch ((state.isLoading, state.hasError)) {
       (true, _) => const Center(child: CircularProgressIndicator()),
       (false, true) => Center(child: Text('Error Loading Stock! ${state.errorMessage}')),
@@ -146,7 +176,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     };
   }
 
-  Widget _buildWineCard(Wine wine) {
+  Widget _buildWineCard(Product wine) {
     final Map<String, int> purchaseCountMap = {
       'Côtes de Provence Rosé': 120,
       'Cremant d\'Alsace': 95,
@@ -216,7 +246,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  Widget _buildWineImage(Wine wine) {
+  Widget _buildWineImage(Product wine) {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(10),
@@ -226,7 +256,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         tag: wine.image,
         transitionOnUserGestures: true,
         child: Image.asset(
-          wine.image,
+          'assets/images/${wine.image}',
           height: 100,
           width: 100,
           fit: BoxFit.contain,
@@ -235,7 +265,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  Widget _buildWineDetails(Wine wine) {
+  Widget _buildWineDetails(Product wine) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -257,7 +287,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Rating: ${wine.rating.toStringAsFixed(1)}',
+          'Rating: ${wine.reviews.length.toStringAsFixed(1)}',
           style: const TextStyle(
             fontSize: 14,
             color: Colors.grey,
@@ -277,7 +307,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  void _applySorting(List<Wine> filteredWines) {
+  /*void _applySorting(List<Product> filteredWines) {
     setState(() {
       switch (_selectedSort) {
         case 'Price':
@@ -298,6 +328,37 @@ class _CategoryScreenState extends State<CategoryScreen> {
           filteredWines.sort((a, b) => _isAscending ? a.rating.compareTo(b.rating) : b.rating.compareTo(a.rating));
       }
     });
+  }*/
+
+  void _applySorting(List<Product> filteredWines) {
+    setState(() {
+      switch (_selectedSort) {
+        case 'Price':
+          filteredWines.sort((a, b) => _isAscending ? a.price.compareTo(b.price) : b.price.compareTo(a.price));
+          break;
+        case 'Rating':
+          filteredWines.sort((a, b) =>
+              _isAscending ? _calculateAverageRating(a.reviews).compareTo(_calculateAverageRating(b.reviews)) : _calculateAverageRating(b.reviews).compareTo(_calculateAverageRating(a.reviews)));
+          break;
+        case 'Name (A-Z)':
+        case 'Name (Z-A)':
+          filteredWines.sort((a, b) => _isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
+          break;
+        case 'Reviews':
+          filteredWines.sort((a, b) => _isAscending ? a.reviews.length.compareTo(b.reviews.length) : b.reviews.length.compareTo(a.reviews.length));
+          break;
+        default:
+          // Default sorting logic
+          filteredWines.sort((a, b) =>
+              _isAscending ? _calculateAverageRating(a.reviews).compareTo(_calculateAverageRating(b.reviews)) : _calculateAverageRating(b.reviews).compareTo(_calculateAverageRating(a.reviews)));
+      }
+    });
+  }
+
+  double _calculateAverageRating(List<Review> reviews) {
+    if (reviews.isEmpty) return 0.0;
+    final totalRating = reviews.fold<int>(0, (sum, review) => sum + review.rating);
+    return totalRating / reviews.length;
   }
 
   void _showFilters(BuildContext context) {
@@ -425,7 +486,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  void _showSortOptions(BuildContext context, List<Wine> filteredWines) {
+  void _showSortOptions(BuildContext context, List<Product> filteredWines) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -454,7 +515,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  Widget _buildSortOption(String sortOption, List<Wine> filteredWines) {
+  Widget _buildSortOption(String sortOption, List<Product> filteredWines) {
     String displayText = sortOption;
 
     // Update the label for Name sorting based on the current order
@@ -482,7 +543,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  _onTapSortOption(String sortOption, List<Wine> filteredWines) {
+  _onTapSortOption(String sortOption, List<Product> filteredWines) {
     setState(() {
       if (_selectedSort == sortOption) {
         // Toggle sort order if the same option is selected
@@ -559,7 +620,7 @@ class _CategoryFilterSliderState extends State<CategoryFilterSlider> {
 
 
 class WineSearchDelegate extends SearchDelegate<String> {
-  final List<Wine> wines;
+  final List<Product> wines;
   final ValueChanged<String> onSearch;
 
   WineSearchDelegate({
@@ -649,7 +710,7 @@ class WineSearchDelegate extends SearchDelegate<String> {
 }
 
 class WineDetailScreen extends StatelessWidget {
-  final Wine wine;
+  final Product wine;
 
   final SimilarWinesRepository similarWinesRepo;
   final PopularityRepository popularityRepo;
@@ -665,6 +726,12 @@ class WineDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final similarWines = similarWinesRepo.findSimilarWines(wine);
     final popularity = popularityRepo.getPopularity(wine);
+
+    double calculateAverageRating(List<Review> reviews) {
+      if (reviews.isEmpty) return 0.0;
+      final totalRating = reviews.fold<int>(0, (sum, review) => sum + review.rating);
+      return totalRating / reviews.length;
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -706,7 +773,7 @@ class WineDetailScreen extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
                   child: Image.asset(
-                    wine.image,
+                    'assets/images/${wine.image}',
                     height: 350,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -738,7 +805,7 @@ class WineDetailScreen extends StatelessWidget {
                   children: [
                     const Icon(Icons.star, color: Colors.amber),
                     Text(
-                      wine.rating.toStringAsFixed(1),
+                      calculateAverageRating(wine.reviews).toStringAsFixed(1),
                       style: const TextStyle(
                         fontSize: 18,
                         color: Colors.grey,
@@ -800,12 +867,12 @@ class WineDetailScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: wine.reviews.length,
                 itemBuilder: (context, index) {
-                  final review = wine.reviews[index]; //
+                  final review = wine.reviews[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: GestureDetector(
                       onTap: () {
-                        // Navigate to similar wine detail page
+                        // Handle review tap
                       },
                       child: Card(
                         child: Container(
@@ -815,7 +882,7 @@ class WineDetailScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                review.userid,
+                                review.userId,
                                 style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
