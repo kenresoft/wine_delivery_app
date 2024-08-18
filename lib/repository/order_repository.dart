@@ -29,7 +29,7 @@ class OrderRepository {
     return newOrderId;
   }
 
-  void createOrder() {
+  void createOrder(Function(Order order) callback) {
     if (cartManager.cartItems.isNotEmpty) {
       Order newOrder = Order(
         orderId: _generateOrderId(), // Generate ID only if cart has items
@@ -45,6 +45,7 @@ class OrderRepository {
         status: OrderStatus.processing,
       );
       orders.add(newOrder);
+      callback(newOrder);
       'Order created !'.toast;
       cartManager.cartItems.clear();
     } else {
