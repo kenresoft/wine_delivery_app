@@ -2,20 +2,20 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
-import 'package:wine_delivery_app/utils/app_theme.dart';
-import 'package:wine_delivery_app/views/admin/oder_management_page.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
 import 'bloc/cart/cart_bloc.dart';
 import 'bloc/category/category_filter/category_filter_bloc.dart';
 import 'bloc/category/category_list/wines_bloc.dart';
+import 'bloc/navigation/bottom_navigation_bloc.dart';
 import 'bloc/order/order_bloc.dart';
 import 'bloc/shipping_address/shipping_address_bloc.dart';
-import 'views/cart/cart_page.dart';
-import 'views/category/category_screen.dart';
+import 'utils/app_theme.dart';
+import 'views/admin/oder_management_page.dart';
 import 'views/home/home.dart';
 import 'views/home/home_screen.dart';
+import 'views/product/cart/cart_page.dart';
+import 'views/product/category/products_category_screen.dart';
 import 'views/product/product_page.dart';
 
 void main() {
