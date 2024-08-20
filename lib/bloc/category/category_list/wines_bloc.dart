@@ -16,9 +16,11 @@ class WinesBloc extends Bloc<WinesEvent, WinesState> {
         //final List<Product> wines = decodedData.map((dynamic item) => Product.fromJson(item)).toList();
 
         final List<Product> products = await productManager.getAllProducts();
+        print(products);
 
         emit(WinesState(status: WinesLoadStatus.success, wines: products));
       } catch (e) {
+        print(e);
         emit(WinesState(status: WinesLoadStatus.error, errorMessage: e.toString()));
       }
     });

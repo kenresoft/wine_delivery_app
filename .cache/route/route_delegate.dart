@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:wine_delivery_app/views/cart/cart_page.dart';
 import 'package:wine_delivery_app/views/cart/shopping_cart.dart';
-import 'package:wine_delivery_app/views/category/category_screen.dart';
+import 'package:wine_delivery_app/views/category/products_category_screen.dart';
 import 'package:wine_delivery_app/views/home/home_screen.dart';
 
 import '../bloc/route/route_bloc.dart';
