@@ -258,7 +258,7 @@ class _ProductPageState extends State<ProductPage>
                                               child: index != 5
                                                   ? CircularImage(
                                                       source:
-                                                          'assets/profile.jpg',
+                                                          'assets/images/profile.jpg',
                                                       radius: 25,
                                                     )
                                                   : const CircleAvatar(
@@ -345,7 +345,7 @@ class _ProductPageState extends State<ProductPage>
                           );*/
                           //var item = Provider.of<CartBloc>(context, listen: false);
                           context.read<CartBloc>().add(
-                                AddToCartEvent(
+                                AddItemToCart(
                                   CartItem(
                                     itemName: drinksCollection.name[index],
                                     itemPrice: drinksCollection.price[index],
