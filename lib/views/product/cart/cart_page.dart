@@ -5,6 +5,7 @@ import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 import 'package:wine_delivery_app/views/product/product_button.dart';
 
+import '../../bloc/order/order_bloc.dart';
 import '../../repository/cart_repository.dart';
 import '../../repository/order_repository.dart';
 
@@ -158,7 +159,7 @@ class _CartPageState extends State<CartPage> {
                                     onPressed: () {
                                       setState(() {
                                         context.read<CartBloc>().add(
-                                            RemoveFromCartEvent(
+                                            RemoveItemFromCart(
                                                 cartItem.itemName));
                                         //cartManager.removeFromCart(cartItem.itemName);
                                         '${cartItem.itemName} removed from cart!'
@@ -276,7 +277,11 @@ class _CartPageState extends State<CartPage> {
                       margin: EdgeInsets.zero,
                       onPressed: () {
                         setState(() {});
-                        orderManager.createOrder();
+                        orderManager.createOrder(
+                          (order) {
+                            context.read<OrderBloc>().add(SaveOrderID(order.orderId));
+                          },
+                        );
                         Navigator.pushNamed(context, 'order_management_page');
                       },
                       text: 'Checkout',
