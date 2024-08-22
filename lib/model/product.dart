@@ -38,8 +38,8 @@ class Product {
       name: '',
       category: Category(id: '', name: ''),
       image: '',
-      price: -1,
-      alcoholContent: -1,
+      price: -1.0,
+      alcoholContent: -1.0,
       description: '',
       reviews: const [],
     );
@@ -64,21 +64,106 @@ class Category {
 }
 
 class Review {
-  final String userId;
-  final int rating;
+  final User user;
+  final double rating;
   final String review;
 
   Review({
-    required this.userId,
+    required this.user,
     required this.rating,
     required this.review,
   });
 
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
-      userId: json['userId'],
-      rating: json['rating'],
+      user: User.fromJson(json['user']),
+      rating: json['rating'].toDouble(),
       review: json['review'],
     );
   }
 }
+
+class User {
+  final String id;
+  final String email;
+  final String username;
+  // final List<Favorite> favorites; // List of Favorite objects
+
+  User({
+    required this.id,
+    required this.email,
+    required this.username,
+    // required this.favorites,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['_id'],
+      email: json['email'],
+      username: json['username'],
+      //favorites: (json['favorites'] as List<dynamic>).map((favoriteJson) => Favorite.fromJson(favoriteJson)).toList(),
+    );
+  }
+}
+
+class Profile {
+  final String id;
+  final String email;
+  final String username;
+  final List<Favorite> favorites; // List of Favorite objects
+
+  Profile({
+    required this.id,
+    required this.email,
+    required this.username,
+    required this.favorites,
+  });
+
+  factory Profile.fromJson(Map<String, dynamic> json) {
+    return Profile(
+      id: json['_id'],
+      email: json['email'],
+      username: json['username'],
+      favorites: (json['favorites'] as List<dynamic>).map((favoriteJson) => Favorite.fromJson(favoriteJson)).toList(),
+    );
+  }
+}
+
+class Favorite {
+  final String id;
+  final String product;
+  // final Product product;
+
+  Favorite({
+    required this.id,
+    required this.product,
+  });
+
+  factory Favorite.fromJson(Map<String, dynamic> json) {
+    return Favorite(
+      id: json['_id'],
+      product: json['product'],
+      // product: Product.fromJson(json['product']),
+    );
+  }
+}
+
+/*class User {
+  final String id;
+  final String email; // Store only email for security
+  final String username;
+
+  User({
+    required this.id,
+    required this.email,
+    required this.username,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['_id'],
+      email: json['email'],
+      username: json['username'],
+    );
+  }
+}*/
