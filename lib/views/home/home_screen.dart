@@ -3,23 +3,27 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/views/cart/shopping_cart.dart';
+import 'package:wine_delivery_app/views/home/home.dart';
+import 'package:wine_delivery_app/views/user/user_profile_screen.dart';
 
 import '../../bloc/carousel/carousel_bloc.dart';
 import '../../bloc/cart/cart_bloc.dart';
 import '../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../model/enums/wine_category.dart';
-import '../cart/cart_page.dart';
-import '../category/category_screen.dart';
+import '../auth/auth_modal.dart';
+import '../product/cart/shopping_cart.dart';
+import '../product/category/products_category_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   final List<Widget> _pages = const [
     HomePage(),
-    CategoryScreen(),
-    CartPage(),
+    Home(),
+    // CartPage(),
     ShoppingCartScreen(),
+    //UserProfilePage(),
+    UserProfileScreen(),
   ];
 
   @override
@@ -35,12 +39,35 @@ class HomeScreen extends StatelessWidget {
           body: PopScope(
             canPop: false,
             onPopInvokedWithResult: (didPop, result) {
-              if (_pages[currentIndex].toString() != 'HomePage') {
-                print('$didPop + $result + ${_pages[currentIndex]}');
+              if (currentIndex != 0) {
                 BlocProvider.of<NavigationBloc>(context).add(const PageTapped(0));
+              } else {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AppExitDialog(
+                      title: 'Exit App?',
+                      message: 'Are you sure you want to exit the app?',
+                      confirmButtonText: 'Exit',
+                      cancelButtonText: 'Cancel',
+                      onConfirm: () {
+                        // Handle exit logic
+                        Navigator.pop(context);
+                      },
+                      onCancel: () {
+                        // Handle cancel logic
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                );
               }
             },
-            child: _pages[currentIndex],
+            child: IndexedStack(
+              index: currentIndex,
+              children: _pages,
+            ),
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: const [
@@ -49,8 +76,8 @@ class HomeScreen extends StatelessWidget {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.category),
-                label: 'Categories',
+                icon: Icon(Icons.favorite),
+                label: 'Favorites',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart),
@@ -74,74 +101,54 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({
+class AppExitDialog extends StatelessWidget {
+  final String title;
+  final String message;
+  final String confirmButtonText;
+  final String cancelButtonText;
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
+
+  const AppExitDialog({
     super.key,
+    required this.title,
+    required this.message,
+    required this.confirmButtonText,
+    required this.cancelButtonText,
+    required this.onConfirm,
+    required this.onCancel,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Wine Delivery'),
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                // Implement search functionality
-              },
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // Implement notification functionality
-            },
-          ),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'cart_page'),
-            child: Container(
-              width: 50,
-              height: 50,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(Icons.shopping_cart, size: 24.r, color: const Color(0xff383838)),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 16.w,
-                      height: 16.w,
-                      padding: const EdgeInsets.all(1),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffBD7879),
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: FittedBox(
-                        child: BlocBuilder<CartBloc, CartState>(
-                          builder: (context, state) {
-                            return Text(
-                              '${state.cartItems.length}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 10, color: Colors.white),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
       ),
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: onCancel,
+          child: Text(cancelButtonText),
+        ),
+        TextButton(
+          onPressed: onConfirm,
+          child: Text(confirmButtonText),
+        ),
+      ],
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //productManager.getAllProducts();
+    return Scaffold(
+      appBar: _buildAppBar(context),
       body: const SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -157,6 +164,73 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Wine Delivery'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.login),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const AuthModal();
+              },
+            );
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.notifications),
+          onPressed: () {
+            // Implement notification functionality
+          },
+        ),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, 'cart_page'),
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(Icons.shopping_cart, size: 24.r, color: const Color(0xff383838)),
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: _buildCartBadge(context),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCartBadge(BuildContext context) {
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        return Container(
+          alignment: Alignment.center,
+          width: 16.w,
+          height: 16.w,
+          padding: const EdgeInsets.all(1),
+          decoration: BoxDecoration(
+            color: const Color(0xffBD7879),
+            borderRadius: BorderRadius.circular(40),
+          ),
+          child: FittedBox(
+            child: Text(
+              '${state.cartItems.length}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 10, color: Colors.white),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -299,6 +373,17 @@ class _CategoryGridState extends State<CategoryGrid> {
 
     return Column(
       children: [
+        Row(
+          children: [
+            const Text(
+              'Categories',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 5),
+            Icon(Icons.category_rounded, color: Colors.amber[800]),
+          ],
+        ),
+        const SizedBox(height: 10),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -375,19 +460,19 @@ class _TopPicksSectionState extends State<TopPicksSection> with TickerProviderSt
     _controllers = topPicks.map((_) {
       return AnimationController(
         vsync: this,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 1),
       );
     }).toList();
 
     _animations = _controllers.map((controller) {
-      return Tween<double>(begin: 0.9, end: 1.05).animate(
+      return Tween<double>(begin: 0.75, end: 1.15).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeInOut),
       );
     }).toList();
 
     // Start each animation with a varying delay
     for (int i = 0; i < _controllers.length; i++) {
-      Future.delayed(Duration(seconds: i * 10), () {
+      Future.delayed(Duration(seconds: i * 12), () {
         _controllers[i].repeat(reverse: true);
       });
     }
@@ -406,9 +491,15 @@ class _TopPicksSectionState extends State<TopPicksSection> with TickerProviderSt
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Top Picks',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Row(
+          children: [
+            const Text(
+              'Top Picks',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 5),
+            Icon(Icons.push_pin_rounded, color: Colors.amber[800]),
+          ],
         ),
         const SizedBox(height: 10),
         ListView.builder(
