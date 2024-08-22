@@ -1,54 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
 
-class UserProfileScreen extends StatelessWidget {
+import '../../bloc/profile/profile_bloc.dart';
+import '../../repository/user_repository.dart';
+
+class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
 
   @override
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Profile'),
-        //backgroundColor: Colors.deepPurple,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // Navigate to Edit Profile page
-            },
-          ),
+    return BlocBuilder<NavigationBloc, NavigationState>(
+      builder: (context, state) {
+        if (state == const PageChanged(selectedIndex: 3)) {
+          context.read<ProfileBloc>().add(const ProfileFetch());
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('User Profile'),
+              //backgroundColor: Colors.deepPurple,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    // Navigate to Edit Profile page
+                    userRepository.getUserProfile().then((value) {
+                      print(value.favorites[0].product);
+                    });
+                  },
+                ),
+              ],
+            ),
+            body: BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, state) {
+                return switch (state) {
+                  ProfileFetching() => const Center(child: CircularProgressIndicator()),
+                  ProfileLoaded() => buildBody(context, state),
+                };
+              },
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  Widget buildBody(BuildContext context, ProfileLoaded state) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Profile Header
+          _buildProfileHeader(context, state),
+
+          // Account Information
+          _buildAccountInfo(context),
+
+          // Order History
+          _buildOrderHistory(context),
+
+          // Favorites
+          _buildFavoritesSection(context),
+
+          // Account Settings
+          _buildAccountSettings(context),
+
+          // Help & Support
+          _buildHelpSupport(context),
+
+          // Logout
+          _buildLogoutButton(context),
         ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Header
-            _buildProfileHeader(context),
-
-            // Account Information
-            _buildAccountInfo(context),
-
-            // Order History
-            _buildOrderHistory(context),
-
-            // Favorites
-            _buildFavoritesSection(context),
-
-            // Account Settings
-            _buildAccountSettings(context),
-
-            // Help & Support
-            _buildHelpSupport(context),
-
-            // Logout
-            _buildLogoutButton(context),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(BuildContext context, ProfileLoaded state) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       color: Colors.deepPurple.shade50,
@@ -56,7 +94,7 @@ class UserProfileScreen extends StatelessWidget {
         children: [
           const CircleAvatar(
             radius: 40,
-            backgroundImage: AssetImage('assets/profile_picture.png'), // Placeholder image
+            backgroundImage: AssetImage('assets/images/profile.jpg'), // Placeholder image
           ),
           const SizedBox(width: 16.0),
           Column(
@@ -68,7 +106,9 @@ class UserProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 4.0),
               Text(
-                'kenresoft@gmail.com',
+                state.profile.username,
+                // 'kenresoft@gmail.com',
+                /*userRepository.getUserProfile(),*/
                 style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
               ),
             ],
