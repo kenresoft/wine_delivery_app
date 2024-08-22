@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/category/favorite/favorite_bloc.dart';
+import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
 import 'bloc/cart/cart_bloc.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<CategoryFilterBloc>(create: (context) => CategoryFilterBloc()),
           BlocProvider<WinesBloc>(create: (context) => WinesBloc()),
           BlocProvider<FavoriteBloc>(create: (context) => FavoriteBloc()),
+          BlocProvider<ProfileBloc>(create: (context) => ProfileBloc()),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
