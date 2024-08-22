@@ -21,7 +21,7 @@ class Order extends Equatable {
     return Order(
       orderId: '', // Or generate a unique ID here
       orderDate: DateTime.now(),
-      items: [],
+      items: const [],
       status: OrderStatus.pending,
     );
   }
