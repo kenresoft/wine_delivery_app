@@ -1,11 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wine_delivery_app/repository/auth_repository.dart';
 import 'package:wine_delivery_app/views/auth/auth_button.dart';
 
-import '../order/shipping_form_address.dart';
+import '../product/order/shipping_form_address.dart';
 
-class AuthModal extends StatelessWidget {
+class AuthModal extends StatefulWidget {
   const AuthModal({super.key});
+
+  @override
+  State<AuthModal> createState() => _AuthModalState();
+}
+
+class _AuthModalState extends State<AuthModal> {
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +50,8 @@ class AuthModal extends StatelessWidget {
                   'Create Account',
                   style: TextStyle(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold, color: Color(0xff394346),
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff394346),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -52,12 +69,14 @@ class AuthModal extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                controller: emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
                 ),
               ),
               const SizedBox(height: 10),
               TextFormField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -121,6 +140,7 @@ class AuthModal extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           // Implement sign-in navigation logic
+                          authRepository.login(emailController.text, passwordController.text);
                         },
                         child: const Text(
                           'Sign in',
