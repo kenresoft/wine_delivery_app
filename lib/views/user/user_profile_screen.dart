@@ -2,41 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
 
+import '../../bloc/product/favorite/favs/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
-import '../../repository/user_repository.dart';
 
-class UserProfileScreen extends StatefulWidget {
+class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
-
-  @override
-  State<UserProfileScreen> createState() => _UserProfileScreenState();
-}
-
-class _UserProfileScreenState extends State<UserProfileScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NavigationBloc, NavigationState>(
       builder: (context, state) {
-        if (state == const PageChanged(selectedIndex: 3)) {
+        if (state != const PageChanged(selectedIndex: 3)) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
           context.read<ProfileBloc>().add(const ProfileFetch());
+          context.read<FavsBloc>().add(LoadFavs());
           return Scaffold(
             appBar: AppBar(
               title: const Text('User Profile'),
-              //backgroundColor: Colors.deepPurple,
               actions: [
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    // Navigate to Edit Profile page
-                    userRepository.getUserProfile().then((value) {
-                      print(value.favorites[0].product);
-                    });
-                  },
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -45,12 +32,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 return switch (state) {
                   ProfileFetching() => const Center(child: CircularProgressIndicator()),
                   ProfileLoaded() => buildBody(context, state),
+                  ProfileError() => Center(child: Text(state.error)),
                 };
               },
             ),
           );
-        } else {
-          return const Center(child: CircularProgressIndicator());
         }
       },
     );
@@ -199,37 +185,43 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         children: [
           const Text('Favorites', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8.0),
-          GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              //childAspectRatio: 2 / 3,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-            ),
-            itemCount: 4,
-            // Example: Show the last 4 favorites
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  // Navigate to Wine Details page
-                },
-                child: Card(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/wine-${index + 1}.png',
-                        fit: BoxFit.contain,
-                        width: 60,
-                        height: 60,
-                      ),
-                      const SizedBox(height: 4.0),
-                      Text('Wine ${index + 1}', style: const TextStyle(fontSize: 16.0)),
-                    ],
-                  ),
-                ) /*Column(
+          BlocBuilder<FavsBloc, FavsState>(
+            builder: (context, state) {
+              return switch (state) {
+                FavsInitial() => const Center(child: CircularProgressIndicator()),
+                FavsError() => Center(child: Text(state.error)),
+                FavsLoaded() => GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      //childAspectRatio: 2 / 3,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                    ),
+                    itemCount: state.favs.length,
+                    // Example: Show the last 4 favorites
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          // Navigate to Wine Details page
+                        },
+                        child: Card(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                // 'assets/images/${state.favs[index].product}',
+                                'assets/images/wine-${index + 1}.png',
+                                fit: BoxFit.contain,
+                                width: 60,
+                                height: 60,
+                              ),
+                              const SizedBox(height: 4.0),
+                              Text('Wine ${index + 1}', style: const TextStyle(fontSize: 16.0)),
+                            ],
+                          ),
+                        ) /*Column(
                   children: [
                     Expanded(
                       child: Image.asset('assets/images/wine-${index + 1}.png', fit: BoxFit.cover),
@@ -238,8 +230,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Text('Wine ${index + 1}', style: const TextStyle(fontSize: 16.0)),
                   ],
                 )*/
-                ,
-              );
+                        ,
+                      );
+                    },
+                  ),
+              };
             },
           ),
         ],
