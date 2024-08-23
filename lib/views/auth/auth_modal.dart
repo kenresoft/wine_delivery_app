@@ -138,9 +138,18 @@ class _AuthModalState extends State<AuthModal> {
                         textAlign: TextAlign.center,
                       ),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // Implement sign-in navigation logic
-                          authRepository.login(emailController.text, passwordController.text);
+                          await authRepository.login(
+                            emailController.text,
+                            passwordController.text,
+                            (value) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(value)),
+                              );
+                            },
+                          );
                         },
                         child: const Text(
                           'Sign in',
