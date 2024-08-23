@@ -2,15 +2,16 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/bloc/category/favorite/favorite_bloc.dart';
+import 'package:wine_delivery_app/bloc/product/favorite/favs/favs_bloc.dart';
 import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
 import 'bloc/cart/cart_bloc.dart';
-import 'bloc/category/category_filter/category_filter_bloc.dart';
-import 'bloc/category/category_list/wines_bloc.dart';
 import 'bloc/navigation/bottom_navigation_bloc.dart';
 import 'bloc/order/order_bloc.dart';
+import 'bloc/product/category_filter/category_filter_bloc.dart';
+import 'bloc/product/category_list/wines_bloc.dart';
+import 'bloc/product/favorite/like/like_bloc.dart';
 import 'bloc/shipping_address/shipping_address_bloc.dart';
 import 'utils/app_theme.dart';
 import 'views/admin/oder_management_page.dart';
@@ -44,8 +45,9 @@ class MyApp extends StatelessWidget {
           BlocProvider<CarouselBloc>(create: (context) => CarouselBloc()),
           BlocProvider<CategoryFilterBloc>(create: (context) => CategoryFilterBloc()),
           BlocProvider<WinesBloc>(create: (context) => WinesBloc()),
-          BlocProvider<FavoriteBloc>(create: (context) => FavoriteBloc()),
+          BlocProvider<LikeBloc>(create: (context) => LikeBloc()),
           BlocProvider<ProfileBloc>(create: (context) => ProfileBloc()),
+          BlocProvider<FavsBloc>(create: (context) => FavsBloc()),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
