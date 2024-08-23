@@ -126,7 +126,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 padding: const EdgeInsets.all(2).r,
                                 child: CircularImage(
                                   radius: 20.r,
-                                  source: 'assets/profile.jpg',
+                                  source: 'assets/images/profile.jpg',
                                 ),
                               ),
                             ),
