@@ -32,6 +32,19 @@ class Product {
     );
   }
 
+  factory Product.id(Map<String, dynamic> json) {
+    return Product(
+      id: json['_id'],
+      name: '',
+      category: Category(id: '', name: ''),
+      image: '',
+      price: -1.0,
+      alcoholContent: -1.0,
+      description: '',
+      reviews: const [],
+    );
+  }
+
   factory Product.empty() {
     return Product(
       id: '',
@@ -131,7 +144,7 @@ class Profile {
 
 class Favorite {
   final String id;
-  final String product;
+  final Product product;
   // final Product product;
 
   Favorite({
@@ -142,8 +155,8 @@ class Favorite {
   factory Favorite.fromJson(Map<String, dynamic> json) {
     return Favorite(
       id: json['_id'],
-      product: json['product'],
-      // product: Product.fromJson(json['product']),
+      // product: json['product'],
+      product: Product.id(json['product']),
     );
   }
 }
