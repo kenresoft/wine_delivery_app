@@ -1,10 +1,10 @@
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/bloc/category/category_list/wines_bloc.dart';
 import 'package:wine_delivery_app/model/enums/wine_category.dart';
 
-import '../../../bloc/category/category_filter/category_filter_bloc.dart';
+import '../../../bloc/product/category_filter/category_filter_bloc.dart';
+import '../../../bloc/product/category_list/wines_bloc.dart';
 import '../../../model/product.dart';
 import '../../../repository/popularity_repository.dart';
 import '../../../repository/similar_wines_repository.dart';
@@ -92,7 +92,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     List<Product> filteredWines = state.wines.where((wine) {
       return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
-          wine.category.name == 'roses'/*_selectedCategory.displayName*/ /*&&
+          wine.category.name == 'roses' /*'Non-Alcoholic'*//*_selectedCategory.displayName*/ /*&&
           wine.price >= _minPrice &&
           wine.price <= _maxPrice &&
           _calculateAverageRating(wine.reviews) >= _minRating &&
