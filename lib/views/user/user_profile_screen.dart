@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
+import 'package:wine_delivery_app/repository/auth_repository.dart';
+import 'package:wine_delivery_app/views/auth/login_page.dart';
 
 import '../../bloc/product/favorite/favs/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
@@ -202,6 +204,7 @@ class UserProfileScreen extends StatelessWidget {
                     itemCount: state.favs.length,
                     // Example: Show the last 4 favorites
                     itemBuilder: (context, index) {
+                      final favItem = state.favs[index];
                       return GestureDetector(
                         onTap: () {
                           // Navigate to Wine Details page
@@ -211,26 +214,17 @@ class UserProfileScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                // 'assets/images/${state.favs[index].product}',
-                                'assets/images/wine-${index + 1}.png',
+                                'assets/images/${favItem.image}',
+                                // 'assets/images/wine-${index + 1}.png',
                                 fit: BoxFit.contain,
                                 width: 60,
                                 height: 60,
                               ),
                               const SizedBox(height: 4.0),
-                              Text('Wine ${index + 1}', style: const TextStyle(fontSize: 16.0)),
+                              Text(favItem.name, style: const TextStyle(fontSize: 16.0)),
                             ],
                           ),
-                        ) /*Column(
-                  children: [
-                    Expanded(
-                      child: Image.asset('assets/images/wine-${index + 1}.png', fit: BoxFit.cover),
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text('Wine ${index + 1}', style: const TextStyle(fontSize: 16.0)),
-                  ],
-                )*/
-                        ,
+                        ),
                       );
                     },
                   ),
@@ -355,7 +349,19 @@ class UserProfileScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // Perform logout operation
-                Navigator.of(context).pop();
+                authRepository.logout().then(
+                  (value) {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginPage();
+                        },
+                      ),
+                    );
+                  },
+                );
               },
               child: const Text('Logout'),
             ),
