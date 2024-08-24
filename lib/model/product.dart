@@ -32,19 +32,6 @@ class Product {
     );
   }
 
-  factory Product.id(Map<String, dynamic> json) {
-    return Product(
-      id: json['_id'],
-      name: '',
-      category: Category(id: '', name: ''),
-      image: '',
-      price: -1.0,
-      alcoholContent: -1.0,
-      description: '',
-      reviews: const [],
-    );
-  }
-
   factory Product.empty() {
     return Product(
       id: '',
@@ -77,7 +64,7 @@ class Category {
 }
 
 class Review {
-  final User user;
+  final dynamic user;
   final double rating;
   final String review;
 
@@ -89,7 +76,8 @@ class Review {
 
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
-      user: User.fromJson(json['user']),
+      user: json['user'] is String ? json['user'] : User.fromJson(json['user']),
+      // user: User.fromJson(json['user']),
       rating: json['rating'].toDouble(),
       review: json['review'],
     );
@@ -123,7 +111,7 @@ class Profile {
   final String id;
   final String email;
   final String username;
-  final List<Favorite> favorites; // List of Favorite objects
+  final List<Favorite> favorites;
 
   Profile({
     required this.id,
@@ -137,15 +125,16 @@ class Profile {
       id: json['_id'],
       email: json['email'],
       username: json['username'],
-      favorites: (json['favorites'] as List<dynamic>).map((favoriteJson) => Favorite.fromJson(favoriteJson)).toList(),
+      favorites: (json['favorites'] as List<dynamic>).map((favoriteJson) {
+        return Favorite.fromJson(favoriteJson);
+      }).toList(),
     );
   }
 }
 
 class Favorite {
   final String id;
-  final Product product;
-  // final Product product;
+  final dynamic product;
 
   Favorite({
     required this.id,
@@ -155,28 +144,7 @@ class Favorite {
   factory Favorite.fromJson(Map<String, dynamic> json) {
     return Favorite(
       id: json['_id'],
-      // product: json['product'],
-      product: Product.id(json['product']),
+      product: json['product'] is String ? json['product'] : json['product']['_id'],
     );
   }
 }
-
-/*class User {
-  final String id;
-  final String email; // Store only email for security
-  final String username;
-
-  User({
-    required this.id,
-    required this.email,
-    required this.username,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['_id'],
-      email: json['email'],
-      username: json['username'],
-    );
-  }
-}*/
