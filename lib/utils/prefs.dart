@@ -12,7 +12,7 @@ String get authToken => SharedPreferencesService.getString('authToken') ?? Const
 
 set authToken(String value) => SharedPreferencesService.setString('authToken', value);
 
-Future<bool> removeAuthToken(String value) => SharedPreferencesService.remove('authToken');
+Future<bool> removeAuthToken() => SharedPreferencesService.remove('authToken');
 
 /// CURRENT PAGE
 /*AppPage get page => getPage(SharedPreferencesService.getString('page') ?? AppPage.userVerification.name);
