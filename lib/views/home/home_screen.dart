@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/views/auth/registration_page.dart';
 import 'package:wine_delivery_app/views/home/home.dart';
 import 'package:wine_delivery_app/views/user/user_profile_screen.dart';
 
@@ -10,7 +11,6 @@ import '../../bloc/carousel/carousel_bloc.dart';
 import '../../bloc/cart/cart_bloc.dart';
 import '../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../model/enums/wine_category.dart';
-import '../auth/auth_modal.dart';
 import '../product/cart/shopping_cart.dart';
 import '../product/category/products_category_screen.dart';
 
@@ -173,14 +173,13 @@ class HomePage extends StatelessWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.login),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AuthModal();
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return const RegistrationPage();
               },
-            );
-          },
+            ),
+          ),
         ),
         IconButton(
           icon: const Icon(Icons.notifications),
