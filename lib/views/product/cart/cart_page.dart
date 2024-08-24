@@ -5,9 +5,9 @@ import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 import 'package:wine_delivery_app/views/product/product_button.dart';
 
-import '../../bloc/order/order_bloc.dart';
-import '../../repository/cart_repository.dart';
-import '../../repository/order_repository.dart';
+import '../../../bloc/order/order_bloc.dart';
+import '../../../repository/cart_repository.dart';
+import '../../../repository/order_repository.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});

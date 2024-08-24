@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/repository/order_repository.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 
-import '../../bloc/cart/cart_bloc.dart';
-import '../../bloc/order/order_bloc.dart';
-import '../../repository/cart_repository.dart';
+import '../../../bloc/cart/cart_bloc.dart';
+import '../../../bloc/navigation/bottom_navigation_bloc.dart';
+import '../../../bloc/order/order_bloc.dart';
+import '../../../bloc/profile/profile_bloc.dart';
+import '../../../repository/cart_repository.dart';
 import '../order/order_confirmation.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
@@ -91,15 +93,22 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double subtotal = cartItems.fold(
-        0, (sum, item) => sum + (item['price'] * item['quantity']));
-
-    return BlocBuilder<CartBloc, CartState>(
+    return BlocBuilder<NavigationBloc, NavigationState>(
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: Colors.grey.shade300,
-          appBar: AppBar(
-            title: Text('Shopping Cart - ${state.cartItems.length} items'),
+        if (state != const PageChanged(selectedIndex: 3)) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          context.read<ProfileBloc>().add(const ProfileFetch());
+          double subtotal = cartItems.fold(0, (sum, item) {
+            return sum + (item['price'] * item['quantity']);
+          });
+
+          return BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) {
+              return Scaffold(
+                backgroundColor: Colors.grey.shade300,
+                appBar: AppBar(
+                  title: Text('Shopping Cart - ${state.cartItems.length} items'),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
@@ -119,6 +128,9 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
             ),
           ),
         );
+      },
+    );
+        }
       },
     );
   }
