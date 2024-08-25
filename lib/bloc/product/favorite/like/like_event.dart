@@ -4,6 +4,15 @@ sealed class LikeEvent extends Equatable {
   const LikeEvent();
 }
 
+class Init extends LikeEvent {
+  final String productId;
+
+  const Init(this.productId);
+
+  @override
+  List<Object> get props => [productId];
+}
+
 class Like extends LikeEvent {
   final String productId;
 
