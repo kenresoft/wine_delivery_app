@@ -9,7 +9,6 @@ part 'bottom_navigation_state.dart';
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(NavigationInitial()) {
     on<PageTapped>((event, emit) {
-      if (event.index == 3) {}
       emit(PageChanged(selectedIndex:  event.index));
     });
   }
