@@ -1,10 +1,10 @@
 part of 'order_bloc.dart';
 
-sealed class OrderState extends Equatable {
-  const OrderState();
-}
+class OrderState extends Equatable {
+  const OrderState(this.orderID);
 
-final class OrderInitial extends OrderState {
+  final String orderID;
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [orderID];
 }
