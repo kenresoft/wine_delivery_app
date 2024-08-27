@@ -10,6 +10,7 @@ import 'package:wine_delivery_app/views/user/user_profile_screen.dart';
 import '../../bloc/carousel/carousel_bloc.dart';
 import '../../bloc/cart/cart_bloc.dart';
 import '../../bloc/navigation/bottom_navigation_bloc.dart';
+import '../../bloc/product/category_list/wines_bloc.dart';
 import '../../model/enums/wine_category.dart';
 import '../product/cart/shopping_cart.dart';
 import '../product/category/products_category_screen.dart';
@@ -400,6 +401,7 @@ class _CategoryGridState extends State<CategoryGrid> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
+                    //context.read<WinesBloc>().add(WinesReady());
                     return CategoryScreen(category: category); // Your CategoryScreen widget
                   },
                 ),
@@ -473,6 +475,7 @@ class _TopPicksSectionState extends State<TopPicksSection> with TickerProviderSt
     for (int i = 0; i < _controllers.length; i++) {
       Future.delayed(Duration(seconds: i * 12), () {
         _controllers[i].repeat(reverse: true);
+        // TODO: Unhandled Exception: Null check operator used on a null value - Error keeps throwing here
       });
     }
   }
