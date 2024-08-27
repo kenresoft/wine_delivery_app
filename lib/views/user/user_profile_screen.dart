@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
 import 'package:wine_delivery_app/repository/auth_repository.dart';
+import 'package:wine_delivery_app/utils/constants.dart';
 import 'package:wine_delivery_app/views/auth/login_page.dart';
+import 'package:wine_delivery_app/views/home/home_screen.dart';
+import 'package:wine_delivery_app/views/product/order/shipping_form_address.dart';
+import 'package:wine_delivery_app/views/user/user_profile_edit_page.dart';
 
 import '../../bloc/product/favorite/favs/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
@@ -19,29 +23,33 @@ class UserProfileScreen extends StatelessWidget {
         } else {
           context.read<ProfileBloc>().add(const ProfileFetch());
           context.read<FavsBloc>().add(LoadFavs());
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('User Profile'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {},
-                ),
-              ],
+        return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
+          return switch (state) {
+            ProfileFetching() => const Center(child: CircularProgressIndicator()),
+            ProfileError() => Center(child: Text(state.error)),
+            ProfileLoaded() => Scaffold(
+              appBar: AppBar(
+                title: const Text('User Profile'),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return UserProfileEditPage(profile: state.profile);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              body: buildBody(context, state),
             ),
-            body: BlocBuilder<ProfileBloc, ProfileState>(
-              builder: (context, state) {
-                return switch (state) {
-                  ProfileFetching() => const Center(child: CircularProgressIndicator()),
-                  ProfileLoaded() => buildBody(context, state),
-                  ProfileError() => Center(child: Text(state.error)),
-                };
-              },
-            ),
-          );
-        }
-      },
-    );
+          };
+        });
+      }
+    });
   }
 
   Widget buildBody(BuildContext context, ProfileLoaded state) {
@@ -80,26 +88,29 @@ class UserProfileScreen extends StatelessWidget {
       color: Colors.deepPurple.shade50,
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 40,
-            backgroundImage: AssetImage('assets/images/profile.jpg'), // Placeholder image
+            backgroundImage: NetworkImage(Constants.baseUrl + state.profile.profileImage),
           ),
           const SizedBox(width: 16.0),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Kenneth Amadi',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4.0),
-              Text(
-                state.profile.username,
-                // 'kenresoft@gmail.com',
-                /*userRepository.getUserProfile(),*/
-                style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
-              ),
-            ],
+          SizedBox(
+            width: 285,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  state.profile.username,
+                  maxLines: 2,
+                  style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  state.profile.email,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -119,9 +130,14 @@ class UserProfileScreen extends StatelessWidget {
             title: const Text('Shipping Address'),
             subtitle: const Text('123 Main St, Springfield, IL'),
             trailing: const Icon(Icons.edit),
-            onTap: () {
-              // Navigate to Manage Addresses page
-            },
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const ShippingAddressForm();
+                },
+              ),
+            ),
           ),
           const Divider(),
           ListTile(
@@ -201,7 +217,7 @@ class UserProfileScreen extends StatelessWidget {
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 5,
                     ),
-                    itemCount: state.favs.length,
+                    itemCount: state.favs.take(6).length,
                     // Example: Show the last 4 favorites
                     itemBuilder: (context, index) {
                       final favItem = state.favs[index];
@@ -230,6 +246,15 @@ class UserProfileScreen extends StatelessWidget {
                   ),
               };
             },
+          ),
+          const SizedBox(height: 8.0),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                // Navigate to full Favorite page
+              },
+              child: const Text('View All Favorites', style: TextStyle(color: Colors.deepPurple)),
+            ),
           ),
         ],
       ),
