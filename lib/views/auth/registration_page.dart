@@ -211,7 +211,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           ),
                           TextButton(
                             onPressed: () async {
-                              Navigator.of(context).push(
+                              Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) => const LoginPage(),
                                 ),
