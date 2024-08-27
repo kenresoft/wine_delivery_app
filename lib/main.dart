@@ -12,6 +12,7 @@ import 'bloc/order/order_bloc.dart';
 import 'bloc/product/category_filter/category_filter_bloc.dart';
 import 'bloc/product/category_list/wines_bloc.dart';
 import 'bloc/product/favorite/like/like_bloc.dart';
+import 'bloc/shipment/shipment_bloc.dart';
 import 'bloc/shipping_address/shipping_address_bloc.dart';
 import 'utils/app_theme.dart';
 import 'views/admin/oder_management_page.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<CartBloc>(create: (context) => CartBloc()),
           BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
           BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc()),
+          BlocProvider<ShipmentBloc>(create: (context) => ShipmentBloc()),
           BlocProvider<CarouselBloc>(create: (context) => CarouselBloc()),
           BlocProvider<CategoryFilterBloc>(create: (context) => CategoryFilterBloc()),
           BlocProvider<WinesBloc>(create: (context) => WinesBloc()),
