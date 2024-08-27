@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:wine_delivery_app/model/product.dart';
 
 import '../utils/constants.dart';
@@ -20,6 +20,8 @@ class UserRepository {
   }
 
   static const String _url = '${Constants.baseUrl}/api/auth/profile';
+
+  static const String _updateUrl = '${Constants.baseUrl}/api/users/';
 
   Future<Profile> getUserProfile() async {
     final token = await authRepository.getToken();
@@ -60,12 +62,10 @@ class UserRepository {
     }
   }
 
-  static const String _updateUrl = '${Constants.baseUrl}/api/users/';
-
   // New Method to Update User Profile
   Future<Profile> updateUserProfile({
     required String userId,
-    required Map<String, String> updatedData,
+    required Map<String, dynamic> updatedData,
     File? profileImage, // Optional profile image
   }) async {
     final token = await authRepository.getToken();
@@ -93,7 +93,7 @@ class UserRepository {
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final  data = jsonDecode(response.body);
         final userJson = data['user'];
 
         if (userJson != null) {
