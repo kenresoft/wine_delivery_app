@@ -4,7 +4,6 @@ import 'package:wine_delivery_app/repository/auth_repository.dart';
 import 'package:wine_delivery_app/views/auth/auth_button.dart';
 import 'package:wine_delivery_app/views/auth/registration_page.dart';
 import 'package:wine_delivery_app/views/home/home_screen.dart';
-import 'package:wine_delivery_app/views/user/user_profile_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -198,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).push(
+                          Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => const RegistrationPage(),
                             ),
