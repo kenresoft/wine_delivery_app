@@ -8,12 +8,12 @@ class ShipmentInitial extends ShipmentState {
 }
 
 class ShipmentLoaded extends ShipmentState {
-  final List<Shipment> shipments;
+  final Shipment shipment;
 
-  ShipmentLoaded(this.shipments);
+  ShipmentLoaded(this.shipment);
 
   @override
-  List<Object?> get props => [shipments];
+  List<Object?> get props => [shipment];
 }
 
 class ShipmentSaved extends ShipmentState {
