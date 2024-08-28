@@ -153,11 +153,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               child: FittedBox(
                                 child: BlocBuilder<CartBloc, CartState>(
                                   builder: (context, state) {
-                                    return Text(
+                                    return const Text(
                                       //'${cartManager.cartItems.length}',
-                                      '${state.cartItems.length}',
+                                      '0',
+                                      // '${state.cartItems.length}',
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 10, color: Colors.white),
+                                      style: TextStyle(fontSize: 10, color: Colors.white),
                                     );
                                   }
                                 ),

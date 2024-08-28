@@ -93,6 +93,7 @@ class HomeScreen extends StatelessWidget {
             selectedItemColor: Colors.amber[800],
             type: BottomNavigationBarType.fixed,
             onTap: (index) {
+              print(index.toString());
               BlocProvider.of<NavigationBloc>(context).add(PageTapped(index));
             },
           ),
@@ -222,11 +223,12 @@ class HomePage extends StatelessWidget {
             color: const Color(0xffBD7879),
             borderRadius: BorderRadius.circular(40),
           ),
-          child: FittedBox(
+          child: const FittedBox(
             child: Text(
-              '${state.cartItems.length}',
+              '0',
+              // '${state.cartItems.length}',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 10, color: Colors.white),
+              style: TextStyle(fontSize: 10, color: Colors.white),
             ),
           ),
         );
