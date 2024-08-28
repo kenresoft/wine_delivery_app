@@ -4,28 +4,19 @@ import 'package:wine_delivery_app/model/shipment.dart';
 import 'package:wine_delivery_app/repository/shipment_repository.dart';
 
 part 'shipment_event.dart';
-
 part 'shipment_state.dart';
 
 class ShipmentBloc extends Bloc<ShipmentEvent, ShipmentState> {
   ShipmentBloc() : super(ShipmentInitial()) {
     on<SaveShipmentDetails>(saveShipmentDetails);
-
-    on<GetShipmentDetails>(
-      (event, emit) => getShipmentDetails(emit),
-    );
-
-    on<GetShipmentDetailsById>(
-      (event, emit) {
-        getShipmentDetailsById(emit, event.shipmentId);
-      },
-    );
+    on<GetShipmentDetails>(getShipmentDetails);
+    on<GetShipmentDetailsById>(getShipmentDetailsById);
   }
 
-  void getShipmentDetails(Emitter<ShipmentState> emit) async {
+  void getShipmentDetails(GetShipmentDetails event, Emitter<ShipmentState> emit) async {
     try {
-      final shipments = await shipmentRepository.getShipmentDetails();
-      emit(ShipmentLoaded(shipments));
+      final shipment = await shipmentRepository.getShipmentDetails();
+      emit(ShipmentLoaded(shipment));
     } catch (e) {
       emit(ShipmentError(e.toString()));
     }
@@ -52,9 +43,9 @@ class ShipmentBloc extends Bloc<ShipmentEvent, ShipmentState> {
     }
   }
 
-  void getShipmentDetailsById(Emitter<ShipmentState> emit, String shipmentId) async {
+  void getShipmentDetailsById(GetShipmentDetailsById event, Emitter<ShipmentState> emit) async {
     try {
-      final shipment = await shipmentRepository.getShipmentDetailsById(shipmentId);
+      final shipment = await shipmentRepository.getShipmentDetailsById(event.shipmentId);
       emit(ShipmentFetched(shipment));
     } catch (e) {
       emit(ShipmentError(e.toString()));
