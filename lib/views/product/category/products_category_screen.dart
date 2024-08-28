@@ -9,9 +9,10 @@ import '../../../model/product.dart';
 import '../../../repository/popularity_repository.dart';
 import '../../../repository/similar_wines_repository.dart';
 import '../product_detail_screen.dart';
+import '../rate_bar.dart';
 
 class CategoryScreen extends StatefulWidget {
-  static const double priceMax = 50.0;
+  static const double priceMax = 5000.0;
   static const double ratingMax = 10.0;
   static const double alcoholMax = 20.0;
 
@@ -28,9 +29,9 @@ class CategoryScreen extends StatefulWidget {
   State<CategoryScreen> createState() => _CategoryScreenState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
+/*class _CategoryScreenState extends State<CategoryScreen> {
   late WineCategory _selectedCategory;
-  late WinesBloc bloc;
+  //late WinesBloc bloc;
 
   String _searchQuery = '';
   String _selectedSort = 'Popularity';
@@ -47,8 +48,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   void initState() {
     super.initState();
     _selectedCategory = widget.category ?? WineCategory.rose;
-    bloc = context.read<WinesBloc>();
-    bloc.add(WinesReady());
+    // bloc = context.read<WinesBloc>();
+    //bloc.add(WinesReady());
   }
 
   void _applyFilters() {
@@ -57,62 +58,132 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  /*@override
+  @override
   Widget build(BuildContext context) {
-    final state = bloc.state;
+    //final state = bloc.state;
 
-    List<Product> filteredWines = state.wines.where((wine) {
-      return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
-          wine.category.name == _selectedCategory.displayName &&
-          wine.price >= _minPrice &&
-          wine.price <= _maxPrice &&
-          wine.rating >= _minRating &&
-          wine.rating <= _maxRating &&
-          wine.alcoholContent >= _minAlcoholContent &&
-          wine.alcoholContent <= _maxAlcoholContent;
-    }).toList();
+    return BlocBuilder<WinesBloc, WinesState>(
+      builder: (context, state) {
+        List<Product> filteredWines = state.wines.where((wine) {
+          return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
+              wine.category.name == _selectedCategory.displayName &&
+              wine.price >= _minPrice &&
+              wine.price <= _maxPrice &&
+              _calculateAverageRating(wine.reviews) >= _minRating &&
+              _calculateAverageRating(wine.reviews) <= _maxRating &&
+              wine.alcoholContent >= _minAlcoholContent &&
+              wine.alcoholContent <= _maxAlcoholContent;
+        }).toList();
 
-    _applySorting(filteredWines);
-    return Scaffold(
-      appBar: _buildAppBar(context, state, filteredWines),
-      body: BlocBuilder<WinesBloc, WinesState>(
-        builder: (context, state) {
-          return Padding(
+        _applySorting(filteredWines);
+
+        return Scaffold(
+          appBar: _buildAppBar(context, state, filteredWines),
+          body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: _buildBody(state, filteredWines),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
+  }*/
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  late WineCategory _selectedCategory;
+  String _searchQuery = '';
+  String _selectedSort = 'Popularity';
+  double _minPrice = 0;
+  double _maxPrice = CategoryScreen.priceMax;
+  double _minRating = 0;
+  double _maxRating = CategoryScreen.ratingMax;
+  double _minAlcoholContent = 0;
+  double _maxAlcoholContent = CategoryScreen.alcoholMax;
+  bool _isAscending = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = widget.category ?? WineCategory.rose;
+    context.read<WinesBloc>().add(WinesReady());
+  }
+
+  void _applyFilters() {
+    setState(() {
+      // Apply filters and trigger a rebuild
+    });
+  }
+
+  void _applySorting(List<Product> filteredWines) {
+    //setState(() {
+    switch (_selectedSort) {
+      case 'Price':
+        filteredWines.sort((a, b) => _isAscending ? a.price.compareTo(b.price) : b.price.compareTo(a.price));
+        break;
+      case 'Rating':
+        filteredWines.sort((a, b) =>
+            _isAscending ? _calculateAverageRating(a.reviews).compareTo(_calculateAverageRating(b.reviews)) : _calculateAverageRating(b.reviews).compareTo(_calculateAverageRating(a.reviews)));
+        break;
+      case 'Name (A-Z)':
+      case 'Name (Z-A)':
+        filteredWines.sort((a, b) => _isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
+        break;
+      case 'Reviews':
+        filteredWines.sort((a, b) => _isAscending ? a.reviews.length.compareTo(b.reviews.length) : b.reviews.length.compareTo(a.reviews.length));
+        break;
+      default:
+        // Default sorting logic
+        filteredWines.sort((a, b) =>
+            _isAscending ? _calculateAverageRating(a.reviews).compareTo(_calculateAverageRating(b.reviews)) : _calculateAverageRating(b.reviews).compareTo(_calculateAverageRating(a.reviews)));
+    }
+    //});
+  }
+
+/*  void _applySorting(List<Product> wines) {
+    // Perform sorting based on the selected criteria
+    wines.sort((a, b) {
+      int compare;
+      switch (_selectedSort) {
+        case 'Price':
+          compare = a.price.compareTo(b.price);
+          break;
+        case 'Rating':
+          compare = _calculateAverageRating(a.reviews).compareTo(_calculateAverageRating(b.reviews));
+          break;
+        case 'Alcohol Content':
+          compare = a.alcoholContent.compareTo(b.alcoholContent);
+          break;
+        default:
+          compare = _getPopularity(a).compareTo(_getPopularity(b));
+      }
+      return _isAscending ? compare : -compare;
+    });
   }*/
 
   @override
   Widget build(BuildContext context) {
-    final state = bloc.state;
+    return BlocBuilder<WinesBloc, WinesState>(
+      builder: (context, state) {
+        List<Product> filteredWines = state.wines.where((wine) {
+          return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
+              wine.category.name == _selectedCategory.displayName &&
+              wine.price >= _minPrice &&
+              wine.price <= _maxPrice &&
+              _calculateAverageRating(wine.reviews) >= _minRating &&
+              _calculateAverageRating(wine.reviews) <= _maxRating &&
+              wine.alcoholContent >= _minAlcoholContent &&
+              wine.alcoholContent <= _maxAlcoholContent;
+        }).toList();
 
-    List<Product> filteredWines = state.wines.where((wine) {
-      return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
-          wine.category.name == 'roses' /*'Non-Alcoholic'*//*_selectedCategory.displayName*/ /*&&
-          wine.price >= _minPrice &&
-          wine.price <= _maxPrice &&
-          _calculateAverageRating(wine.reviews) >= _minRating &&
-          _calculateAverageRating(wine.reviews) <= _maxRating &&
-          wine.alcoholContent >= _minAlcoholContent &&
-          wine.alcoholContent <= _maxAlcoholContent*/;
-    }).toList();
+        _applySorting(filteredWines);
 
-    _applySorting(filteredWines);
-
-    return Scaffold(
-      appBar: _buildAppBar(context, state, filteredWines),
-      body: BlocBuilder<WinesBloc, WinesState>(
-        builder: (context, state) {
-          return Padding(
+        return Scaffold(
+          appBar: _buildAppBar(context, state, filteredWines),
+          body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: _buildBody(state, filteredWines),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -287,13 +358,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
+        /*Text(
           'Rating: ${_calculateAverageRating(wine.reviews).toStringAsFixed(1)}',
           style: const TextStyle(
             fontSize: 14,
             color: Colors.grey,
           ),
-        ),
+        ),*/
+        RateBar(rating: _calculateAverageRating(wine.reviews)),
         const SizedBox(height: 8),
         Text(
           wine.description,
@@ -331,7 +403,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }*/
 
-  void _applySorting(List<Product> filteredWines) {
+  /*void _applySorting(List<Product> filteredWines) {
     setState(() {
       switch (_selectedSort) {
         case 'Price':
@@ -354,7 +426,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               _isAscending ? _calculateAverageRating(a.reviews).compareTo(_calculateAverageRating(b.reviews)) : _calculateAverageRating(b.reviews).compareTo(_calculateAverageRating(a.reviews)));
       }
     });
-  }
+  }*/
 
   double _calculateAverageRating(List<Review> reviews) {
     if (reviews.isEmpty) return 0.0;
