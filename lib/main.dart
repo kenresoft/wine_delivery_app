@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/product/favorite/favs/favs_bloc.dart';
 import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
+import 'package:wine_delivery_app/repository/cart_repository.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
 import 'bloc/cart/cart_bloc.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider<NavigationBloc>(create: (context) => NavigationBloc()),
-          BlocProvider<CartBloc>(create: (context) => CartBloc()),
+          BlocProvider<CartBloc>(create: (context) => CartBloc(cartRepository)),
           BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
           BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc()),
           BlocProvider<ShipmentBloc>(create: (context) => ShipmentBloc()),
@@ -60,8 +61,8 @@ class MyApp extends StatelessWidget {
             // '/': (context) => OrderConfirmationScreen(),
             // '/': (context) => ShoppingCartScreen(),
             'home': (context) => const Home(),
-            'product_page': (context) => const ProductPage(),
-            'cart_page': (context) => const CartPage(),
+            // 'product_page': (context) => const ProductPage(),
+            // 'cart_page': (context) => const CartPage(),
             //'order_page': (context) => const OrderPage(),
             'order_management_page': (context) => const OrderManagementPage(),
             'category': (context) => const CategoryScreen(),
