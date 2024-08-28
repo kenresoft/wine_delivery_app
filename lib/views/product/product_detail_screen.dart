@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/product/favorite/like/like_bloc.dart';
 import '../../model/product.dart';
 import '../../repository/popularity_repository.dart';
 import '../../repository/similar_wines_repository.dart';
@@ -46,6 +48,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 */
+  @override
+  void initState() {
+    super.initState();
+    context.read<LikeBloc>().add(Init(widget.wine.id));
+  }
   @override
   Widget build(BuildContext context) {
     final similarWines = widget.similarWinesRepo.findSimilarWines(widget.wine);
@@ -310,19 +317,56 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             const SizedBox(width: 10),
-            ElevatedButton(
-              onPressed: () {
-                // Handle adding to favorites
-                //_toggleFavoriteStatus();
+            BlocBuilder<LikeBloc, LikeState>(
+              builder: (context, state) {
+                return switch(state){
+                  InitialState() => ElevatedButton(
+                    onPressed: () async {
+                      context.read<LikeBloc>().add(Like(widget.wine.id));
+                      // print(isLiked);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(15.0),
+                      backgroundColor: Colors.grey[300],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                    ),
+                    child: state.isLiked
+                        ? const Icon(
+                      Icons.favorite,
+                      color: Colors.redAccent,
+                    )
+                        : const Icon(
+                      Icons.favorite_border,
+                      color: Colors.redAccent,
+                    ),
+                  ),
+                  ToggleState() => ElevatedButton(
+                    onPressed: () async {
+                      // Handle adding to favorites
+                      context.read<LikeBloc>().add(Like(widget.wine.id));
+                      // print(isLiked);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(15.0),
+                      backgroundColor: Colors.grey[300],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                    ),
+                    child: state.isLiked
+                        ? const Icon(
+                      Icons.favorite,
+                      color: Colors.redAccent,
+                    )
+                        : const Icon(
+                      Icons.favorite_border,
+                      color: Colors.redAccent,
+                    ),
+                  ),
+                };
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(15.0),
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-              ),
-              child: const Icon(Icons.favorite_border, color: Colors.redAccent),
             ),
           ],
         ),

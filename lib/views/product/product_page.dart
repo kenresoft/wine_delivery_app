@@ -1,3 +1,4 @@
+/*
 import 'package:circular_image/circular_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
-import 'package:wine_delivery_app/views/home/rate_bar.dart';
+import 'package:wine_delivery_app/views/product/rate_bar.dart';
 import 'package:wine_delivery_app/views/product/product_button.dart';
 
 import '../../model/cart_item.dart';
@@ -321,15 +322,18 @@ class _ProductPageState extends State<ProductPage>
                     Expanded(
                       child: ProductButton(
                         onPressed: () {
-                          /*addToCartButtonPressed(
+                          */
+/*addToCartButtonPressed(
                             drinksCollection.name[index],
                             drinksCollection.price[index],
                             drinksCollection.image[index],
                             1,
                             1.5,
                           );
-                          setState(() {});*/
-                          /*context.select<CartBloc, CartItem>(
+                          setState(() {});*//*
+
+                          */
+/*context.select<CartBloc, CartItem>(
                             ( value) => value.add(
                               AddToCartEvent(
                                 CartItem(
@@ -342,7 +346,8 @@ class _ProductPageState extends State<ProductPage>
                                 ),
                               ),
                             ),
-                          );*/
+                          );*//*
+
                           //var item = Provider.of<CartBloc>(context, listen: false);
                           context.read<CartBloc>().add(
                                 AddItemToCart(
@@ -382,3 +387,4 @@ class _ProductPageState extends State<ProductPage>
     // Optionally show a snackbar or toast message to confirm item added to cart
   }
 }
+*/
