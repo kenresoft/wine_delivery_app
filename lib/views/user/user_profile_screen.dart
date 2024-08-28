@@ -4,12 +4,12 @@ import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
 import 'package:wine_delivery_app/repository/auth_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 import 'package:wine_delivery_app/views/auth/login_page.dart';
-import 'package:wine_delivery_app/views/home/home_screen.dart';
 import 'package:wine_delivery_app/views/product/order/shipping_form_address.dart';
 import 'package:wine_delivery_app/views/user/user_profile_edit_page.dart';
 
 import '../../bloc/product/favorite/favs/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
+import '../../bloc/shipment/shipment_bloc.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -23,6 +23,7 @@ class UserProfileScreen extends StatelessWidget {
         } else {
           context.read<ProfileBloc>().add(const ProfileFetch());
           context.read<FavsBloc>().add(LoadFavs());
+          context.read<ShipmentBloc>().add(GetShipmentDetails());
         return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
           return switch (state) {
             ProfileFetching() => const Center(child: CircularProgressIndicator()),
@@ -125,19 +126,27 @@ class UserProfileScreen extends StatelessWidget {
         children: [
           const Text('Account Information', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8.0),
-          ListTile(
-            leading: const Icon(Icons.location_on, color: Colors.deepPurple),
-            title: const Text('Shipping Address'),
-            subtitle: const Text('123 Main St, Springfield, IL'),
-            trailing: const Icon(Icons.edit),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return const ShippingAddressForm();
-                },
-              ),
-            ),
+          BlocBuilder<ShipmentBloc, ShipmentState>(
+            builder: (context, state) {
+              String? shippingAddress;
+              if (state is ShipmentLoaded) {
+                shippingAddress = state.shipment.address;
+              }
+              return ListTile(
+                leading: const Icon(Icons.location_on, color: Colors.deepPurple),
+                title: const Text('Shipping Address'),
+                subtitle: Text(shippingAddress ?? 'No address specified!'),
+                trailing: const Icon(Icons.edit),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const ShippingAddressForm();
+                    },
+                  ),
+                ),
+              );
+            },
           ),
           const Divider(),
           ListTile(
