@@ -164,9 +164,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () async {
-                        //if (_formKey.currentState?.validate() == true) {
-                        // Save profile logic here
-                        print(_profileImage?.path);
+                        if (_formKey.currentState?.validate() == true) {
                         await userRepository.updateUserProfile(
                           userId: widget.profile.id,
                           updatedData: {
@@ -178,7 +176,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Profile updated successfully')),
                         );
-                        //}
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 52),
