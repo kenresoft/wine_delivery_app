@@ -5,8 +5,8 @@ class RateBar extends StatelessWidget {
   const RateBar({
     super.key,
     required this.rating,
-    this.size = 15,
-    this.unratedColor = Colors.white70,
+    this.size = 16,
+    this.unratedColor = Colors.black12,
   });
 
   final double rating;
