@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/product/favorite/favs/favs_bloc.dart';
 import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
 import 'package:wine_delivery_app/repository/cart_repository.dart';
+import 'package:wine_delivery_app/views/product/cart/shopping_cart.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
 import 'bloc/cart/cart_bloc.dart';
@@ -18,7 +19,7 @@ import 'bloc/shipping_address/shipping_address_bloc.dart';
 import 'utils/app_theme.dart';
 import 'views/admin/oder_management_page.dart';
 import 'views/home/home.dart';
-import 'views/home/home_screen.dart';
+import 'views/home/main_screen.dart';
 import 'views/product/cart/cart_page.dart';
 import 'views/product/category/products_category_screen.dart';
 import 'views/product/product_page.dart';
@@ -57,15 +58,15 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme().themeData,
           routes: {
-            '/': (context) => const HomeScreen(),
+            '/': (context) => const MainScreen(),
             // '/': (context) => OrderConfirmationScreen(),
-            // '/': (context) => ShoppingCartScreen(),
-            'home': (context) => const Home(),
+            '/cart_page': (context) => const ShoppingCartScreen(),
+            '/home': (context) => const Home(),
             // 'product_page': (context) => const ProductPage(),
             // 'cart_page': (context) => const CartPage(),
             //'order_page': (context) => const OrderPage(),
-            'order_management_page': (context) => const OrderManagementPage(),
-            'category': (context) => const CategoryScreen(),
+            '/order_management_page': (context) => const OrderManagementPage(),
+            '/category': (context) => const CategoryScreen(),
           },
         ),
       ),
