@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/product/favorite/favs/favs_bloc.dart';
 import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
+import 'package:wine_delivery_app/bloc/promo_code/promo_code_bloc.dart';
 import 'package:wine_delivery_app/repository/cart_repository.dart';
 import 'package:wine_delivery_app/views/product/cart/shopping_cart.dart';
 
@@ -20,9 +21,7 @@ import 'utils/app_theme.dart';
 import 'views/admin/oder_management_page.dart';
 import 'views/home/home.dart';
 import 'views/home/main_screen.dart';
-import 'views/product/cart/cart_page.dart';
 import 'views/product/category/products_category_screen.dart';
-import 'views/product/product_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +51,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<LikeBloc>(create: (context) => LikeBloc()),
           BlocProvider<ProfileBloc>(create: (context) => ProfileBloc()),
           BlocProvider<FavsBloc>(create: (context) => FavsBloc()),
+          BlocProvider<PromoCodeBloc>(create: (context) => PromoCodeBloc()),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
