@@ -12,18 +12,10 @@ class ShipmentFormState extends FormState {
   final TextEditingController zipCodeController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
-  // ... other form fields and methods
-
   @override
   bool validate() {
-    // Validate all form fields here
-    if (fullNameController.text.isEmpty) {
-      // ... handle validation error for first name
-    }
-    // ... validate other fields
+    if (fullNameController.text.isEmpty) {}
 
     return true; // Return true if all fields are valid
   }
-
-// ... other methods like reset, save, etc.
 }

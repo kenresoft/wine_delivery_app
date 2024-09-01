@@ -19,7 +19,7 @@ Future<bool> removeAuthToken() => SharedPreferencesService.remove('authToken');
 
 set page(AppPage value) => SharedPreferencesService.setString('page', value.name);*/
 
-///CACHE STATUS MESSAGE
-String get statusMessage => SharedPreferencesService.getString('statusMessage') ?? Constants.empty;
+/// PROMO CODE
+String get promoCode => SharedPreferencesService.getString('promoCode') ?? Constants.empty;
 
-set statusMessage(String value) => SharedPreferencesService.setString('statusMessage', value);
+set promoCode(String value) => SharedPreferencesService.setString('promoCode', value);
