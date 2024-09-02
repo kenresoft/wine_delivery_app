@@ -1,7 +1,10 @@
-import 'package:wine_delivery_app/utils/utils.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:wine_delivery_app/repository/auth_repository.dart';
+import 'package:wine_delivery_app/utils/constants.dart';
 
 import '../model/order/order.dart';
-import 'cart_repository.dart';
 
 class OrderRepository {
   // Private constructor
@@ -15,102 +18,139 @@ class OrderRepository {
     return _instance;
   }
 
-  List<Order> orders = [];
+  // API Base URL
+  final String _baseUrl = '${Constants.baseUrl}/api/orders';
 
-  int _orderIdCounter = 1000;
+  // Create an order
+  Future<Order> createOrder({
+    required double subTotal,
+    required String description,
+    required String currency,
+  }) async {
+    final token = await authRepository.getAccessToken();
 
-  String _generateOrderId() {
-    String newOrderId = '';
-    bool isUnique = false;
-    while (!isUnique) {
-      newOrderId = 'ORD${_orderIdCounter++}';
-      isUnique = !orders.any((order) => order.orderId == newOrderId);
-    }
-    return newOrderId;
-  }
-
-  void createOrder(Function(Order order) callback) {
-    if (cartManager.cartItems.isNotEmpty) {
-      Order newOrder = Order(
-        orderId: _generateOrderId(), // Generate ID only if cart has items
-        orderDate: DateTime.now(),
-        items: cartManager.cartItems.map((cartItem) {
-          return OrderItem(
-            itemName: cartItem.itemName,
-            itemPrice: cartItem.itemPrice,
-            quantity: cartItem.quantity,
-            imageUrl: cartItem.imageUrl,
-          );
-        }).toList(),
-        status: OrderStatus.processing,
+    try {
+      final response = await http.post(
+        Uri.parse(_baseUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'subTotal': subTotal,
+          'description': description,
+          'currency': currency,
+        }),
       );
-      orders.add(newOrder);
-      callback(newOrder);
-      'Order created !'.toast;
-      cartManager.cartItems.clear();
-    } else {
-      'Cart is Empty !'.toast;
+
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return Order.fromJson(data['order']); // Parse the order data
+      } else {
+        throw _handleError(response);
+      }
+    } catch (e) {
+      throw Exception('Failed to create order: ${e.toString()}');
     }
   }
 
-  void deleteOrder(String orderId) {
-    Order? orderToDelete = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
-    if (orderToDelete.status != OrderStatus.pending) {
-      orders.remove(orderToDelete);
-      'Order deleted !'.toast;
-    } else {
-      'Order not found !'.toast;
-    }
-  }
+  // Get orders by user
+  Future<List<Order>> getUserOrders() async {
+    final token = authRepository.getAccessToken();
 
-  void deleteAllOrders() {
-    orders.clear();
-    'All orders deleted !'.toast;
-  }
-
-  void updateOrderStatus(String orderId, OrderStatus newStatus) {
-    Order? orderToUpdate = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
-    if (orderToUpdate.status != OrderStatus.pending) {
-      Order updatedOrder = orderToUpdate.copyWith(status: newStatus);
-      orders[orders.indexWhere((order) => order.orderId == orderId)] = updatedOrder;
-      'Order status updated !'.toast;
-    } else {
-      'Order not found !'.toast;
-    }
-  }
-
-  Order getOrderById(String orderId) {
-    Order? order = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
-    if (order.status != OrderStatus.pending) {
-      return order;
-    } else {
-      return Order.empty();
-    }
-  }
-
-  List<OrderItem> getOrderItems(String orderId) {
-    Order? order = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
-    if (order.status != OrderStatus.pending) {
-      return order.items;
-    } else {
-      return [];
-    }
-  }
-
-  void editOrder(String orderId, {DateTime? orderDate, List<OrderItem>? items, OrderStatus? status}) {
-    Order? orderToUpdate = orders.firstWhere((order) => order.orderId == orderId, orElse: () => Order.empty());
-    if (orderToUpdate.status != OrderStatus.pending) {
-      Order updatedOrder = orderToUpdate.copyWith(
-        orderDate: orderDate ?? orderToUpdate.orderDate,
-        items: items ?? orderToUpdate.items,
-        status: status ?? orderToUpdate.status,
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/user'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
-      orders[orders.indexWhere((order) => order.orderId == orderId)] = updatedOrder;
-      'Order updated !'.toast;
-    } else {
-      'Order not found !'.toast;
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final List<dynamic> ordersJson = data['orders'];
+
+        return ordersJson.map((json) => Order.fromJson(json)).toList();
+      } else {
+        throw _handleError(response);
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch orders: ${e.toString()}');
+    }
+  }
+
+  // Get order by ID
+  Future<Order> getOrderById(String orderId) async {
+    final token = authRepository.getAccessToken();
+
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$orderId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Order.fromJson(data['order']); // Parse the order data
+      } else {
+        throw _handleError(response);
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch order: ${e.toString()}');
+    }
+  }
+
+  // Update order status
+  Future<Order> updateOrderStatus({
+    required String orderId,
+    required String status,
+  }) async {
+    final token = authRepository.getAccessToken();
+
+    try {
+      final response = await http.patch(
+        Uri.parse('$_baseUrl/$orderId/status'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'status': status,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Order.fromJson(data['order']); // Parse the updated order data
+      } else {
+        throw _handleError(response);
+      }
+    } catch (e) {
+      throw Exception('Failed to update order status: ${e.toString()}');
+    }
+  }
+
+  // Handle errors based on status code
+  String _handleError(http.Response response) {
+    switch (response.statusCode) {
+      case 400:
+        return 'Bad request, please check your input.';
+      case 401:
+        return 'Unauthorized access, please log in again.';
+      case 403:
+        return 'Forbidden access.';
+      case 404:
+        return 'Resource not found.';
+      case 500:
+        return 'Internal server error, please try again later.';
+      default:
+        return 'Unexpected error: ${response.statusCode} - ${response.reasonPhrase}';
     }
   }
 }
 
-final OrderRepository orderManager = OrderRepository.getInstance();
+final OrderRepository orderRepository = OrderRepository.getInstance();
