@@ -1,6 +1,9 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:wine_delivery_app/utils/constants.dart';
 
 class StorageRepository {
+  const StorageRepository();
+
   final _storage = const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
@@ -10,12 +13,12 @@ class StorageRepository {
     await _storage.write(key: 'refreshToken', value: refreshToken);
   }
 
-  Future<String?> getAccessToken() async {
-    return await _storage.read(key: 'accessToken');
+  Future<String> getAccessToken() async {
+    return await _storage.read(key: 'accessToken') ?? Constants.empty;
   }
 
-  Future<String?> getRefreshToken() async {
-    return await _storage.read(key: 'refreshToken');
+  Future<String> getRefreshToken() async {
+    return await _storage.read(key: 'refreshToken') ?? Constants.empty;
   }
 
   Future<void> clearTokens() async {
@@ -23,3 +26,5 @@ class StorageRepository {
     await _storage.delete(key: 'refreshToken');
   }
 }
+
+StorageRepository storageRepository = const StorageRepository();

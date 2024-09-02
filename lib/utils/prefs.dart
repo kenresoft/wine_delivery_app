@@ -8,11 +8,11 @@ String get userID => SharedPreferencesService.getString('userID') ?? Constants.e
 set userID(String value) => SharedPreferencesService.setString('userID', value);
 
 /// AUTH TOKEN
-String get authToken => SharedPreferencesService.getString('authToken') ?? Constants.empty;
+// String get authToken => SharedPreferencesService.getString('authToken') ?? Constants.empty;
 
-set authToken(String value) => SharedPreferencesService.setString('authToken', value);
+// set authToken(String value) => SharedPreferencesService.setString('authToken', value);
 
-Future<bool> removeAuthToken() => SharedPreferencesService.remove('authToken');
+// Future<bool> removeAuthToken() => SharedPreferencesService.remove('authToken');
 
 /// CURRENT PAGE
 /*AppPage get page => getPage(SharedPreferencesService.getString('page') ?? AppPage.userVerification.name);
