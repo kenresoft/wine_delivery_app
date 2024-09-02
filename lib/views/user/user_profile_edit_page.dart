@@ -7,7 +7,7 @@ import 'package:wine_delivery_app/model/product.dart';
 import 'package:wine_delivery_app/repository/user_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 
-import '../home/home_screen.dart';
+import '../home/main_screen.dart';
 
 class UserProfileEditPage extends StatefulWidget {
   final Profile profile;
@@ -78,7 +78,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) {
-              return const HomeScreen();
+              return const MainScreen();
             },
           ),
         );
@@ -93,7 +93,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
             onPressed: () => Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) {
-                  return const HomeScreen(); // Because of the bottom nav we used
+                  return const MainScreen(); // Because of the bottom nav we used
                 },
               ),
             ),

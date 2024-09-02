@@ -89,9 +89,16 @@ class UserProfileScreen extends StatelessWidget {
       color: Colors.deepPurple.shade50,
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(Constants.baseUrl + state.profile.profileImage),
+          GestureDetector(
+            onTap: () async {
+              print('AccessToken: ${await authRepository.getAccessToken()}');
+              print('RefreshToken: ${await authRepository.getRefreshToken()}');
+              print('AuthStatus: ${await authRepository.checkAuthStatus()}');
+            },
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: NetworkImage(Constants.baseUrl + state.profile.profileImage),
+            ),
           ),
           const SizedBox(width: 16.0),
           SizedBox(
