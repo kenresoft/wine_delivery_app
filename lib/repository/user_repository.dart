@@ -24,16 +24,8 @@ class UserRepository {
   static const String _updateUrl = '${Constants.baseUrl}/api/users/';
 
   Future<Profile> getUserProfile() async {
-    final token = await authRepository.getToken();
-
     try {
-      final response = await http.get(
-        Uri.parse(_url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      final response = await authRepository.makeAuthenticatedRequest(_url);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -68,7 +60,7 @@ class UserRepository {
     required Map<String, dynamic> updatedData,
     File? profileImage, // Optional profile image
   }) async {
-    final token = await authRepository.getToken();
+    final token = await authRepository.getAccessToken();
 
     try {
       final uri = Uri.parse('$_updateUrl/$userId');
