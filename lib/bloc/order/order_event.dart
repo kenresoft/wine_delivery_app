@@ -1,14 +1,40 @@
 part of 'order_bloc.dart';
 
-sealed class OrderEvent extends Equatable {
+abstract class OrderEvent extends Equatable {
   const OrderEvent();
-}
-
-class SaveOrderID extends OrderEvent {
-  final String orderID;
-
-  const SaveOrderID(this.orderID);
 
   @override
-  List<Object?> get props => [orderID];
+  List<Object?> get props => [];
+}
+
+class CreateOrder extends OrderEvent {
+  final double subTotal;
+  final String description;
+  final String currency;
+
+  const CreateOrder({required this.subTotal, required this.description, required this.currency});
+
+  @override
+  List<Object?> get props => [subTotal, description, currency];
+}
+
+class GetUserOrders extends OrderEvent {}
+
+class GetOrderById extends OrderEvent {
+  final String orderId;
+
+  const GetOrderById(this.orderId);
+
+  @override
+  List<Object?> get props => [orderId];
+}
+
+class UpdateOrderStatus extends OrderEvent {
+  final String orderId;
+  final String status;
+
+  const UpdateOrderStatus({required this.orderId, required this.status});
+
+  @override
+  List<Object?> get props => [orderId, status];
 }
