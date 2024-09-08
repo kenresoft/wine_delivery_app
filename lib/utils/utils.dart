@@ -9,8 +9,8 @@ import 'package:wine_delivery_app/views/auth/login_page.dart';
 import '../repository/auth_repository.dart';
 import 'constants.dart';
 
-extension ToastExtension on String {
-  void get toast {
+extension ToastExtension<T> on T {
+  T get toast {
     Fluttertoast.showToast(
       msg: toString(),
       toastLength: Toast.LENGTH_LONG,
@@ -20,6 +20,7 @@ extension ToastExtension on String {
       textColor: Colors.white,
       fontSize: 18,
     );
+    return this;
   }
 
   void toasts(BuildContext context) {
@@ -41,7 +42,7 @@ extension ToastExtension on String {
                   children: [
                     const Icon(CupertinoIcons.check_mark, color: Colors.green),
                     Text(
-                      this,
+                      toString(),
                       maxLines: 5,
                       overflow: TextOverflow.ellipsis,
                       softWrap: true,
@@ -56,14 +57,16 @@ extension ToastExtension on String {
   }
 }
 
+/*
 class Utils {
   Utils._();
+*/
 
-  /// API Request Wrapper
-  static Future<http.Response> makeRequest(
-    String endpoint, {
-    RequestMethod method = RequestMethod.get,
-    Map<String, String>? headers,
+/// API Request Wrapper
+Future<http.Response> makeRequest(
+  String endpoint, {
+  RequestMethod method = RequestMethod.get,
+  Map<String, String>? headers,
     dynamic body,
   }) async {
     String accessToken = await authRepository.getAccessToken();
@@ -81,10 +84,10 @@ class Utils {
     return response;
   }
 
-  static Future<http.Response> _getResponse(
-    RequestMethod method,
-    String endpoint,
-    Map<String, String> headers,
+Future<http.Response> _getResponse(
+  RequestMethod method,
+  String endpoint,
+  Map<String, String> headers,
     body,
   ) async {
     return switch (method) {
@@ -95,10 +98,10 @@ class Utils {
     };
   }
 
-  static Future<void> authCheck(BuildContext context) async {
-    const String endpoint = '${Constants.baseUrl}/api/categories';
-    try {
-      final response = await authRepository.makeAuthenticatedRequest(endpoint);
+Future<void> authCheck(BuildContext context) async {
+  const String endpoint = '${Constants.baseUrl}/api/categories';
+  try {
+    final response = await authRepository.makeAuthenticatedRequest(endpoint);
       if (response.statusCode == 200) {
         /*final data = response.body;
         print(data.isNotEmpty);*/
@@ -117,7 +120,7 @@ class Utils {
       print(e);
     }
   }
-}
+/*}*/
 
 enum RequestMethod {
   get,
