@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/model/shipment.dart';
 
 import '../utils/constants.dart';
-import 'auth_repository.dart';
+import '../utils/utils.dart';
 
 class ShipmentRepository {
   ShipmentRepository();
@@ -21,23 +20,17 @@ class ShipmentRepository {
 
   static const String _baseUrl = '${Constants.baseUrl}/api/shipment';
 
-  Future<List<Shipment>> getShipmentDetails() async {
-    final token = await authRepository.getToken();
+  Future<Shipment> getShipmentDetails() async {
+    // final token = await authRepository.getAccessToken();
 
     try {
-      final response = await http.get(
-        Uri.parse(_baseUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      final response = await makeRequest(_baseUrl);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final shipment = data['shipment'] as List<dynamic>;
+        final shipment = data['shipment'];
 
-        return shipment.map((shipmentJson) => Shipment.fromJson(shipmentJson)).toList();
+        return Shipment.fromJson(shipment);
       }
       if (response.statusCode == 401) {
         throw 'Unauthorized: Please log in again.';
@@ -67,15 +60,11 @@ class ShipmentRepository {
     required String zipCode,
     required String note,
   }) async {
-    final token = await authRepository.getToken();
 
     try {
-      final response = await http.post(
-        Uri.parse(_baseUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
+      final response = await makeRequest(
+        _baseUrl,
+        method: RequestMethod.post,
         body: jsonEncode({
           'country': country,
           'state': state,
@@ -116,16 +105,9 @@ class ShipmentRepository {
   }
 
   Future<Shipment> getShipmentDetailsById(String shipmentId) async {
-    final token = await authRepository.getToken();
 
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/$shipmentId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      final response = await makeRequest('$_baseUrl/$shipmentId');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
