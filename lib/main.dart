@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/product/favorite/favs/favs_bloc.dart';
+import 'package:wine_delivery_app/bloc/product/product_bloc.dart';
 import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
 import 'package:wine_delivery_app/bloc/promo_code/promo_code_bloc.dart';
-import 'package:wine_delivery_app/repository/cart_repository.dart';
 import 'package:wine_delivery_app/views/product/cart/shopping_cart.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
@@ -41,7 +41,8 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider<NavigationBloc>(create: (context) => NavigationBloc()),
-          BlocProvider<CartBloc>(create: (context) => CartBloc(cartRepository)),
+          BlocProvider<ProductBloc>(create: (context) => ProductBloc()),
+          BlocProvider<CartBloc>(create: (context) => CartBloc()),
           BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
           BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc()),
           BlocProvider<ShipmentBloc>(create: (context) => ShipmentBloc()),
