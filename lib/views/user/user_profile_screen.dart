@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/bloc/navigation/bottom_navigation_bloc.dart';
-import 'package:wine_delivery_app/repository/auth_repository.dart';
-import 'package:wine_delivery_app/utils/constants.dart';
-import 'package:wine_delivery_app/views/auth/login_page.dart';
-import 'package:wine_delivery_app/views/product/order/shipping_form_address.dart';
-import 'package:wine_delivery_app/views/user/user_profile_edit_page.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../bloc/product/favorite/favs/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
 import '../../bloc/shipment/shipment_bloc.dart';
+import '../../repository/auth_repository.dart';
+import '../../utils/constants.dart';
+import '../auth/login_page.dart';
+import '../product/order/shipping_form_address.dart';
+import 'user_profile_edit_page.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -21,13 +22,16 @@ class UserProfileScreen extends StatelessWidget {
         if (state != const PageChanged(selectedIndex: 3)) {
           return const Center(child: CircularProgressIndicator());
         } else {
-          context.read<ProfileBloc>().add(const ProfileFetch());
-          context.read<FavsBloc>().add(LoadFavs());
-          context.read<ShipmentBloc>().add(GetShipmentDetails());
+        context.read<ProfileBloc>().add(const ProfileFetch());
+        context.read<FavsBloc>().add(LoadFavs());
+        context.read<ShipmentBloc>().add(GetShipmentDetails());
         return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
           return switch (state) {
-            ProfileFetching() => const Center(child: CircularProgressIndicator()),
-            ProfileError() => Center(child: Text(state.error)),
+            ProfileFetching() => _buildShimmerLoading(),
+            // ProfileFetching() => const Center(child: CircularProgressIndicator()),
+            ProfileError() => _buildShimmerLoading(),
+            // ProfileError() => const Center(child: CircularProgressIndicator()),
+            // ProfileError() => Center(child: Text(state.error)),
             ProfileLoaded() => Scaffold(
               appBar: AppBar(
                 title: const Text('User Profile'),
@@ -52,6 +56,187 @@ class UserProfileScreen extends StatelessWidget {
       }
     });
   }
+
+  ///
+
+  Widget _buildShimmerLoading() {
+    return ListView(
+      children: [
+        _buildShimmerProfileHeader(),
+        _buildShimmerAccountInfo(),
+        _buildShimmerOrderHistory(),
+        _buildShimmerFavoritesSection(),
+      ],
+    );
+  }
+
+  Widget _buildShimmerProfileHeader() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        color: Colors.grey[200],
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.grey[300],
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.grey[300],
+                  ),
+                  const SizedBox(height: 4.0),
+                  Container(
+                    height: 15,
+                    width: 150,
+                    color: Colors.grey[300],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerAccountInfo() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 20,
+              width: 200,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 8.0),
+            Container(
+              height: 40,
+              color: Colors.grey[300],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerOrderHistory() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 20,
+              width: 200,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 8.0),
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: ListTile(
+                    leading: Container(
+                      width: 50,
+                      height: 50,
+                      color: Colors.grey[300],
+                    ),
+                    title: Container(
+                      height: 20,
+                      width: 150,
+                      color: Colors.grey[300],
+                    ),
+                    subtitle: Container(
+                      height: 15,
+                      width: 100,
+                      color: Colors.grey[300],
+                    ),
+                    trailing: Container(
+                      width: 20,
+                      height: 20,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerFavoritesSection() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 20,
+              width: 200,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 8.0),
+            GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+              ),
+              itemCount: 6,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        color: Colors.grey[300],
+                      ),
+                      const SizedBox(height: 4.0),
+                      Container(
+                        height: 15,
+                        width: 80,
+                        color: Colors.grey[300],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ///
 
   Widget buildBody(BuildContext context, ProfileLoaded state) {
     return SingleChildScrollView(
@@ -91,9 +276,9 @@ class UserProfileScreen extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () async {
-              print('AccessToken: ${await authRepository.getAccessToken()}');
+              /*print('AccessToken: ${await authRepository.getAccessToken()}');
               print('RefreshToken: ${await authRepository.getRefreshToken()}');
-              print('AuthStatus: ${await authRepository.checkAuthStatus()}');
+              print('AuthStatus: ${await authRepository.checkAuthStatus()}');*/
             },
             child: CircleAvatar(
               radius: 40,

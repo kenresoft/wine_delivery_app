@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
 
 import '../../bloc/product/favorite/like/like_bloc.dart';
 import '../../model/product.dart';
@@ -53,6 +54,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     super.initState();
     context.read<LikeBloc>().add(Init(widget.wine.id));
   }
+
   @override
   Widget build(BuildContext context) {
     final similarWines = widget.similarWinesRepo.findSimilarWines(widget.wine);
@@ -297,7 +299,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle add to cart action
+                  context.read<CartBloc>().add(AddToCart(productId: widget.wine.id, quantity: 1));
+                  print('ITEM ADDED TO CART!');
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(15.0),
@@ -306,13 +309,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
-                child: const Text(
-                  'Add to Cart',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                child: BlocBuilder<CartBloc, CartState>(
+                  builder: (context, state) {
+                    if (state is CartUpdated) {
+                      return Text(
+                        '$state ${widget.wine.name} added to cart',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    } else {
+                      return const Text(
+                        'Add to Cart',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
             ),
@@ -321,50 +339,50 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               builder: (context, state) {
                 return switch(state){
                   InitialState() => ElevatedButton(
-                    onPressed: () async {
-                      context.read<LikeBloc>().add(Like(widget.wine.id));
-                      // print(isLiked);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.all(15.0),
-                      backgroundColor: Colors.grey[300],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+                      onPressed: () async {
+                        context.read<LikeBloc>().add(Like(widget.wine.id));
+                        // print(isLiked);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(15.0),
+                        backgroundColor: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
                       ),
+                      child: state.isLiked
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.redAccent,
+                            )
+                          : const Icon(
+                              Icons.favorite_border,
+                              color: Colors.redAccent,
+                            ),
                     ),
-                    child: state.isLiked
-                        ? const Icon(
-                      Icons.favorite,
-                      color: Colors.redAccent,
-                    )
-                        : const Icon(
-                      Icons.favorite_border,
-                      color: Colors.redAccent,
-                    ),
-                  ),
                   ToggleState() => ElevatedButton(
-                    onPressed: () async {
-                      // Handle adding to favorites
-                      context.read<LikeBloc>().add(Like(widget.wine.id));
-                      // print(isLiked);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.all(15.0),
-                      backgroundColor: Colors.grey[300],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+                      onPressed: () async {
+                        // Handle adding to favorites
+                        context.read<LikeBloc>().add(Like(widget.wine.id));
+                        // print(isLiked);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(15.0),
+                        backgroundColor: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
                       ),
+                      child: state.isLiked
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.redAccent,
+                            )
+                          : const Icon(
+                              Icons.favorite_border,
+                              color: Colors.redAccent,
+                            ),
                     ),
-                    child: state.isLiked
-                        ? const Icon(
-                      Icons.favorite,
-                      color: Colors.redAccent,
-                    )
-                        : const Icon(
-                      Icons.favorite_border,
-                      color: Colors.redAccent,
-                    ),
-                  ),
                 };
               },
             ),
