@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/auth_repository.dart';
+import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 
 import '../model/order/order.dart';
@@ -72,6 +73,46 @@ class OrderRepository {
         final List<dynamic> ordersJson = data['orders'];
 
         return ordersJson.map((json) => Order.fromJson(json)).toList();
+      } else {
+        throw _handleError(response);
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch orders: ${e.toString()}');
+    }
+  }
+
+  // Get orders by user
+  Future<List<OrderProductItem>> getUserOrderItems() async {
+    final token = authRepository.getAccessToken();
+
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/user'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        final cartItemsJson = data['orders']['items'] as List<dynamic>;
+
+        // Fetch all products in parallel
+        List<OrderProductItem> orderProductItem = await Future.wait(cartItemsJson.map((itemJson) async {
+          final orderItem = OrderItem.fromJson(itemJson);
+          final product = await productRepository.getProductById(orderItem.productId);
+
+          return OrderProductItem(
+            id: orderItem.id,
+            quantity: orderItem.quantity,
+            product: product,
+          );
+        }).toList());
+
+        print(orderProductItem.toString());
+        return orderProductItem;
       } else {
         throw _handleError(response);
       }

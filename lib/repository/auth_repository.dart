@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/storage_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 
+import '../utils/utils.dart';
+
 class AuthRepository {
   AuthRepository();
 
@@ -36,7 +38,7 @@ class AuthRepository {
       final String? refreshToken = data['refreshToken'];
 
       if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
-        saveTokens(accessToken, refreshToken);
+        _saveTokens(accessToken, refreshToken);
         return true;
       }
       return false;
@@ -62,7 +64,7 @@ class AuthRepository {
         final String? refreshToken = data['refreshToken'];
 
         if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
-          saveTokens(accessToken, refreshToken);
+          _saveTokens(accessToken, refreshToken);
           print(accessToken);
           result('Login successful!');
           return true;
@@ -97,7 +99,7 @@ class AuthRepository {
     }
 
     try {
-      final response = await makeAuthenticatedRequest('$_baseUrl/check');
+      final response = await makeRequest('$_baseUrl/check');
 
       switch (response.statusCode) {
         case 200:
@@ -119,7 +121,36 @@ class AuthRepository {
     }
   }
 
-  Future<void> refreshAccessToken() async {
+  Future<http.Response> makeAuthenticatedRequest(String endpoint) async {
+    await _checkTokenExpiry();
+
+    final accessToken = await getAccessToken();
+    if (accessToken.isEmpty) {
+      throw Exception('No access token available');
+    }
+
+    return makeRequest(endpoint);
+  }
+
+  /// Checks if access token is about to expire and refreshes if necessary
+  Future<void> _checkTokenExpiry() async {
+    final accessToken = await getAccessToken();
+
+    if (accessToken.isEmpty) return;
+
+    final payload = _decodePayload(accessToken);
+    final expirationTime = DateTime.fromMillisecondsSinceEpoch(payload['exp'] * 1000);
+    final currentTime = DateTime.now();
+
+    final timeToExpire = expirationTime.difference(currentTime).inSeconds;
+
+    if (timeToExpire < Constants.tokenRefreshThreshold) {
+      await _refreshAccessToken();
+    }
+  }
+
+  /// Refreshes the access token
+  Future<void> _refreshAccessToken() async {
     final String refreshToken = await getRefreshToken();
 
     if (refreshToken.isEmpty) {
@@ -138,10 +169,12 @@ class AuthRepository {
         }),
       );
 
+      print(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final newAccessToken = data['accessToken'];
-        await saveTokens(newAccessToken, refreshToken);
+        // final newRefreshToken = data['refreshToken'];
+        await _saveTokens(newAccessToken, refreshToken);
       } else {
         // Handle failed refresh (e.g., log out)
         logout();
@@ -151,58 +184,18 @@ class AuthRepository {
     }
   }
 
-  Future<http.Response> makeAuthenticatedRequest(
-    String endpoint, {
-    RequestMethod method = RequestMethod.get,
-    Map<String, String>? headers,
-    dynamic body,
-  }) async {
-    String? accessToken = await getAccessToken();
-
-    headers ??= {};
-    headers['Content-Type'] = 'application/json';
-    headers['Authorization'] = 'Bearer $accessToken';
-
-    http.Response response;
-    http.Response cachedResponse;
-    try {
-      response = await getResponse(method, endpoint, headers, body);
-    } catch (e) {
-      throw Exception('Network error: $e');
+  /// Decodes JWT token payload
+  Map<String, dynamic> _decodePayload(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) {
+      throw Exception('Invalid token');
     }
 
-    if (response.statusCode == 401) {
-      // Token might be expired, try to refresh it
-      await refreshAccessToken();
-
-      // Retry the original request with the new access token
-      accessToken = await getAccessToken();
-      headers['Authorization'] = 'Bearer $accessToken';
-      cachedResponse = response;
-
-      response = await getResponse(method, endpoint, headers, body, cachedResponse);
-    }
-
-    return response;
+    final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+    return jsonDecode(payload);
   }
 
-  Future<http.Response> getResponse(
-    RequestMethod method,
-    String endpoint,
-    Map<String, String> headers,
-    body, [
-    http.Response? response,
-  ]) async {
-    response = switch (method) {
-      RequestMethod.get => await http.get(Uri.parse(endpoint), headers: headers),
-      RequestMethod.post => await http.post(Uri.parse(endpoint), headers: headers, body: body),
-      RequestMethod.put => await http.put(Uri.parse(endpoint), headers: headers, body: body),
-      RequestMethod.delete => await http.delete(Uri.parse(endpoint), headers: headers, body: body),
-    };
-    return response;
-  }
-
-  Future<void> saveTokens(String accessToken, String refreshToken) async {
+  Future<void> _saveTokens(String accessToken, String refreshToken) async {
     return await storageRepository.saveTokens(accessToken, refreshToken);
   }
 
@@ -222,10 +215,3 @@ class AuthRepository {
 }
 
 final AuthRepository authRepository = AuthRepository.getInstance();
-
-enum RequestMethod {
-  get,
-  post,
-  put,
-  delete,
-}
