@@ -7,6 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:wine_delivery_app/model/product.dart';
 
 import '../utils/constants.dart';
+import '../utils/utils.dart';
 import 'auth_repository.dart';
 
 class UserRepository {
@@ -25,7 +26,7 @@ class UserRepository {
 
   Future<Profile> getUserProfile() async {
     try {
-      final response = await authRepository.makeAuthenticatedRequest(_url);
+      final response = await makeRequest(_url);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
