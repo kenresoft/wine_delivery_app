@@ -111,12 +111,14 @@ class Profile {
   final String id;
   final String email;
   final String username;
+  final String profileImage;
   final List<Favorite> favorites;
 
   Profile({
     required this.id,
     required this.email,
     required this.username,
+    required this.profileImage,
     required this.favorites,
   });
 
@@ -125,6 +127,7 @@ class Profile {
       id: json['_id'],
       email: json['email'],
       username: json['username'],
+      profileImage: json['profileImage'],
       favorites: (json['favorites'] as List<dynamic>).map((favoriteJson) {
         return Favorite.fromJson(favoriteJson);
       }).toList(),

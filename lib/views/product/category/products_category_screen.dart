@@ -8,6 +8,7 @@ import '../../../bloc/product/category_list/wines_bloc.dart';
 import '../../../model/product.dart';
 import '../../../repository/popularity_repository.dart';
 import '../../../repository/similar_wines_repository.dart';
+import '../../home/main_screen.dart';
 import '../product_detail_screen.dart';
 import '../rate_bar.dart';
 
@@ -176,11 +177,24 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
         _applySorting(filteredWines);
 
-        return Scaffold(
-          appBar: _buildAppBar(context, state, filteredWines),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _buildBody(state, filteredWines),
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            // BlocProvider.of<NavigationBloc>(context).add(const PageTapped(0));
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const MainScreen();
+                },
+              ),
+            );
+          },
+          child: Scaffold(
+            appBar: _buildAppBar(context, state, filteredWines),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _buildBody(state, filteredWines),
+            ),
           ),
         );
       },
