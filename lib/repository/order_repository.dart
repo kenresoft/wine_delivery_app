@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/auth_repository.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
@@ -25,8 +26,7 @@ class OrderRepository {
   // Create an order
   Future<Order> createOrder({
     required double subTotal,
-    required String description,
-    required String currency,
+    required String note,
   }) async {
     final token = await authRepository.getAccessToken();
 
@@ -39,8 +39,7 @@ class OrderRepository {
         },
         body: jsonEncode({
           'subTotal': subTotal,
-          'description': description,
-          'currency': currency,
+          'note': note,
         }),
       );
 
@@ -52,6 +51,68 @@ class OrderRepository {
       }
     } catch (e) {
       throw Exception('Failed to create order: ${e.toString()}');
+    }
+  }
+
+  Future<bool> makePurchase({
+    required String orderId,
+    required String description,
+    required String currency,
+    required String paymentMethod,
+  }) async {
+    final token = await authRepository.getAccessToken();
+
+    try {
+      final url = Uri.parse('$_baseUrl/$orderId/purchase');
+
+      final response = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'description': description,
+          'currency': currency,
+          'paymentMethod': paymentMethod,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        /*final data = jsonDecode(response.body);
+        final paymentResponse = data['paymentResponse']; // Assuming your response structure
+
+        if (paymentResponse['success']) {
+          // Payment successful, update order locally if needed
+          // (But avoid sensitive details)
+          final updatedOrder = Order.fromJson(data['order']);
+          return updatedOrder;
+        } else {
+          throw Exception(paymentResponse['message']);
+        }*/
+        final data = jsonDecode(response.body);
+        final order = Order.fromJson(data['order']);
+        final paymentIntent = order.paymentDetails?.paymentIntent;
+        if (paymentIntent != null && paymentIntent.isNotEmpty) {
+
+          await Stripe.instance.initPaymentSheet(
+            paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntent,
+              merchantDisplayName: "Wine Delivery",
+            ),
+          );
+
+          await Stripe.instance.presentPaymentSheet();
+          await Stripe.instance.confirmPaymentSheetPayment();
+
+          return true;
+        }
+        return false;
+      } else {
+        throw _handleError(response);
+      }
+    } catch (e) {
+      throw Exception('Failed to make payment: ${e.toString()}');
     }
   }
 
@@ -105,7 +166,7 @@ class OrderRepository {
           final product = await productRepository.getProductById(orderItem.productId);
 
           return OrderProductItem(
-            id: orderItem.id,
+            // id: orderItem.id,
             quantity: orderItem.quantity,
             product: product,
           );
