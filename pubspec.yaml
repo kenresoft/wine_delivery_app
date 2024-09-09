@@ -38,8 +38,9 @@ dependencies:
 #  payment_card: ^0.0.1
   cupertino_icons: ^1.0.8
 
-#  http: ^1.2.2
-  stripe: ^4.11.0
+  http: ^1.2.2
+#  stripe: ^4.11.0
+  flutter_stripe: ^11.0.0
   flutter_secure_storage: ^9.2.2
 
   bloc: ^8.1.4
