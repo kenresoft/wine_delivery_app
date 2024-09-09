@@ -3,19 +3,19 @@ part of 'order.dart';
 class OrderItem {
   final String productId;
   final int quantity;
-  final String id;
+  // final String id;
 
   OrderItem({
     required this.productId,
     required this.quantity,
-    required this.id,
+    // required this.id,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
       productId: json['product'],
       quantity: json['quantity'],
-      id: json['_id'],
+      // id: json['_id'],
     );
   }
 
@@ -23,7 +23,19 @@ class OrderItem {
     return {
       'product': productId,
       'quantity': quantity,
-      '_id': id,
+      // '_id': id,
     };
   }
+}
+
+class OrderProductItem {
+  final Product product;
+  final int quantity;
+  // final String id;
+
+  OrderProductItem({
+    required this.product,
+    required this.quantity,
+    // required this.id,
+  });
 }

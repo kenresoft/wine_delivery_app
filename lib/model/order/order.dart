@@ -49,11 +49,14 @@ class Order extends Equatable {
 }
 */
 
-part 'order_item.dart';
+import 'package:equatable/equatable.dart';
+import 'package:wine_delivery_app/model/product.dart';
 
 part '../enums/order_status.dart';
 
-class Order {
+part 'order_item.dart';
+
+class Order extends Equatable {
   final String id;
   final String userId;
   final List<OrderItem> items;
@@ -62,9 +65,11 @@ class Order {
   final int totalCost;
   final String status;
   final String createdAt;
-  final PaymentDetails paymentDetails;
+  final PaymentDetails? paymentDetails;
+  final String? note;
+  final String? trackingNumber;
 
-  Order({
+  const Order({
     required this.id,
     required this.userId,
     required this.items,
@@ -73,7 +78,9 @@ class Order {
     required this.totalCost,
     required this.status,
     required this.createdAt,
-    required this.paymentDetails,
+    this.paymentDetails,
+    this.note,
+    this.trackingNumber,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -87,6 +94,8 @@ class Order {
       status: json['status'],
       createdAt: json['createdAt'],
       paymentDetails: PaymentDetails.fromJson(json['paymentDetails']),
+      note: json['note'],
+      trackingNumber: json['trackingNumber'],
     );
   }
 
@@ -100,19 +109,39 @@ class Order {
       'totalCost': totalCost,
       'status': status,
       'createdAt': createdAt,
-      'paymentDetails': paymentDetails.toJson(),
+      'paymentDetails': paymentDetails?.toJson(),
+      'note': note,
+      'trackingNumber': trackingNumber,
     };
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        userId,
+        items,
+        shipmentId,
+        subTotal,
+        totalCost,
+        status,
+        createdAt,
+        paymentDetails,
+        note,
+        trackingNumber,
+      ];
+
+  @override
+  bool? get stringify => true;
 }
 
-class PaymentDetails {
-  final String paymentIntent;
+class PaymentDetails extends Equatable {
+  final String? paymentIntent;
 
-  PaymentDetails({required this.paymentIntent});
+  const PaymentDetails({required this.paymentIntent});
 
-  factory PaymentDetails.fromJson(Map<String, dynamic> json) {
+  factory PaymentDetails.fromJson(Map<String, dynamic>? json) {
     return PaymentDetails(
-      paymentIntent: json['paymentIntent'],
+      paymentIntent: json?['paymentIntent'],
     );
   }
 
@@ -121,4 +150,10 @@ class PaymentDetails {
       'paymentIntent': paymentIntent,
     };
   }
+
+  @override
+  List<Object?> get props => [paymentIntent];
+
+  @override
+  bool? get stringify => true;
 }
