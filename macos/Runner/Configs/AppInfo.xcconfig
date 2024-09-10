@@ -8,7 +8,7 @@
 PRODUCT_NAME = wine_delivery_app
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.kenresoft.wineDeliveryApp
+PRODUCT_BUNDLE_IDENTIFIER = com.example.wineDeliveryApp
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2024 com.kenresoft. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2024 com.example. All rights reserved.
