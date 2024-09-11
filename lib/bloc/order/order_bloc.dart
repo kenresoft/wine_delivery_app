@@ -11,7 +11,8 @@ part 'order_state.dart';
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   OrderBloc() : super(const OrderInitial()) {
     on<CreateOrder>(createOrder);
-    on<GetUserOrders>(getUserOrders);
+    // on<GetUserOrders>(getUserOrders);
+    on<GetUserOrders>(getUserProductOrders);
     on<GetOrderById>(getOrderById);
     on<UpdateOrderStatus>(updateOrderStatus);
   }
@@ -20,8 +21,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     try {
       final order = await orderRepository.createOrder(
         subTotal: event.subTotal,
-        description: event.description,
-        currency: event.currency,
+        note: event.note,
       );
       emit(OrderCreated(order));
     } catch (e) {
@@ -33,6 +33,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     try {
       final orders = await orderRepository.getUserOrders();
       emit(OrdersLoaded(orders));
+    } catch (e) {
+      emit(OrderError(e.toString()));
+    }
+  }
+
+  Future<void> getUserProductOrders(GetUserOrders event, Emitter<OrderState> emit) async {
+    try {
+      final orderItems = await orderRepository.getUserOrderItems();
+      print(orderItems);
+      emit(OrderProductsLoaded(orderItems));
     } catch (e) {
       emit(OrderError(e.toString()));
     }

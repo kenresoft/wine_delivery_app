@@ -9,13 +9,12 @@ abstract class OrderEvent extends Equatable {
 
 class CreateOrder extends OrderEvent {
   final double subTotal;
-  final String description;
-  final String currency;
+  final String note;
 
-  const CreateOrder({required this.subTotal, required this.description, required this.currency});
+  const CreateOrder({required this.subTotal, required this.note});
 
   @override
-  List<Object?> get props => [subTotal, description, currency];
+  List<Object?> get props => [subTotal, note];
 }
 
 class GetUserOrders extends OrderEvent {}

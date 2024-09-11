@@ -32,6 +32,16 @@ class OrdersLoaded extends OrderState {
   List<Object?> get props => [orders];
 }
 
+/// NEW
+class OrderProductsLoaded extends OrderState {
+  final List<OrderProductItem> orderItems;
+
+  const OrderProductsLoaded(this.orderItems);
+
+  @override
+  List<Object?> get props => [orderItems];
+}
+
 class OrderLoaded extends OrderState {
   final Order order;
 
