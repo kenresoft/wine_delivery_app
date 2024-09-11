@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/storage_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
+import 'package:wine_delivery_app/utils/app_exception.dart';
 
 import '../utils/utils.dart';
 
@@ -126,7 +127,7 @@ class AuthRepository {
 
     final accessToken = await getAccessToken();
     if (accessToken.isEmpty) {
-      throw Exception('No access token available');
+      throw const NoAccessTokenException('No access token available');
     }
 
     return makeRequest(endpoint);
