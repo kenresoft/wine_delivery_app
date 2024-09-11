@@ -19,6 +19,11 @@ Future<bool> removeAuthToken() => SharedPreferencesService.remove('authToken');
 
 set page(AppPage value) => SharedPreferencesService.setString('page', value.name);*/
 
+/// SEEN ONBOARDING
+bool get seenOnboarding => SharedPreferencesService.getBool('seenOnboarding') ?? false;
+
+set seenOnboarding(bool value) => SharedPreferencesService.setBool('seenOnboarding', value);
+
 /// PROMO CODE
 String get promoCode => SharedPreferencesService.getString('promoCode') ?? Constants.empty;
 

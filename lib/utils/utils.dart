@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:wine_delivery_app/utils/app_exception.dart';
 import 'package:wine_delivery_app/utils/app_theme.dart';
 import 'package:wine_delivery_app/views/auth/login_page.dart';
+import 'package:wine_delivery_app/views/home/main_screen.dart';
 
 import '../repository/auth_repository.dart';
 import 'constants.dart';
@@ -103,10 +105,14 @@ Future<void> authCheck(BuildContext context) async {
   try {
     final response = await authRepository.makeAuthenticatedRequest(endpoint);
       if (response.statusCode == 200) {
-        /*final data = response.body;
-        print(data.isNotEmpty);*/
-        return;
-      } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return const MainScreen();
+          },
+        ),
+      );
+    } else {
         // Handle error here
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -116,10 +122,18 @@ Future<void> authCheck(BuildContext context) async {
           ),
         );
       }
-    } catch (e) {
-      print(e);
-    }
+  } on NoAccessTokenException {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return const LoginPage();
+        },
+      ),
+    );
+  } catch (e) {
+    print(e);
   }
+}
 /*}*/
 
 enum RequestMethod {
