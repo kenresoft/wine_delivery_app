@@ -2,12 +2,13 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+
+// import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:wine_delivery_app/bloc/product/favorite/favs/favs_bloc.dart';
 import 'package:wine_delivery_app/bloc/product/product_bloc.dart';
 import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
 import 'package:wine_delivery_app/bloc/promo_code/promo_code_bloc.dart';
-import 'package:wine_delivery_app/utils/constants.dart';
+import 'package:wine_delivery_app/views/onboarding/splash_screen.dart';
 import 'package:wine_delivery_app/views/product/cart/shopping_cart.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
@@ -28,7 +29,7 @@ import 'views/product/category/products_category_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferencesService.init();
-  Stripe.publishableKey = Constants.stripePublishableKey;
+  // Stripe.publishableKey = Constants.stripePublishableKey;
   runApp(const MyApp());
 }
 
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme().themeData,
           routes: {
-            '/': (context) => const MainScreen(),
+            '/': (context) => const SplashScreen(),
             // '/': (context) => OrderConfirmationScreen(),
             '/cart_page': (context) => const ShoppingCartScreen(),
             '/home': (context) => const Home(),
