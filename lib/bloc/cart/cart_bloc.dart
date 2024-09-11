@@ -9,9 +9,8 @@ part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  final CartRepository cartRepository;
 
-  CartBloc(this.cartRepository) : super(CartInitial()) {
+  CartBloc() : super(CartInitial()) {
     on<GetCartItems>(getCartItems);
     on<AddToCart>(addToCart);
     on<UpdateCartItem>(updateCartItem);
@@ -41,9 +40,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void addToCart(AddToCart event, Emitter<CartState> emit) async {
     try {
-      await cartRepository.addToCart(event.productId, event.quantity);
+      final cartItems = await cartRepository.addToCart(event.productId, event.quantity);
+      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
       promoCode = '';
-      emit(const CartUpdated(message: 'Product Added to cart'));
+      emit(CartLoaded(cartItems: cartItems, totalPrice: totalPrice));
+      // emit(const CartUpdated(message: 'Product Added to cart'));
     } catch (e) {
       emit(CartError(e.toString()));
     }

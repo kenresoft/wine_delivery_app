@@ -10,7 +10,7 @@ class CartInitial extends CartState {
 }
 
 class CartLoaded extends CartState {
-  final List<Cart> cartItems;
+  final List<CartItem> cartItems;
   final double totalPrice;
   final String? couponCode;
 
