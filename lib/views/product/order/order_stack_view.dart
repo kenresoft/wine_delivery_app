@@ -1,8 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../model/order/order.dart';
+import '../../../bloc/product/product_bloc.dart';
+import '../../../model/order/order.dart';
+import '../../../model/product.dart';
 
 class OrderStackView extends StatelessWidget {
   const OrderStackView({
@@ -18,16 +21,25 @@ class OrderStackView extends StatelessWidget {
       width: 130,
       height: 130,
       alignment: Alignment.center,
-      child: Stack(
-        children: _buildStackItems(),
+      child: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          if (state is ProductsLoaded) {
+            return Stack(
+              children: _buildStackItems(state.products),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
 
-  List<Widget> _buildStackItems() {
+  List<Widget> _buildStackItems(List<Product> products) {
     List<Widget> stackItems = [];
-    var items = orderItems.take(11).toList(); // Take only the first 11 items
-    final int itemCount = items.length;
+    // var items = widget.orderItems.take(11).toList(); // Take only the first 11 items
+    final int itemCount = products.length;
+    // final int itemCount = items.length;
 
     if (itemCount == 1) {
       // Only one item, no need for stacking
@@ -36,7 +48,7 @@ class OrderStackView extends StatelessWidget {
           left: 0,
           top: 0,
           child: Image.asset(
-            items[0].imageUrl,
+            products[0].image,
             width: 130,
             height: 130,
             fit: BoxFit.contain,
@@ -80,7 +92,7 @@ class OrderStackView extends StatelessWidget {
             origin: const Offset(65, 130),
             transform: Matrix4.identity()..rotateZ(angle),
             child: Image.asset(
-              items[index].imageUrl,
+              'assets/images/${products[index].image}',
               width: 130,
               height: 130,
               fit: BoxFit.contain,
