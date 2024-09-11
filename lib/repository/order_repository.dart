@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/auth_repository.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
@@ -95,7 +95,7 @@ class OrderRepository {
         final paymentIntent = order.paymentDetails?.paymentIntent;
         if (paymentIntent != null && paymentIntent.isNotEmpty) {
 
-          await Stripe.instance.initPaymentSheet(
+          /*await Stripe.instance.initPaymentSheet(
             paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: paymentIntent,
               merchantDisplayName: "Wine Delivery",
@@ -103,7 +103,7 @@ class OrderRepository {
           );
 
           await Stripe.instance.presentPaymentSheet();
-          await Stripe.instance.confirmPaymentSheetPayment();
+          await Stripe.instance.confirmPaymentSheetPayment();*/
 
           return true;
         }
