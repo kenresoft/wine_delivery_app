@@ -6,6 +6,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'enums.dart';
 import 'themes.dart';
 
+// Extension to compare DateTime objects by date only
+extension DateTimeComparison on DateTime {
+  bool isSameDate(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
+}
+
 extension ToastExtension<T> on T {
   T get toast {
     Fluttertoast.showToast(
@@ -13,7 +20,6 @@ extension ToastExtension<T> on T {
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.SNACKBAR,
       backgroundColor: AppTheme().themeData.colorScheme.primary,
-      // backgroundColor: Colors.black54,
       textColor: Colors.white,
       fontSize: 18,
     );
