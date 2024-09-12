@@ -24,10 +24,22 @@ class NetworkException extends AppException {
 }
 
 // Other potential exceptions (add as needed)
+class BadRequestException extends AppException {
+  const BadRequestException(super.message);
+}
+
 class ServerErrorException extends AppException {
   const ServerErrorException(super.message);
 }
 
 class UnauthorizedException extends AppException {
   const UnauthorizedException(super.message);
+}
+
+class UnexpectedException extends AppException {
+  const UnexpectedException(super.message);
+}
+
+class NotFoundException extends AppException {
+  const NotFoundException(super.message);
 }

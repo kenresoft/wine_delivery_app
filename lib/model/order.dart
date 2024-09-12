@@ -52,8 +52,6 @@ class Order extends Equatable {
 import 'package:equatable/equatable.dart';
 import 'package:wine_delivery_app/model/product.dart';
 
-part '../enums/order_status.dart';
-
 part 'order_item.dart';
 
 class Order extends Equatable {
@@ -134,26 +132,4 @@ class Order extends Equatable {
   bool? get stringify => true;
 }
 
-class PaymentDetails extends Equatable {
-  final String? paymentIntent;
 
-  const PaymentDetails({required this.paymentIntent});
-
-  factory PaymentDetails.fromJson(Map<String, dynamic>? json) {
-    return PaymentDetails(
-      paymentIntent: json?['paymentIntent'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'paymentIntent': paymentIntent,
-    };
-  }
-
-  @override
-  List<Object?> get props => [paymentIntent];
-
-  @override
-  bool? get stringify => true;
-}
