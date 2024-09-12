@@ -15,6 +15,10 @@ class NoAccessTokenException extends AppException {
   const NoAccessTokenException(super.message);
 }
 
+class NoRefreshTokenException extends AppException {
+  const NoRefreshTokenException(super.message);
+}
+
 class InvalidAccessTokenException extends AppException {
   const InvalidAccessTokenException(super.message);
 }
