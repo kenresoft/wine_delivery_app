@@ -4,12 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:wine_delivery_app/bloc/product/favorite/favs/favs_bloc.dart';
-import 'package:wine_delivery_app/bloc/product/product_bloc.dart';
-import 'package:wine_delivery_app/bloc/profile/profile_bloc.dart';
-import 'package:wine_delivery_app/bloc/promo_code/promo_code_bloc.dart';
-import 'package:wine_delivery_app/views/onboarding/splash_screen.dart';
-import 'package:wine_delivery_app/views/product/cart/shopping_cart.dart';
 
 import 'bloc/carousel/carousel_bloc.dart';
 import 'bloc/cart/cart_bloc.dart';
@@ -17,13 +11,18 @@ import 'bloc/navigation/bottom_navigation_bloc.dart';
 import 'bloc/order/order_bloc.dart';
 import 'bloc/product/category_filter/category_filter_bloc.dart';
 import 'bloc/product/category_list/wines_bloc.dart';
+import 'bloc/product/favorite/favs/favs_bloc.dart';
 import 'bloc/product/favorite/like/like_bloc.dart';
+import 'bloc/product/product_bloc.dart';
+import 'bloc/profile/profile_bloc.dart';
+import 'bloc/promo_code/promo_code_bloc.dart';
 import 'bloc/shipment/shipment_bloc.dart';
 import 'bloc/shipping_address/shipping_address_bloc.dart';
-import 'utils/app_theme.dart';
+import 'utils/themes.dart';
 import 'views/admin/oder_management_page.dart';
 import 'views/home/home.dart';
-import 'views/home/main_screen.dart';
+import 'views/onboarding/splash_screen.dart';
+import 'views/product/cart/shopping_cart.dart';
 import 'views/product/category/products_category_screen.dart';
 
 void main() {
