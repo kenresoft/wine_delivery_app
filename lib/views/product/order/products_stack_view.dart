@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../bloc/product/product_bloc.dart';
-import '../../../model/order/order.dart';
+import '../../../model/order_item.dart';
 import '../../../model/product.dart';
 
 class OrderStackView extends StatelessWidget {

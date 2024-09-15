@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/repository/order_repository.dart';
-import 'package:wine_delivery_app/utils/utils.dart';
+import 'package:wine_delivery_app/utils/extensions.dart';
 import 'package:wine_delivery_app/views/product/order/shipping_form_address.dart';
 
 import '../../../bloc/product/product_bloc.dart';
 import '../../../bloc/shipment/shipment_bloc.dart';
-import '../../../model/order/order.dart';
+import '../../../model/order.dart';
+import '../../../model/order_item.dart';
 import 'order_stack_view.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
@@ -138,7 +139,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
         ),
         ElevatedButton(
           onPressed: () async {
-            final isIntentCreated = await orderRepository.makePurchase(
+            /*final isIntentCreated = await orderRepository.makePurchase(
               orderId: orderId,
               description: "_description",
               currency: "gbp",
@@ -146,7 +147,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             );
             if (isIntentCreated) {
               'created'.toast;
-            }
+            }*/
+
           },
           style: OutlinedButton.styleFrom(
             backgroundColor: colorScheme(context).primary,
