@@ -36,12 +36,13 @@ dependencies:
   fontresoft: ^0.0.5
   extensionresoft: ^0.0.6
 #  payment_card: ^0.0.1
+  flutter_secure_storage: ^9.2.2
   cupertino_icons: ^1.0.8
 
   http: ^1.2.2
   socket_io_client: ^2.0.3+1
+  connectivity_plus: ^6.0.5
 #  flutter_stripe: ^11.0.0
-  flutter_secure_storage: ^9.2.2
 
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
