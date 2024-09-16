@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/model/cart_item.dart';
@@ -7,7 +6,10 @@ import 'package:wine_delivery_app/repository/auth_repository.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 
+import '../model/cart.dart';
+import '../utils/enums.dart';
 import '../utils/utils.dart';
+import 'cache_repository.dart';
 
 class CartRepository {
   CartRepository._();
@@ -21,10 +23,37 @@ class CartRepository {
   static const String _baseUrl = '${Constants.baseUrl}/api/cart';
 
   Future<List<CartItem>> getCartItems() async {
-    // final token = await authRepository.getAccessToken();
+    const cacheKey = 'getCartItems';
 
-    try {
-      final response = await makeRequest(_baseUrl);
+    return decide(cacheKey: cacheKey, endpoint: _baseUrl, function: _fetchCartItems);
+
+    /*if (!cacheRepository.hasCache(cacheKey)) {
+      final response = await Utils.makeRequest(_baseUrl);
+
+      if (response.statusCode == 200) {
+        await cacheRepository.cache(cacheKey, response.body);
+      } else {
+        await cacheRepository.cache(cacheKey, null); // Or handle error
+        Utils.handleError(response);
+      }
+    }
+
+    final cachedData = cacheRepository.getCache(cacheKey);
+    if (cachedData != null) {
+      return _fetchCartItems(cachedData);
+    }
+
+    // No cache or invalid cache, fetch from API
+    final response = await Utils.makeRequest('$_baseUrl/user');
+    if (response.statusCode == 200) {
+      await cacheRepository.cache(cacheKey, response.body);
+      return _fetchCartItems(response.body);
+    } else {
+      throw Utils.handleError(response);
+    }*/
+
+    /*try {
+      final response = await Utils.makeRequest(_baseUrl);
 
       return await parseCartResponse(response);
     } catch (e) {
@@ -32,7 +61,22 @@ class CartRepository {
         throw 'Failed to fetch cart items. Please check your internet connection and try again.';
       }
       throw 'Failed to fetch cart items: ${e.toString()}';
-    }
+    }*/
+  }
+
+  Future<List<CartItem>> _fetchCartItems(data) async {
+    print(data);
+    final cartItemsJson = data['cart']['items'] as List<dynamic>;
+
+    // Fetch all products in parallel
+    List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
+      final cartItem = Cart.fromJson(itemJson);
+      final product = await productRepository.getProductById(cartItem.product!);
+
+      return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
+    }).toList());
+    print(cartItems);
+    return cartItems;
   }
 
   Future<List<CartItem>> addToCart(String productId, int quantity) async {
@@ -125,24 +169,11 @@ class CartRepository {
 
   Future<List<CartItem>> incrementCartItem(String itemId) async {
     try {
-      final response = await makeRequest('$_baseUrl/increment/$itemId', method: RequestMethod.put);
+      final response = await Utils.makeRequest('$_baseUrl/increment/$itemId', method: RequestMethod.put);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final cartItemsJson = data['cart']['items'] as List<dynamic>;
+        List<CartItem> cartItems = await _fetchCartItems(data);
 
-        // Fetch all products in parallel
-        List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
-          final cart = Cart.fromJson(itemJson);
-          final product = await productRepository.getProductById(cart.product!);
-
-          return CartItem(
-            id: cart.id,
-            quantity: cart.quantity,
-            product: product,
-          );
-        }).toList());
-
-        print(DateTime.now());
         return cartItems;
       } else {
         throw Exception('Error fetching cart items: ${response.statusCode} - ${response.reasonPhrase}');
@@ -228,19 +259,7 @@ class CartRepository {
   Future<List<CartItem>> parseCartResponse(http.Response response) async {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final cartItemsJson = data['cart']['items'] as List<dynamic>;
-
-      // Fetch all products in parallel
-      List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
-        final cartItem = Cart.fromJson(itemJson);
-        final product = await productRepository.getProductById(cartItem.product!);
-
-        return CartItem(
-          id: cartItem.id,
-          quantity: cartItem.quantity,
-          product: product,
-        );
-      }).toList());
+      List<CartItem> cartItems = await _fetchCartItems(data);
 
       return cartItems;
     } else {
