@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 
-import '../utils/prefs.dart';
+import '../utils/preferences.dart';
 
 class StorageRepository {
   const StorageRepository();

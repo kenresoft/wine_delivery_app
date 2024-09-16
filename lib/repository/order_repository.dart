@@ -5,8 +5,13 @@ import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/auth_repository.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
+import 'package:wine_delivery_app/utils/exceptions.dart';
 
-import '../model/order/order.dart';
+import '../model/order.dart';
+import '../model/order_item.dart';
+import '../model/order_product_item.dart';
+import '../utils/utils.dart';
+import 'cache_repository.dart';
 
 class OrderRepository {
   // Private constructor
@@ -20,7 +25,6 @@ class OrderRepository {
     return _instance;
   }
 
-  // API Base URL
   final String _baseUrl = '${Constants.baseUrl}/api/orders';
 
   // Create an order
@@ -45,9 +49,9 @@ class OrderRepository {
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        return Order.fromJson(data['order']); // Parse the order data
+        return Order.fromJson(data['order']);
       } else {
-        throw _handleError(response);
+        throw Utils.handleError(response);
       }
     } catch (e) {
       throw Exception('Failed to create order: ${e.toString()}');
@@ -109,7 +113,7 @@ class OrderRepository {
         }
         return false;
       } else {
-        throw _handleError(response);
+        throw Utils.handleError(response);
       }
     } catch (e) {
       throw Exception('Failed to make payment: ${e.toString()}');
@@ -118,33 +122,68 @@ class OrderRepository {
 
   // Get orders by user
   Future<List<Order>> getUserOrders() async {
-    final token = authRepository.getAccessToken();
+    const cacheKey = 'userOrders';
 
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/user'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      if (!cacheRepository.hasCache(cacheKey)) {
+        final response = await Utils.makeRequest('$_baseUrl/user');
 
+        if (response.statusCode == 200) {
+          await cacheRepository.cache(cacheKey, response.body);
+        } else {
+          await cacheRepository.cache(cacheKey, null); // Or handle error
+          Utils.handleError(response);
+        }
+      }
+
+      final cachedData = cacheRepository.getCache(cacheKey);
+      if (cachedData != null) {
+        return _fetchOrders(jsonDecode(cachedData));
+      }
+
+      // No cache or invalid cache, fetch from API
+      final response = await Utils.makeRequest('$_baseUrl/user');
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final List<dynamic> ordersJson = data['orders'];
-
-        return ordersJson.map((json) => Order.fromJson(json)).toList();
+        await cacheRepository.cache(cacheKey, response.body);
+        return _fetchOrders(jsonDecode(response.body));
       } else {
-        throw _handleError(response);
+        throw Utils.handleError(response);
       }
     } catch (e) {
       throw Exception('Failed to fetch orders: ${e.toString()}');
     }
   }
 
+  List<Order> _fetchOrders(data) {
+    final List<dynamic> ordersJson = data['orders'];
+    final orders = ordersJson.map((json) => Order.fromJson(json)).toList();
+    return orders;
+  }
+
+/*  Future<List<Order>> getUserOrders() async {
+    try {
+      if (!await cacheRepository.hasCache('')) {
+        final response = await Utils.makeRequest('$_baseUrl/user');
+
+        if (response.statusCode == 200) {
+          await cacheRepository.cache('cachedOrders', response.body);
+        } else {
+          await cacheRepository.cache('cachedOrders', null);
+          Utils.handleError(response);
+        }
+      }
+
+      final data = jsonDecode(cacheRepository.getCache(''));
+      final List<dynamic> ordersJson = data['orders'];
+      return ordersJson.map((json) => Order.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch orders: ${e.toString()}');
+    }
+  }*/
+
   // Get orders by user
   Future<List<OrderProductItem>> getUserOrderItems() async {
-    final token = authRepository.getAccessToken();
+    final token = await authRepository.getAccessToken();
 
     try {
       final response = await http.get(
@@ -160,22 +199,22 @@ class OrderRepository {
 
         final cartItemsJson = data['orders']['items'] as List<dynamic>;
 
-        // Fetch all products in parallel
-        List<OrderProductItem> orderProductItem = await Future.wait(cartItemsJson.map((itemJson) async {
+        final futures = cartItemsJson.map((itemJson) async {
           final orderItem = OrderItem.fromJson(itemJson);
-          final product = await productRepository.getProductById(orderItem.productId);
+          try {
+            final product = await productRepository.getProductById(orderItem.productId);
+            return OrderProductItem(quantity: orderItem.quantity, product: product);
+          } catch (e) {
+            // Handle error fetching individual product
+            print('Error fetching product: ${orderItem.productId}');
+            return null; // Or return a placeholder item
+          }
+        });
 
-          return OrderProductItem(
-            // id: orderItem.id,
-            quantity: orderItem.quantity,
-            product: product,
-          );
-        }).toList());
-
-        print(orderProductItem.toString());
-        return orderProductItem;
+        final orderProductItems = await Future.wait(futures);
+        return orderProductItems.whereType<OrderProductItem>().toList();
       } else {
-        throw _handleError(response);
+        throw Utils.handleError(response);
       }
     } catch (e) {
       throw Exception('Failed to fetch orders: ${e.toString()}');
@@ -184,25 +223,17 @@ class OrderRepository {
 
   // Get order by ID
   Future<Order> getOrderById(String orderId) async {
-    final token = authRepository.getAccessToken();
-
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/$orderId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      final response = await Utils.makeRequest('$_baseUrl/$orderId');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return Order.fromJson(data['order']); // Parse the order data
       } else {
-        throw _handleError(response);
+        throw Utils.handleError(response);
       }
     } catch (e) {
-      throw Exception('Failed to fetch order: ${e.toString()}');
+      throw Utils.handleError(http.Response('', 999, reasonPhrase: '$e'));
     }
   }
 
@@ -211,7 +242,7 @@ class OrderRepository {
     required String orderId,
     required String status,
   }) async {
-    final token = authRepository.getAccessToken();
+    final token = await authRepository.getAccessToken();
 
     try {
       final response = await http.patch(
@@ -229,29 +260,23 @@ class OrderRepository {
         final data = jsonDecode(response.body);
         return Order.fromJson(data['order']); // Parse the updated order data
       } else {
-        throw _handleError(response);
+        throw Utils.handleError(response);
       }
     } catch (e) {
-      throw Exception('Failed to update order status: ${e.toString()}');
+      throw UnexpectedException('Failed to update order status: ${e.toString()}');
     }
   }
 
-  // Handle errors based on status code
-  String _handleError(http.Response response) {
-    switch (response.statusCode) {
-      case 400:
-        return 'Bad request, please check your input.';
-      case 401:
-        return 'Unauthorized access, please log in again.';
-      case 403:
-        return 'Forbidden access.';
-      case 404:
-        return 'Resource not found.';
-      case 500:
-        return 'Internal server error, please try again later.';
-      default:
-        return 'Unexpected error: ${response.statusCode} - ${response.reasonPhrase}';
-    }
+  /// Handling Caching for Orders
+  Future<void> cacheOrders(List<Order> orders) async {
+    final orderJsonList = orders.map((order) => jsonEncode(order.toJson())).toList();
+    // Save the orderJsonList using SharedPreferences or Hive
+  }
+
+  Future<List<Order>> getCachedOrders() async {
+    // Retrieve and decode cached orders
+    final cachedOrders = []; // From SharedPreferences or Hive
+    return cachedOrders.map((orderJson) => Order.fromJson(jsonDecode(orderJson))).toList();
   }
 }
 
