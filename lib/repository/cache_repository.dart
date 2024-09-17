@@ -1,9 +1,6 @@
 import 'dart:convert';
 
 import 'package:extensionresoft/extensionresoft.dart';
-import 'package:wine_delivery_app/utils/extensions.dart';
-
-import '../utils/utils.dart';
 
 class CacheRepository {
   CacheRepository._();
@@ -12,96 +9,62 @@ class CacheRepository {
 
   static CacheRepository getInstance() => _instance;
 
-  static const expirationInSeconds = 3600; // Cache for 1 hour
+  static const int defaultExpirationInSeconds = 3600; // Default cache duration (1 hour)
 
+  /// Caches data with a specified key. Data will expire after [expirationInSeconds].
+  /// If no data is passed (null), it skips caching.
   Future<void> cache(
     String key,
-    String? body,
-    /*{int expirationInSeconds = 3600}*/
-  ) async {
-    if (body != null) {
+    String? body, {
+    int expirationInSeconds = defaultExpirationInSeconds, // Added parameter flexibility
+  }) async {
+    if (body != null && body.isNotEmpty) {
       final now = DateTime.now();
-      final expirationTime = now.add(const Duration(seconds: expirationInSeconds));
+      final expirationTime = now.add(Duration(seconds: expirationInSeconds));
       final cachedData = {
         'data': body,
         'expiration': expirationTime.millisecondsSinceEpoch,
       };
+
       await SharedPreferencesService.setString(key, jsonEncode(cachedData));
     } else {
       // Handle case where no data is cached for the key
     }
   }
 
+  /// Retrieves cached data by key if it exists and hasn't expired.
+  /// Returns null if data has expired or doesn't exist.
   String? getCache(String key) {
     final cachedDataString = SharedPreferencesService.getString(key);
-    if (cachedDataString?.isNullOrEmpty != true) {
-      final cachedData = jsonDecode(cachedDataString!);
+    if (cachedDataString?.isNotEmpty == true) {
+      final cachedData = jsonDecode(cachedDataString!) as Map<String, dynamic>;
       final expirationTime = DateTime.fromMillisecondsSinceEpoch(cachedData['expiration']);
+
       if (DateTime.now().isBefore(expirationTime)) {
-        return cachedData['data'];
+        return cachedData['data'] as String;
+      } else {
+        // Data has expired, so clear the cache for this key.
+        clearCache(key);
       }
     }
-    return null; // Or handle the case where the cached data is empty or invalid
+    return null;
   }
 
-/*  Future<void> cache(String key, String? body) async {
-    if (body != null) {
-      await SharedPreferencesService.setString(key, body);
-    } else {
-      // Handle case where no data is cached for the key
-    }
-  }
-
-  String? getCache(String key) {
-    final cachedData = SharedPreferencesService.getString(key);
-    if (cachedData?.isNullOrEmpty != true) {
-      return cachedData;
-    }
-    return null; // Or handle the case where the cached data is empty or invalid
-  }*/
-
+  /// Checks if valid (non-expired) cache exists for a specific key.
   bool hasCache(String key) {
-    return SharedPreferencesService.containsKey(key) && !(getCache(key))!.isNullOrEmpty;
+    final cacheData = getCache(key);
+    return cacheData != null && cacheData.isNotEmpty;
   }
 
+  /// Clears the cache for the provided key.
   Future<void> clearCache(String key) async {
     await SharedPreferencesService.remove(key);
+  }
+
+  /// Clears all cached data (optional function for broader cache management).
+  Future<void> clearAllCache() async {
+    await SharedPreferencesService.clear(); // Be cautious; this clears all data, not just cache.
   }
 }
 
 final CacheRepository cacheRepository = CacheRepository.getInstance();
-
-Future<T> decide<T>({
-  required String cacheKey,
-  required String endpoint,
-  required Future<T> Function(dynamic data) function,
-}) async {
-  if (!cacheRepository.hasCache(cacheKey)) {
-    final response = await Utils.makeRequest(endpoint);
-
-    if (response.statusCode == 200) {
-      await cacheRepository.cache(cacheKey, response.body);
-    } else {
-      await cacheRepository.cache(cacheKey, null); // Or handle error
-      Utils.handleError(response);
-    }
-  }
-
-  final cachedData = cacheRepository.getCache(cacheKey);
-  if (cachedData != null) {
-    print('Data fetched from cache');
-    return function(jsonDecode(cachedData));
-    // return _fetchOrders(cachedData);
-  }
-
-  // No cache or invalid cache, fetch from API
-  final response = await Utils.makeRequest(endpoint);
-  if (response.statusCode == 200) {
-    await cacheRepository.cache(cacheKey, response.body);
-    print('Data fetched from API');
-    return function(jsonDecode(response.body));
-    // return _fetchOrders(response.body);
-  } else {
-    throw Utils.handleError(response);
-  }
-}
