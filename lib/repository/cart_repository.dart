@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/model/cart_item.dart';
 import 'package:wine_delivery_app/repository/auth_repository.dart';
+import 'package:wine_delivery_app/repository/decision_repository.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 
 import '../model/cart.dart';
 import '../utils/enums.dart';
+import '../utils/logger.dart';
 import '../utils/utils.dart';
-import 'cache_repository.dart';
 
 class CartRepository {
   CartRepository._();
@@ -25,47 +26,34 @@ class CartRepository {
   Future<List<CartItem>> getCartItems() async {
     const cacheKey = 'getCartItems';
 
-    return decide(cacheKey: cacheKey, endpoint: _baseUrl, function: _fetchCartItems);
+    return decisionRepository.decide<List<CartItem>>(
+      cacheKey: cacheKey,
+      endpoint: _baseUrl,
+      onSuccess: (data) async {
+        final cartItemsJson = data['cart']['items'] as List<dynamic>;
 
-    /*if (!cacheRepository.hasCache(cacheKey)) {
-      final response = await Utils.makeRequest(_baseUrl);
+        // Fetch all products in parallel
+        List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
+          final cartItem = Cart.fromJson(itemJson);
+          final product = await productRepository.getProductById(cartItem.product!);
 
-      if (response.statusCode == 200) {
-        await cacheRepository.cache(cacheKey, response.body);
-      } else {
-        await cacheRepository.cache(cacheKey, null); // Or handle error
-        Utils.handleError(response);
-      }
-    }
+          return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
+        }).toList());
+        print('Data fetched from cache');
+        logToDevice('Data fetched from cache');
 
-    final cachedData = cacheRepository.getCache(cacheKey);
-    if (cachedData != null) {
-      return _fetchCartItems(cachedData);
-    }
-
-    // No cache or invalid cache, fetch from API
-    final response = await Utils.makeRequest('$_baseUrl/user');
-    if (response.statusCode == 200) {
-      await cacheRepository.cache(cacheKey, response.body);
-      return _fetchCartItems(response.body);
-    } else {
-      throw Utils.handleError(response);
-    }*/
-
-    /*try {
-      final response = await Utils.makeRequest(_baseUrl);
-
-      return await parseCartResponse(response);
-    } catch (e) {
-      if (e is SocketException) {
-        throw 'Failed to fetch cart items. Please check your internet connection and try again.';
-      }
-      throw 'Failed to fetch cart items: ${e.toString()}';
-    }*/
+        logToDevice(cartItems.toString(), 'cart.log');
+        return cartItems;
+      },
+      onError: (error) async {
+        print('ERROR: ${error.toString()}');
+        return [];
+      },
+      // function: (data) => _fetchCartItems(data),
+    );
   }
 
   Future<List<CartItem>> _fetchCartItems(data) async {
-    print(data);
     final cartItemsJson = data['cart']['items'] as List<dynamic>;
 
     // Fetch all products in parallel
@@ -75,7 +63,11 @@ class CartRepository {
 
       return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
     }).toList());
-    print(cartItems);
+    print('Data fetched from cache');
+    logToDevice('Data fetched from cache');
+
+    print(cartItems.toString());
+    logToDevice(cartItems.toString(), 'cart.log');
     return cartItems;
   }
 
@@ -210,15 +202,24 @@ class CartRepository {
   }
 
   Future<double> getTotalPrice({String? couponCode}) async {
-    final token = await authRepository.getAccessToken();
+    return decisionRepository.decide<double>(
+      cacheKey: 'getTotalPrice',
+      endpoint: '$_baseUrl/price',
+      requestMethod: RequestMethod.post,
+      body: jsonEncode({'couponCode': couponCode}),
+      onSuccess: (data) async {
+        return double.parse(data['totalPrice'].toString());
+      },
+      onError: (error) async {
+        print('ERROR: ${error.toString()}');
+        return 0.0;
+      },
+    );
 
-    try {
-      final response = await http.post(
-        Uri.parse('$_baseUrl/price'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
+    /*try {
+      final response = await Utils.makeRequest(
+        '$_baseUrl/price',
+        method: RequestMethod.post,
         body: jsonEncode({'couponCode': couponCode}),
       );
 
@@ -230,7 +231,7 @@ class CartRepository {
       }
     } catch (e) {
       throw 'Failed to fetch total price: ${e.toString()}';
-    }
+    }*/
   }
 
   Future<bool> isProductInCart(String productId) async {
