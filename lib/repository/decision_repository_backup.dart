@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:wine_delivery_app/repository/cache_repository.dart';
 import 'package:wine_delivery_app/utils/enums.dart';
 
-import '../utils/utils.dart';
+import '../../utils/utils.dart';
 
-class DecisionRepository {
+class DecisionRepositoryBackup {
   final CacheRepository _cacheRepository;
 
-  DecisionRepository._(this._cacheRepository);
+  DecisionRepositoryBackup._(this._cacheRepository);
 
   /// Decides whether to fetch data from the cache or the API, processes the result
   /// via [onSuccess] or handles errors via [onError].
@@ -68,4 +68,4 @@ class DecisionRepository {
   }
 }
 
-final DecisionRepository decisionRepository = DecisionRepository._(cacheRepository);
+final DecisionRepositoryBackup decisionRepository = DecisionRepositoryBackup._(cacheRepository);
