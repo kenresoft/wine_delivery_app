@@ -48,8 +48,11 @@ dependencies:
   flutter_bloc: ^8.1.6
   equatable: ^2.0.5
 
-  circular_image: ^0.0.6
+  path_provider: ^2.1.4
   image_picker: ^1.1.2
+  permission_handler: ^11.3.1
+
+  circular_image: ^0.0.6
   flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.9.3
   fluttertoast: ^8.2.8
