@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:wine_delivery_app/repository/cache_repository.dart';
 import 'package:wine_delivery_app/utils/enums.dart';
+import 'package:wine_delivery_app/utils/extensions.dart';
 
 import '../utils/utils.dart';
 
@@ -20,9 +22,9 @@ class DecisionRepository {
     required Future<T> Function(dynamic data) onSuccess,
     required Future<T> Function(dynamic error) onError,
   }) async {
+    // Retrieve cached data (if any)
+    final cachedData = _cacheRepository.getCache(cacheKey);
     try {
-      // Retrieve cached data (if any)
-      final cachedData = _cacheRepository.getCache(cacheKey);
 
       // Fetch data from the API
       final apiResponse = await Utils.makeRequest(endpoint, method: requestMethod, body: body);
@@ -53,6 +55,12 @@ class DecisionRepository {
         await _cacheRepository.cache(cacheKey, freshApiData);
         return onSuccess(jsonDecode(freshApiData));
       }
+    } on SocketException {
+      if (!cachedData!.isNullOrEmpty) {
+        final decodedCacheData = jsonDecode(cachedData);
+        return onSuccess(decodedCacheData);
+      }
+      return onError('SocketException with No API or Cache data available');
     } on Exception catch (e) {
       print('Exception occurred: $e');
       return onError(e);
@@ -62,6 +70,7 @@ class DecisionRepository {
   /// Helper function to determine if the data has changed.
   bool _hasDataChanged(dynamic cachedData, dynamic freshData) {
     // Customize this comparison based on the structure of your data.
+    print('--data check up--');
     return jsonEncode(cachedData) != jsonEncode(freshData);
   }
 }
