@@ -47,7 +47,7 @@ class Utils {
     };
   }
 
-  static Future<void> authCheck(BuildContext context) async {
+  /*static Future<void> authCheck(BuildContext context) async {
     const String endpoint = '${Constants.baseUrl}/api/categories';
     try {
       final response = await authRepository.makeAuthenticatedRequest(endpoint);
@@ -90,15 +90,66 @@ class Utils {
     } catch (e) {
       print(e);
     }
+  }*/
+
+  static Future<void> authCheck(BuildContext context) async {
+    const String endpoint = '${Constants.baseUrl}/api/categories';
+
+    try {
+      final response = await _makeAuthenticatedRequest(endpoint);
+
+      if (response.statusCode == 200) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const MainScreen();
+            },
+          ),
+        );
+      } else {
+        // Handle error here
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const LoginPage();
+            },
+          ),
+        );
+      }
+    } on NoAccessTokenException catch (e) {
+      print(e.message);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginPage();
+          },
+        ),
+      );
+    } on NoRefreshTokenException catch (e) {
+      print(e.message);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginPage();
+          },
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<http.Response> _makeAuthenticatedRequest(String endpoint) async {
+    return authRepository.makeAuthenticatedRequest(endpoint);
   }
 
   // Handle errors based on status code
-  static AppException handleError(http.Response response) {
+  static AppException handleError(http.Response response, [String? error]) {
     switch (response.statusCode) {
       case 400:
         return const BadRequestException('Bad request, please check your input.');
       case 401:
-        return const InvalidAccessTokenException('Invalid access token: Please log in again.');
+        return const InvalidAccessTokenException('Invalid access token. Please log in again.');
       case 403:
         return const UnauthorizedException('Unauthorized: Access Denied.');
       case 404:

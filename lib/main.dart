@@ -2,6 +2,9 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/bb.dart';
+import 'package:wine_delivery_app/bloc/network/network_bloc.dart';
+import 'package:wine_delivery_app/utils/environment_config.dart';
 
 // import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -18,16 +21,17 @@ import 'bloc/profile/profile_bloc.dart';
 import 'bloc/promo_code/promo_code_bloc.dart';
 import 'bloc/shipment/shipment_bloc.dart';
 import 'bloc/shipping_address/shipping_address_bloc.dart';
+import 'utils/constants.dart';
 import 'utils/themes.dart';
 import 'views/admin/oder_management_page.dart';
 import 'views/home/home.dart';
-import 'views/onboarding/splash_screen.dart';
 import 'views/product/cart/shopping_cart.dart';
 import 'views/product/category/products_category_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferencesService.init();
+  await EnvironmentConfig.load(ConfigMode.dev);
   // Stripe.publishableKey = Constants.stripePublishableKey;
   runApp(const MyApp());
 }
@@ -56,13 +60,15 @@ class MyApp extends StatelessWidget {
           BlocProvider<ProfileBloc>(create: (context) => ProfileBloc()),
           BlocProvider<FavsBloc>(create: (context) => FavsBloc()),
           BlocProvider<PromoCodeBloc>(create: (context) => PromoCodeBloc()),
+          BlocProvider<NetworkBloc>(create: (context) => NetworkBloc()),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
           theme: AppTheme().themeData,
           routes: {
-            '/': (context) => const SplashScreen(),
+            // '/': (context) => const SplashScreen(),
+            '/': (context) => const NetworkStatusScreen(),
             // '/': (context) => OrderConfirmationScreen(),
             '/cart_page': (context) => const ShoppingCartScreen(),
             '/home': (context) => const Home(),
