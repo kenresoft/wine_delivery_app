@@ -1,3 +1,5 @@
+import 'package:wine_delivery_app/utils/environment_config.dart';
+
 class Constants {
   Constants._();
 
@@ -5,10 +7,12 @@ class Constants {
 
   static const unknownDevice = 'Unknown device';
 
-  static const String baseUrl = 'http://192.168.6.207:3333';
+  static String baseUrl = EnvironmentConfig.baseUrl;
+
+  static String wsBaseUrl = EnvironmentConfig.wsBaseUrl;
 
   static const int tokenRefreshThreshold = 60;
 
-  static const String stripePublishableKey = 'pk_test_51PtmJH1oKmbRUnqpSrtIE00IY4c4AQGqNO9QZcyWnIx7p6btNWAzvyX23XIzd2OLXXXxSldi2gDiOMwejUx4irrl00OVMw69O2';
+  static String stripePublishableKey = EnvironmentConfig.stripeKey;
 
 }
