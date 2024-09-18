@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:wine_delivery_app/views/auth/registration_page.dart';
 
-import '../../utils/prefs.dart';
+import '../../utils/preferences.dart';
 // For sign-up/login
 
 class OnboardingScreen extends StatefulWidget {

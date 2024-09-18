@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lottie/lottie.dart'; // Import Lottie package
-import 'package:wine_delivery_app/utils/app_theme.dart';
+import 'package:wine_delivery_app/utils/themes.dart';
 
-import '../../utils/prefs.dart';
+import '../../utils/preferences.dart';
 import '../../utils/utils.dart';
 import 'onboarding_screen.dart';
 
@@ -23,8 +23,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
+    initialization();
+  }
 
-    // Initialize the animation controller for opacity, scale, and rotation
+  void initialization() async {
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -73,7 +75,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> _checkOnboardingStatus() async {
     if (seenOnboarding) {
       debugPrint('Authentication check...');
-      authCheck(context);
+      // await Isolate.run(() => Utils.authCheck(context));
+      await Utils.authCheck(context);
     } else {
       Navigator.pushReplacement(
         context,
@@ -95,7 +98,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               AppTheme().themeData.colorScheme.surface,
               AppTheme().themeData.colorScheme.tertiary,
             ], // Background gradient
-            // colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],  // Background gradient
           ),
         ),
         child: Center(
@@ -106,7 +108,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               child: RotationTransition(
                 turns: _rotationAnimation,
                 child: Lottie.asset(
-                  'assets/animations/vintiora.json', // Path to your Lottie animation
+                  'assets/animations/vintiora.json',
                   height: 200,
                   width: 200,
                 ),
@@ -127,7 +129,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(
+          CurveTween(curve: curve),
+        );
         var offsetAnimation = animation.drive(tween);
 
         return SlideTransition(

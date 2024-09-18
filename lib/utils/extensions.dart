@@ -97,3 +97,51 @@ extension WineCategoryExtension on WineCategory {
     };
   }
 }
+
+extension OrderStatusExtension on OrderStatus {
+  String toShortString() {
+    switch (this) {
+      case OrderStatus.draft:
+        return 'Draft';
+      case OrderStatus.pending:
+        return 'Pending';
+      case OrderStatus.processing:
+        return 'Processing';
+      case OrderStatus.packaging:
+        return 'Packaging';
+      case OrderStatus.shipping:
+        return 'Shipping';
+      case OrderStatus.delivered:
+        return 'Delivered';
+      case OrderStatus.cancelled:
+        return 'Cancelled';
+    }
+  }
+
+  static OrderStatus fromString(String value) {
+    switch (value.toLowerCase()) {
+      case 'draft':
+        return OrderStatus.draft;
+      case 'pending':
+        return OrderStatus.pending;
+      case 'processing':
+        return OrderStatus.processing;
+      case 'packaging':
+        return OrderStatus.packaging;
+      case 'shipping':
+        return OrderStatus.shipping;
+      case 'delivered':
+        return OrderStatus.delivered;
+      case 'cancelled':
+        return OrderStatus.cancelled;
+      default:
+        throw ArgumentError('Invalid OrderStatus string: $value');
+    }
+  }
+}
+
+extension StringExtensions on String? {
+  bool get isNullOrEmpty {
+    return this == null || this!.isEmpty;
+  }
+}
