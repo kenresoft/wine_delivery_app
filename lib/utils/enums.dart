@@ -30,3 +30,12 @@ enum RequestMethod {
   put,
   delete,
 }
+
+enum ErrorType {
+  network,
+  timeout,
+  unknown,
+  authentication,
+  permission,
+  initialization,
+}
