@@ -29,7 +29,7 @@ class DecisionRepository {
       // Fetch data from the API
       final apiResponse = await Utils.makeRequest(endpoint, method: requestMethod, body: body);
       if (apiResponse.statusCode != 200) {
-        print('API request failed with status: ${apiResponse.statusCode}');
+        logger.e('API request failed with status: ${apiResponse.statusCode}');
         return onError(Utils.handleError(apiResponse));
       }
 
@@ -40,29 +40,38 @@ class DecisionRepository {
         final decodedCacheData = jsonDecode(cachedData);
         final decodedApiData = jsonDecode(freshApiData);
 
+        // Check for conflicts
+        /*if (_hasConflict(decodedCacheData, decodedApiData)) {
+          print('Data conflict detected between API and cached data.');
+          // Handle conflict: Notify user, log it, or decide to override.
+          await _cacheRepository.cache(cacheKey, freshApiData); // Optional: overwrite cache
+          return onSuccess(decodedApiData); // Proceed with API data despite conflict
+        }*/
+
         if (_hasDataChanged(decodedCacheData, decodedApiData)) {
-          print('Data changed. Updating cache.');
+          logger.w('Data changed. Updating cache.');
           await _cacheRepository.cache(cacheKey, freshApiData);
         } else {
-          print('Data has not changed. Using cached data.');
+          logger.w('Data has not changed. Using cached data.');
         }
 
         // Use cached or API data (whichever is more appropriate based on change)
         return onSuccess(decodedApiData);
       } else {
         // Cache miss, so cache the fresh API data
-        print('No cache available. Storing new API data in cache.');
+        logger.w('No cache available. Storing new API data in cache.');
         await _cacheRepository.cache(cacheKey, freshApiData);
         return onSuccess(jsonDecode(freshApiData));
       }
     } on SocketException {
       if (!cachedData!.isNullOrEmpty) {
+        logger.e('Socket Exception');
         final decodedCacheData = jsonDecode(cachedData);
         return onSuccess(decodedCacheData);
       }
       return onError('SocketException with No API or Cache data available');
     } on Exception catch (e) {
-      print('Exception occurred: $e');
+      logger.e('Exception occurred: $e');
       return onError(e);
     }
   }
@@ -70,8 +79,30 @@ class DecisionRepository {
   /// Helper function to determine if the data has changed.
   bool _hasDataChanged(dynamic cachedData, dynamic freshData) {
     // Customize this comparison based on the structure of your data.
-    print('--data check up--');
     return jsonEncode(cachedData) != jsonEncode(freshData);
+  }
+
+  /// Detects conflicts between cached data and API data using version fields.
+  bool _hasConflict(dynamic cachedData, dynamic freshData) {
+    return _findVersion(cachedData) != _findVersion(freshData);
+  }
+
+  /// Extracts the version field from data to be used for conflict detection.
+  int? _findVersion(Map<String, dynamic> data) {
+    if (data.containsKey('__v')) {
+      return data['__v'] as int?;
+    }
+
+    for (var value in data.values) {
+      if (value is Map<String, dynamic>) {
+        final foundVersion = _findVersion(value);
+        if (foundVersion != null) {
+          return foundVersion;
+        }
+      }
+    }
+
+    return null;
   }
 }
 
