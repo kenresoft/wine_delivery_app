@@ -1,67 +1,18 @@
-/*
 import 'package:equatable/equatable.dart';
+import 'package:wine_delivery_app/utils/enums.dart';
 
-part 'order_item.dart';
-
-part 'order_status.dart';
-
-class Order extends Equatable {
-  final String orderId;
-  final DateTime orderDate;
-  final List<OrderItem> items;
-  final OrderStatus status;
-
-  const Order({
-    required this.orderId,
-    required this.orderDate,
-    required this.items,
-    required this.status,
-  });
-
-  factory Order.empty() {
-    return Order(
-      orderId: '', // Or generate a unique ID here
-      orderDate: DateTime.now(),
-      items: const [],
-      status: OrderStatus.pending,
-    );
-  }
-
-  Order copyWith({
-    String? orderId,
-    DateTime? orderDate,
-    List<OrderItem>? items,
-    OrderStatus? status,
-  }) {
-    return Order(
-      orderId: orderId ?? this.orderId,
-      orderDate: orderDate ?? this.orderDate,
-      items: items ?? this.items,
-      status: status ?? this.status,
-    );
-  }
-
-  @override
-  List<Object?> get props => [orderId, orderDate, items, status];
-
-  @override
-  bool get stringify => true; // Set stringify to true for better debugging
-}
-*/
-
-import 'package:equatable/equatable.dart';
-import 'package:wine_delivery_app/model/product.dart';
-
-part 'order_item.dart';
+import '../utils/extensions.dart';
+import 'order_item.dart';
+import 'payment_details.dart';
 
 class Order extends Equatable {
   final String id;
   final String userId;
   final List<OrderItem> items;
   final String shipmentId;
-  final int subTotal;
-  final int totalCost;
-  final String status;
+  final num subTotal;
+  final num totalCost;
+  final OrderStatus status;
   final String createdAt;
   final PaymentDetails? paymentDetails;
   final String? note;
@@ -89,7 +40,7 @@ class Order extends Equatable {
       shipmentId: json['shipment'],
       subTotal: json['subTotal'],
       totalCost: json['totalCost'],
-      status: json['status'],
+      status: OrderStatusExtension.fromString(json['status']),
       createdAt: json['createdAt'],
       paymentDetails: PaymentDetails.fromJson(json['paymentDetails']),
       note: json['note'],
@@ -105,7 +56,7 @@ class Order extends Equatable {
       'shipment': shipmentId,
       'subTotal': subTotal,
       'totalCost': totalCost,
-      'status': status,
+      'status': status.toShortString(),
       'createdAt': createdAt,
       'paymentDetails': paymentDetails?.toJson(),
       'note': note,
@@ -114,19 +65,21 @@ class Order extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        userId,
-        items,
-        shipmentId,
-        subTotal,
-        totalCost,
-        status,
-        createdAt,
-        paymentDetails,
-        note,
-        trackingNumber,
-      ];
+  List<Object?> get props {
+    return [
+      id,
+      userId,
+      items,
+      shipmentId,
+      subTotal,
+      totalCost,
+      status,
+      createdAt,
+      paymentDetails,
+      note,
+      trackingNumber,
+    ];
+  }
 
   @override
   bool? get stringify => true;
