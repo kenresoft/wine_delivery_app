@@ -1,21 +1,18 @@
-part of 'order.dart';
+import 'package:equatable/equatable.dart';
 
-class OrderItem {
+class OrderItem extends Equatable {
   final String productId;
   final int quantity;
-  // final String id;
 
-  OrderItem({
+  const OrderItem({
     required this.productId,
     required this.quantity,
-    // required this.id,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
       productId: json['product'],
       quantity: json['quantity'],
-      // id: json['_id'],
     );
   }
 
@@ -23,19 +20,12 @@ class OrderItem {
     return {
       'product': productId,
       'quantity': quantity,
-      // '_id': id,
     };
   }
-}
 
-class OrderProductItem {
-  final Product product;
-  final int quantity;
-  // final String id;
+  @override
+  List<Object?> get props => [productId, quantity];
 
-  OrderProductItem({
-    required this.product,
-    required this.quantity,
-    // required this.id,
-  });
+  @override
+  bool get stringify => true;
 }
