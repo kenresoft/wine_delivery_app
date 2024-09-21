@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/storage_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
-import 'package:wine_delivery_app/utils/app_exception.dart';
+import 'package:wine_delivery_app/utils/exceptions.dart';
 
 import '../utils/utils.dart';
 
@@ -20,7 +20,7 @@ class AuthRepository {
     return _instance;
   }
 
-  static const String _baseUrl = '${Constants.baseUrl}/api/auth';
+  static final String _baseUrl = '${Constants.baseUrl}/api/auth';
 
   Future<bool> register(String username, String email, String password) async {
     final response = await http.post(
@@ -66,7 +66,7 @@ class AuthRepository {
 
         if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
           _saveTokens(accessToken, refreshToken);
-          print(accessToken);
+          logger.i(accessToken);
           result('Login successful!');
           return true;
         }
@@ -80,9 +80,7 @@ class AuthRepository {
       result('Error logging in user: ${response.statusCode} - ${response.reasonPhrase}');
       return false;
     } catch (e) {
-      if (kDebugMode) {
-        print(e.toString());
-      }
+      logger.e(e.toString());
       if (e is SocketException) {
         result('Failed to retrieve user information (error code: 404). \n'
             'Please check your internet connection and try again. \n'
@@ -100,7 +98,7 @@ class AuthRepository {
     }
 
     try {
-      final response = await makeRequest('$_baseUrl/check');
+      final response = await Utils.makeRequest('$_baseUrl/check');
 
       switch (response.statusCode) {
         case 200:
@@ -110,14 +108,14 @@ class AuthRepository {
           await clearToken();
           return false;
         default:
-          print('Unexpected status code: ${response.statusCode}');
+          logger.e('Unexpected status code: ${response.statusCode}');
           return false;
       }
     } on SocketException {
-      print('No Internet connection');
+      logger.w('No Internet connection');
       return false;
     } catch (e) {
-      print('Error checking auth status: $e');
+      logger.e('Error checking auth status: $e');
       return false;
     }
   }
@@ -130,7 +128,7 @@ class AuthRepository {
       throw const NoAccessTokenException('No access token available');
     }
 
-    return makeRequest(endpoint);
+    return Utils.makeRequest(endpoint);
   }
 
   /// Checks if access token is about to expire and refreshes if necessary
@@ -170,18 +168,19 @@ class AuthRepository {
         }),
       );
 
-      print(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final newAccessToken = data['accessToken'];
         // final newRefreshToken = data['refreshToken'];
         await _saveTokens(newAccessToken, refreshToken);
+      } else if (response.statusCode == 401) {
+        throw const NoRefreshTokenException('Error refreshing access token');
       } else {
         // Handle failed refresh (e.g., log out)
         logout();
       }
     } catch (e) {
-      print('Error refreshing access token: $e');
+      throw NoAccessTokenException('Error refreshing access token: $e');
     }
   }
 
