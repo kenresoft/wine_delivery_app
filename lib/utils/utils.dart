@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:wine_delivery_app/utils/exceptions.dart';
 import 'package:wine_delivery_app/views/auth/login_page.dart';
 import 'package:wine_delivery_app/views/home/main_screen.dart';
@@ -7,6 +8,8 @@ import 'package:wine_delivery_app/views/home/main_screen.dart';
 import '../repository/auth_repository.dart';
 import 'constants.dart';
 import 'enums.dart';
+
+final logger = Logger();
 
 class Utils {
   Utils._();
@@ -93,7 +96,7 @@ class Utils {
   }*/
 
   static Future<void> authCheck(BuildContext context) async {
-    const String endpoint = '${Constants.baseUrl}/api/categories';
+    final String endpoint = '${Constants.baseUrl}/api/categories';
 
     try {
       final response = await _makeAuthenticatedRequest(endpoint);
@@ -117,7 +120,7 @@ class Utils {
         );
       }
     } on NoAccessTokenException catch (e) {
-      print(e.message);
+      logger.e(e.message);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
@@ -126,7 +129,7 @@ class Utils {
         ),
       );
     } on NoRefreshTokenException catch (e) {
-      print(e.message);
+      logger.e(e.message);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
@@ -135,7 +138,7 @@ class Utils {
         ),
       );
     } catch (e) {
-      print(e);
+      logger.e(e);
     }
   }
 
