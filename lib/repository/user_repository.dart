@@ -4,9 +4,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:wine_delivery_app/model/product.dart';
 
+import '../model/profile.dart';
 import '../utils/constants.dart';
+import '../utils/exceptions.dart';
 import '../utils/utils.dart';
 import 'auth_repository.dart';
 
@@ -20,13 +21,13 @@ class UserRepository {
     return _instance;
   }
 
-  static const String _url = '${Constants.baseUrl}/api/auth/profile';
+  static final String _url = '${Constants.baseUrl}/api/auth/profile';
 
-  static const String _updateUrl = '${Constants.baseUrl}/api/users/';
+  static final String _updateUrl = '${Constants.baseUrl}/api/users/';
 
   Future<Profile> getUserProfile() async {
     try {
-      final response = await makeRequest(_url);
+      final response = await Utils.makeRequest(_url);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -39,17 +40,20 @@ class UserRepository {
         throw 'Error parsing user from the server.';
       }
       if (response.statusCode == 401) {
-        throw 'Unauthorized: Please log in again.';
+        throw const InvalidAccessTokenException('Unauthorized: Please log in again.');
+      }
+      if (response.statusCode == 403) {
+        throw const UnauthorizedException('Unauthorized: Access Denied');
       }
       throw 'Error fetching user profile: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        logger.e(e.toString());
       }
       if (e is SocketException) {
-        throw 'Failed to retrieve user information (error code: 404). \n'
+        throw const NetworkException('Failed to retrieve user information (error code: 404). \n'
             'Please check your internet connection and try again. \n'
-            'If the issue persists, contact our support team at [email protected].';
+            'If the issue persists, contact our support team at [email protected].');
       }
       rethrow;
     }
@@ -78,7 +82,7 @@ class UserRepository {
         request.files.add(await http.MultipartFile.fromPath(
           'profileImage',
           profileImage.path,
-          contentType: MediaType('image', 'jpeg'), // Adjust based on the image type
+          contentType: MediaType('image', 'jpeg'),
         ));
       }
 
@@ -100,7 +104,7 @@ class UserRepository {
       throw 'Error updating user profile: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        logger.e(e.toString());
       }
       if (e is SocketException) {
         throw 'Failed to update user information. \n'

@@ -21,7 +21,7 @@ class SocketRepository {
     try {
       final authToken = await authRepository.getAccessToken(); // Get auth token
       socket = sio.io(
-        Constants.socketUrl,
+        Constants.wsBaseUrl,
         sio.OptionBuilder().setTransports(
           ['websocket'],
         ).setExtraHeaders({
