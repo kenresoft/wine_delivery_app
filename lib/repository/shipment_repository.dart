@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:wine_delivery_app/model/shipment.dart';
 
 import '../utils/constants.dart';
+import '../utils/enums.dart';
 import '../utils/utils.dart';
 
 class ShipmentRepository {
@@ -18,13 +20,13 @@ class ShipmentRepository {
     return _instance;
   }
 
-  static const String _baseUrl = '${Constants.baseUrl}/api/shipment';
+  static final String _baseUrl = '${Constants.baseUrl}/api/shipment';
 
   Future<Shipment> getShipmentDetails() async {
     // final token = await authRepository.getAccessToken();
 
     try {
-      final response = await makeRequest(_baseUrl);
+      final response = await Utils.makeRequest(_baseUrl);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -38,7 +40,7 @@ class ShipmentRepository {
       throw 'Error fetching shipment details: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        logger.e(e.toString());
       }
       if (e is SocketException) {
         throw 'Failed to retrieve shipment details. \n'
@@ -62,7 +64,7 @@ class ShipmentRepository {
   }) async {
 
     try {
-      final response = await makeRequest(
+      final response = await Utils.makeRequest(
         _baseUrl,
         method: RequestMethod.post,
         body: jsonEncode({
@@ -93,7 +95,7 @@ class ShipmentRepository {
       throw 'Error creating shipment details: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        logger.e(e.toString());
       }
       if (e is SocketException) {
         throw 'Failed to create shipment details. \n'
@@ -107,7 +109,7 @@ class ShipmentRepository {
   Future<Shipment> getShipmentDetailsById(String shipmentId) async {
 
     try {
-      final response = await makeRequest('$_baseUrl/$shipmentId');
+      final response = await Utils.makeRequest('$_baseUrl/$shipmentId');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -124,7 +126,7 @@ class ShipmentRepository {
       throw 'Error fetching shipment details: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        logger.e(e.toString());
       }
       if (e is SocketException) {
         throw 'Failed to retrieve shipment details. \n'
@@ -133,6 +135,34 @@ class ShipmentRepository {
       }
       rethrow;
     }
+  }
+
+  Future<Map<String, List<String>>> loadCountriesWithStates() async {
+    // Load JSON data from assets
+    String jsonString = await rootBundle.loadString('assets/countries.json');
+    List<dynamic> countriesData = json.decode(jsonString);
+
+    // Initialize map to store countries with their states/provinces
+    Map<String, List<String>> countriesWithStates = {};
+
+    // Iterate through each country object
+    for (var country in countriesData) {
+      String countryName = country['name'];
+      List<dynamic> statesData = country['states'];
+
+      // Initialize list to store states/provinces
+      List<String> statesList = [];
+
+      // Iterate through states/provinces of the country
+      for (var state in statesData) {
+        statesList.add(state['name']);
+      }
+
+      // Add country with its states/provinces to the map
+      countriesWithStates[countryName] = statesList;
+    }
+
+    return countriesWithStates;
   }
 }
 

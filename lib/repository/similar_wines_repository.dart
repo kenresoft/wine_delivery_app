@@ -25,6 +25,7 @@ class SimilarWinesRepository {
 
 
 import '../model/product.dart';
+import '../model/review.dart';
 
 class SimilarWinesRepository {
   final List<Product> allWines;
