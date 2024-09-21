@@ -13,15 +13,15 @@ import '../utils/logger.dart';
 import '../utils/utils.dart';
 
 class CartRepository {
-  CartRepository._();
+  const CartRepository._();
 
-  static final CartRepository _instance = CartRepository._();
+  static const CartRepository _instance = CartRepository._();
 
   static CartRepository getInstance() {
     return _instance;
   }
 
-  static const String _baseUrl = '${Constants.baseUrl}/api/cart';
+  static final String _baseUrl = '${Constants.baseUrl}/api/cart';
 
   Future<List<CartItem>> getCartItems() async {
     const cacheKey = 'getCartItems';
@@ -39,14 +39,14 @@ class CartRepository {
 
           return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
         }).toList());
-        print('Data fetched from cache');
+        logger.i('Data fetched from cache');
         logToDevice('Data fetched from cache');
 
         logToDevice(cartItems.toString(), 'cart.log');
         return cartItems;
       },
       onError: (error) async {
-        print('ERROR: ${error.toString()}');
+        logger.e('ERROR: ${error.toString()}');
         return [];
       },
       // function: (data) => _fetchCartItems(data),
@@ -63,10 +63,10 @@ class CartRepository {
 
       return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
     }).toList());
-    print('Data fetched from cache');
+    logger.i('Data fetched from cache');
     logToDevice('Data fetched from cache');
 
-    print(cartItems.toString());
+    logger.i(cartItems.toString());
     logToDevice(cartItems.toString(), 'cart.log');
     return cartItems;
   }
@@ -211,7 +211,7 @@ class CartRepository {
         return double.parse(data['totalPrice'].toString());
       },
       onError: (error) async {
-        print('ERROR: ${error.toString()}');
+        logger.e('ERROR: ${error.toString()}');
         return 0.0;
       },
     );

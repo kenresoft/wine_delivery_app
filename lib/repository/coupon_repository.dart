@@ -15,7 +15,7 @@ class CouponRepository {
     return _instance;
   }
 
-  static const String _baseUrl = '${Constants.baseUrl}/api/coupon';
+  static final String _baseUrl = '${Constants.baseUrl}/api/coupon';
 
   Future<Coupon> createCoupon(
     String code,
