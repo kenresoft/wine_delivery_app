@@ -1,10 +1,12 @@
-class Coupon {
+import 'package:equatable/equatable.dart';
+
+class Coupon extends Equatable {
   final String code;
   final double discount;
   final double minimumPurchaseAmount;
   final DateTime expiryDate;
 
-  Coupon({
+  const Coupon({
     required this.code,
     required this.discount,
     required this.minimumPurchaseAmount,
@@ -19,4 +21,10 @@ class Coupon {
       expiryDate: DateTime.parse(json['expiryDate'].toString()),
     );
   }
+
+  @override
+  List<Object?> get props => [code, discount, minimumPurchaseAmount, expiryDate];
+
+  @override
+  bool get stringify => true;
 }
