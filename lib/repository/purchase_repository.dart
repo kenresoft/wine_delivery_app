@@ -1,7 +1,7 @@
-import 'package:wine_delivery_app/utils/utils.dart';
+import 'package:wine_delivery_app/utils/extensions.dart';
 
-import '../model/purchase.dart';
 import '../model/product.dart';
+import '../model/purchase.dart';
 
 class PurchaseRepository {
   // Private constructor
@@ -34,7 +34,7 @@ class PurchaseRepository {
   void addPurchase(Product wine, int quantity, DateTime date) {
     Purchase newPurchase = Purchase(
       purchaseId: _generatePurchaseId(),
-      wine: wine,
+      product: wine,
       quantity: quantity,
       purchaseDate: date,
     );
@@ -60,22 +60,19 @@ class PurchaseRepository {
   }
 
   Purchase getPurchaseById(String purchaseId) {
-    Purchase? purchase = purchases.firstWhere((purchase) {
-      return purchase.purchaseId == purchaseId;
-    }, orElse: () => Purchase.empty());
+    Purchase? purchase = purchases.firstWhere(
+      (purchase) => purchase.purchaseId == purchaseId,
+      orElse: () => Purchase.empty(),
+    );
     return purchase;
   }
 
   List<Purchase> getPurchasesByWine(Product wine) {
-    return purchases.where((purchase) {
-      return purchase.wine == wine;
-    }).toList();
+    return purchases.where((purchase) => purchase.product == wine).toList();
   }
 
   List<Purchase> getPurchasesByDate(DateTime date) {
-    return purchases.where((purchase) {
-      return purchase.purchaseDate.isSameDate(date);
-    }).toList();
+    return purchases.where((purchase) => purchase.purchaseDate.isSameDate(date)).toList();
   }
 }
 

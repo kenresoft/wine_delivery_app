@@ -206,7 +206,7 @@ class OrderRepository {
             return OrderProductItem(quantity: orderItem.quantity, product: product);
           } catch (e) {
             // Handle error fetching individual product
-            print('Error fetching product: ${orderItem.productId}');
+            logger.e('Error fetching product: ${orderItem.productId}');
             return null; // Or return a placeholder item
           }
         });

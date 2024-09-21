@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:wine_delivery_app/repository/decision_repository.dart';
 
 import '../model/product.dart';
 import '../utils/constants.dart';
+import '../utils/enums.dart';
 import '../utils/utils.dart';
 
 class ProductRepository {
@@ -20,7 +22,7 @@ class ProductRepository {
   Future<List<Product>> getAllProducts() async {
 
     try {
-      final response = await makeRequest('${Constants.baseUrl}/api/products');
+      final response = await Utils.makeRequest('${Constants.baseUrl}/api/products');
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['products'];
@@ -38,7 +40,7 @@ class ProductRepository {
     try {
       // Join the list of IDs with a comma
       final idsParam = ids.join(',');
-      final response = await makeRequest('${Constants.baseUrl}/api/products/ids/$idsParam');
+      final response = await Utils.makeRequest('${Constants.baseUrl}/api/products/ids/$idsParam');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -69,16 +71,28 @@ class ProductRepository {
   }
 
   Future<Product> getProductById(String id) async {
-    try {
-      final response = await makeRequest('${Constants.baseUrl}/api/products/$id');
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+    return decisionRepository.decide(
+      cacheKey: 'getProductById:$id',
+      endpoint: '${Constants.baseUrl}/api/products/$id',
+      onSuccess: (data) async {
         if (data['product'] != null) {
           final productData = data['product'] as Map<String, dynamic>;
+          //logger.d(productData);
           return Product.fromJson(productData);
         } else {
           throw 'Error: Product not found in response.';
         }
+      },
+      onError: ( error) async {
+        logger.e('ERROR: ${error.toString()}');
+        return Product.empty();
+      },
+    );
+    /*try {
+      final response = await Utils.makeRequest('${Constants.baseUrl}/api/products/$id');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
       }
 
       if (response.statusCode == 401) {
@@ -88,11 +102,11 @@ class ProductRepository {
       throw 'Error fetching user favorites: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       throw 'ERROR: $e';
-    }
+    }*/
   }
 
   Future<Product> createProduct(Product product) async {
-    final response = await makeRequest('${Constants.baseUrl}/api/products',
+    final response = await Utils.makeRequest('${Constants.baseUrl}/api/products',
         method: RequestMethod.post,
         body: json.encode({
           'name': product.name,
