@@ -39,7 +39,7 @@ class FavoritesRepository {
           for (final favoriteJson in favoritesJson) {
             final favorite = Favorite.fromJson(favoriteJson);
             final product = await productRepository.getProductById(favorite.product);
-            logger.t(response);
+            logger.t(response.body);
             products.add(product);
           }
           return products;

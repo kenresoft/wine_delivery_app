@@ -1,30 +1,85 @@
+/*
+// import 'package:extensionresoft/extensionresoft.dart';
+
+import '../aa.dart';
+import 'constants.dart';
+
+/// USER ID
+String get userID => sharedPreferencesService.getString('userID') ?? Constants.empty;
+
+set userID(String value) => sharedPreferencesService.setString('userID', value);
+
+/// AUTH TOKEN
+String get authToken => sharedPreferencesService.getString('authToken') ?? Constants.empty;
+
+set authToken(String value) => sharedPreferencesService.setString('authToken', value);
+
+Future<bool> removeAuthToken() => sharedPreferencesService.remove('authToken');
+
+/// CURRENT PAGE
+*/ /*
+
+*/
+/*AppPage get page => getPage(sharedPreferencesService.getString('page') ?? AppPage.userVerification.name);
+
+set page(AppPage value) => sharedPreferencesService.setString('page', value.name);*/ /*
+*/
+/*
+
+
+/// SEEN ONBOARDING
+bool get seenOnboarding => sharedPreferencesService.getBool('seenOnboarding') ?? false;
+
+set seenOnboarding(bool value) => sharedPreferencesService.setBool('seenOnboarding', value);
+
+/// PROMO CODE
+String get promoCode => sharedPreferencesService.getString('promoCode') ?? Constants.empty;
+
+set promoCode(String value) => sharedPreferencesService.setString('promoCode', value);*/ /*
+
+*/
+
+// import '../cc.dart';
 import 'package:extensionresoft/extensionresoft.dart';
 
 import 'constants.dart';
 
 /// USER ID
-String get userID => SharedPreferencesService.getString('userID') ?? Constants.empty;
+String get userID => SharedPreferencesService.get('userID') ?? Constants.empty;
 
-set userID(String value) => SharedPreferencesService.setString('userID', value);
+set userID(String value) => SharedPreferencesService.set('userID', value);
 
 /// AUTH TOKEN
-String get authToken => SharedPreferencesService.getString('authToken') ?? Constants.empty;
+Future<String> get authToken async => await SharedPreferencesService.getAsync('authToken') ?? Constants.empty;
 
-set authToken(String value) => SharedPreferencesService.setString('authToken', value);
+set authToken(Future<String> value) => SharedPreferencesService.set('authToken', value);
 
-Future<bool> removeAuthToken() => SharedPreferencesService.remove('authToken');
-
-/// CURRENT PAGE
-/*AppPage get page => getPage(SharedPreferencesService.getString('page') ?? AppPage.userVerification.name);
-
-set page(AppPage value) => SharedPreferencesService.setString('page', value.name);*/
+Future<void> removeAuthToken() => SharedPreferencesService.remove('authToken');
 
 /// SEEN ONBOARDING
-bool get seenOnboarding => SharedPreferencesService.getBool('seenOnboarding') ?? false;
+/*
+bool get seenOnboarding => SharedPreferencesService.get<bool>('seenOnboarding') ?? false;
 
-set seenOnboarding(bool value) => SharedPreferencesService.setBool('seenOnboarding', value);
+set seenOnboarding(bool value) => SharedPreferencesService.set<bool>('seenOnboarding', value);
+*/
+
+/// SEEN ONBOARDING
+Future<bool> get seenOnboarding async => await SharedPreferencesService.getAsync<bool>('seenOnboarding') ?? false;
+
+set seenOnboarding(Future<bool> value) => SharedPreferencesService.set<bool>('seenOnboarding', value);
 
 /// PROMO CODE
-String get promoCode => SharedPreferencesService.getString('promoCode') ?? Constants.empty;
+String get promoCode => SharedPreferencesService.get<String>('promoCode') ?? Constants.empty;
 
-set promoCode(String value) => SharedPreferencesService.setString('promoCode', value);
+set promoCode(String value) => SharedPreferencesService.set<String>('promoCode', value);
+
+/// INTERNET STATUS
+bool get internetStatus => SharedPreferencesService.getBool('internetStatus') ?? false;
+
+set internetStatus(bool value) => SharedPreferencesService.setBool('internetStatus', value);
+
+/// SESSION ACTIVE
+bool get sessionActive => SharedPreferencesService.get('sessionActive') ?? false;
+
+set sessionActive(bool value) => SharedPreferencesService.set('sessionActive', value);
+

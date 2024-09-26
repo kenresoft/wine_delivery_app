@@ -7,6 +7,7 @@ import 'package:wine_delivery_app/repository/storage_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 import 'package:wine_delivery_app/utils/exceptions.dart';
 
+import '../utils/preferences.dart';
 import '../utils/utils.dart';
 
 class AuthRepository {
@@ -40,6 +41,7 @@ class AuthRepository {
 
       if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
         _saveTokens(accessToken, refreshToken);
+        sessionActive = true;
         return true;
       }
       return false;
@@ -66,6 +68,7 @@ class AuthRepository {
 
         if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
           _saveTokens(accessToken, refreshToken);
+          sessionActive = true;
           logger.i(accessToken);
           result('Login successful!');
           return true;
@@ -94,6 +97,7 @@ class AuthRepository {
     final token = await getAccessToken();
 
     if (token.isEmpty) {
+      sessionActive = false;
       return false;
     }
 
@@ -106,9 +110,11 @@ class AuthRepository {
         case 401:
           // Unauthorized - Token might be invalid or expired
           await clearToken();
+          sessionActive = false;
           return false;
         default:
           logger.e('Unexpected status code: ${response.statusCode}');
+          sessionActive = false;
           return false;
       }
     } on SocketException {
@@ -125,6 +131,7 @@ class AuthRepository {
 
     final accessToken = await getAccessToken();
     if (accessToken.isEmpty) {
+      sessionActive = false;
       throw const NoAccessTokenException('No access token available');
     }
 
@@ -174,6 +181,7 @@ class AuthRepository {
         // final newRefreshToken = data['refreshToken'];
         await _saveTokens(newAccessToken, refreshToken);
       } else if (response.statusCode == 401) {
+        sessionActive = false;
         throw const NoRefreshTokenException('Error refreshing access token');
       } else {
         // Handle failed refresh (e.g., log out)
@@ -208,10 +216,13 @@ class AuthRepository {
   }
 
   Future<void> clearToken() async {
+    sessionActive = false;
     return await storageRepository.clearTokens();
   }
 
-  Future<void> logout() async {}
+  Future<void> logout() async {
+    sessionActive = false;
+  }
 }
 
 final AuthRepository authRepository = AuthRepository.getInstance();
