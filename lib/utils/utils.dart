@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:wine_delivery_app/utils/exceptions.dart';
+import 'package:wine_delivery_app/utils/internet_connection_checker.dart';
+import 'package:wine_delivery_app/utils/preferences.dart';
 import 'package:wine_delivery_app/views/auth/login_page.dart';
 import 'package:wine_delivery_app/views/home/main_screen.dart';
 
@@ -96,12 +100,26 @@ class Utils {
   }*/
 
   static Future<void> authCheck(BuildContext context) async {
-    final String endpoint = '${Constants.baseUrl}/api/categories';
+    // final String endpoint = '${Constants.baseUrl}/api/categories';
+    final String endpoint = '${Constants.baseUrl}/api/auth/profile';
+    var response = http.Response('', 404);
 
     try {
-      final response = await _makeAuthenticatedRequest(endpoint);
+      response = await _makeAuthenticatedRequest(endpoint);
+      final internet = await internetConnectionChecker.hasInternetConnection();
+
+      if (sessionActive && seenOnboarding || !internet.isConnected) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const MainScreen();
+            },
+          ),
+        );
+      }
 
       if (response.statusCode == 200) {
+        sessionActive = true;
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
@@ -111,6 +129,7 @@ class Utils {
         );
       } else {
         // Handle error here
+        logger.w('${response.statusCode}: ${response.body}');
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
@@ -120,6 +139,7 @@ class Utils {
         );
       }
     } on NoAccessTokenException catch (e) {
+      sessionActive = false;
       logger.e(e.message);
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -129,6 +149,7 @@ class Utils {
         ),
       );
     } on NoRefreshTokenException catch (e) {
+      sessionActive = false;
       logger.e(e.message);
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -137,8 +158,18 @@ class Utils {
           },
         ),
       );
+    } on SocketException catch (e) {
+      logger.d(e);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return const MainScreen();
+          },
+        ),
+      );
     } catch (e) {
       logger.e(e);
+      Utils.handleError(response, e.toString());
     }
   }
 
