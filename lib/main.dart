@@ -4,8 +4,8 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/views/connection_banner.dart';
 
 import 'bloc/providers.dart';
 import 'utils/enums.dart';
@@ -68,8 +68,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Object? _currentError;
   late StreamSubscription<InternetConnectionResult> _connectionSubscription;
-  String connectionStatus = "Checking connection...";
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  bool internetStatus = false;
+  bool isBannerVisible = false;
+  String connectionMessage = "Checking connection...";
+
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  Color bannerColor = Colors.red; // Default color for offline status
 
   @override
   void initState() {
@@ -85,9 +89,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     // Initialize local notifications
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    /*const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);*/
 
     // Start listening to connection changes globally
     internetConnectionChecker.startListening();
@@ -95,19 +99,36 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // Subscribe to the connection stream globally
     _connectionSubscription = internetConnectionChecker.connectionStream.listen((result) {
       String message;
+      bool status;
+      Color bannerBgColor;
       if (result.dnsSuccess && result.socketSuccess && result.httpSuccess) {
         message = 'Internet connection is available';
+        bannerBgColor = Colors.green; // Green for online status
+        status = true;
       } else {
         message = 'Internet connection is down: ${result.failureReason}';
+        bannerBgColor = Colors.red; // Red for offline status
+        status = false;
       }
 
       setState(() {
-        connectionStatus = message;
-        //internetStatus = true;
+        connectionMessage = message;
+        internetStatus = status;
+        bannerColor = bannerBgColor;
+        isBannerVisible = true;
+      });
+
+      // Automatically hide the banner after 3 seconds
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted) {
+          setState(() {
+            isBannerVisible = false;
+          });
+        }
       });
 
       // Show notification
-      _showNotification(message);
+      // _showNotification(message);
 
       logger.d(message);
     });
@@ -130,7 +151,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  Future<void> _showNotification(String message) async {
+  /*Future<void> _showNotification(String message) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'connection_channel',
       'Connection Status',
@@ -145,7 +166,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       message,
       notificationDetails,
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -156,56 +177,74 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ensureScreenSize: true,
       child: MultiBlocProvider(
         providers: Providers.blocProviders,
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme().themeData,
-          // darkTheme: AppTheme().darkThemeData,
-          themeMode: ThemeMode.system,
-          routes: {
-            '/': condition(
-              widget.initialError != null,
-              (context) => ErrorScreen(
-                message: "Initialization failed: ${widget.initialError}",
-                errorType: ErrorType.initialization,
-                onRetry: () async {
-                  try {
-                    // Load configuration and services
-                    await SharedPreferencesService.init();
-                    await EnvironmentConfig.load(ConfigMode.dev);
+        child: Directionality(
+          textDirection: TextDirection.ltr, // Add this
+          child: Stack(
+            children: [
+              MaterialApp(
+                title: 'Flutter Demo',
+                debugShowCheckedModeBanner: false,
+                theme: AppTheme().themeData,
+                // darkTheme: AppTheme().darkThemeData,
+                themeMode: ThemeMode.system,
+                routes: {
+                  '/': condition(
+                    widget.initialError != null,
+                    (context) => ErrorScreen(
+                      message: "Initialization failed: ${widget.initialError}",
+                      errorType: ErrorType.initialization,
+                      onRetry: () async {
+                        try {
+                          // Load configuration and services
+                          await SharedPreferencesService.init();
+                          await EnvironmentConfig.load(ConfigMode.dev);
 
-                    // If successful, clear the error and navigate to the home
-                    if (mounted) {
-                      setState(() {
-                        _currentError = null; // Reset the error
-                      });
-                      Navigator.of(currentContext).pushReplacement(
-                        // Use the captured context
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const SplashScreen();
+                          // If successful, clear the error and navigate to the home
+                              if (mounted) {
+                                setState(() {
+                                  _currentError = null; // Reset the error
+                                });
+                                Navigator.of(currentContext).pushReplacement(
+                                  // Use the captured context
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return const SplashScreen();
+                                    },
+                                  ),
+                                );
+                              }
+                            } catch (error) {
+                              // Handle any initialization errors
+                              logger.e("Error during initialization: $error");
+                              if (mounted) {
+                                setState(() {
+                                  _currentError = error; // Update error state
+                                });
+                              }
+                            }
                           },
                         ),
-                      );
-                    }
-                  } catch (error) {
-                    // Handle any initialization errors
-                    logger.e("Error during initialization: $error");
-                    if (mounted) {
-                      setState(() {
-                        _currentError = error; // Update error state
-                      });
-                    }
-                  }
+                        (context) => const SplashScreen(),
+                  ),
+                  '/cart_page': (context) => const ShoppingCartScreen(),
+                  '/home': (context) => const Home(),
+                  '/order_management_page': (context) => const OrderManagementPage(),
+                  '/category': (context) => const CategoryScreen(),
                 },
               ),
-              (context) => const SplashScreen(),
-            ),
-            '/cart_page': (context) => const ShoppingCartScreen(),
-            '/home': (context) => const Home(),
-            '/order_management_page': (context) => const OrderManagementPage(),
-            '/category': (context) => const CategoryScreen(),
-          },
+              // Connection banner widget displayed on top of the screen
+              ConnectionBannerWidget(
+                message: connectionMessage,
+                isVisible: isBannerVisible,
+                backgroundColor: bannerColor,
+                onClose: () {
+                  setState(() {
+                    isBannerVisible = false;
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
