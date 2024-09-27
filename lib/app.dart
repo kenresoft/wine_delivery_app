@@ -62,57 +62,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         textDirection: TextDirection.ltr,
         child: Stack(
           children: [
-            MaterialApp(
-              title: 'Flutter Demo',
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme().themeData,
-              // darkTheme: AppTheme().darkThemeData,
-              themeMode: ThemeMode.system,
-              routes: {
-                '/': condition(
-                  widget.initialError != null,
-                  (context) => ErrorScreen(
-                    message: "Initialization failed: ${widget.initialError}",
-                    errorType: ErrorType.initialization,
-                    onRetry: () async {
-                      try {
-                        // Load configuration and services
-                        await SharedPreferencesService.init();
-                        await EnvironmentConfig.load(ConfigMode.dev);
-
-                        // If successful, clear the error and navigate to the home
-                            if (mounted) {
-                              setState(() {
-                                _currentError = null; // Reset the error
-                              });
-                              Navigator.of(currentContext).pushReplacement(
-                                // Use the captured context
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return const SplashScreen();
-                                  },
-                                ),
-                              );
-                            }
-                          } catch (error) {
-                            // Handle any initialization errors
-                            logger.e("Error during initialization: $error");
-                            if (mounted) {
-                              setState(() {
-                                _currentError = error; // Update error state
-                              });
-                            }
-                          }
-                        },
-                      ),
-                      (context) => const SplashScreen(),
-                ),
-                '/cart_page': (context) => const ShoppingCartScreen(),
-                '/home': (context) => const Home(),
-                '/order_management_page': (context) => const OrderManagementPage(),
-                '/category': (context) => const CategoryScreen(),
-              },
-            ),
+            buildMaterialApp(currentContext),
             BlocBuilder<NetworkBloc, NetworkState>(
               builder: (context, state) {
                 if (state is BannerVisible) {
@@ -131,6 +81,53 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ],
         ),
       ),
+    );
+  }
+
+  MaterialApp buildMaterialApp(BuildContext mainContext) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme().themeData,
+      // darkTheme: AppTheme().darkThemeData,
+      themeMode: ThemeMode.system,
+      routes: {
+        '/': condition(
+          widget.initialError != null,
+          (context) => ErrorScreen(
+            message: "Initialization failed: ${widget.initialError}",
+            errorType: ErrorType.initialization,
+            onRetry: () async {
+              try {
+                // Load configuration and services
+                await SharedPreferencesService.init();
+                await EnvironmentConfig.load(ConfigMode.dev);
+
+                // If successful, clear the error and navigate to the home
+                    if (mounted) {
+                      setState(() => _currentError = null);
+                      Navigator.of(mainContext).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const SplashScreen(),
+                        ),
+                      );
+                    }
+                  } catch (error) {
+                    // Handle any initialization errors
+                    logger.e("Error during initialization: $error");
+                    if (mounted) {
+                      setState(() => _currentError = error);
+                    }
+                  }
+                },
+              ),
+              (context) => const SplashScreen(),
+        ),
+        '/cart_page': (context) => const ShoppingCartScreen(),
+        '/home': (context) => const Home(),
+        '/order_management_page': (context) => const OrderManagementPage(),
+        '/category': (context) => const CategoryScreen(),
+      },
     );
   }
 
