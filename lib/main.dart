@@ -1,6 +1,5 @@
 import 'dart:async';
 
-// import 'package:extensionresoft/extensionresoft.dart';
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'cc.dart' as sps;
 import 'bloc/providers.dart';
 import 'utils/enums.dart';
 import 'utils/environment_config.dart';
@@ -38,10 +36,9 @@ void main() async {
     };
     try {
       // Load configuration and services after binding initialization
-      // await SharedPreferencesService.init();
-      await sps.sharedPreferencesService.init(
-        // allowList: {'seenOnboarding', 'authToken'},
-        useCache: false,
+      await SharedPreferencesService.init(
+        enableCaching: true,
+        cacheOptions: const SharedPreferencesWithCacheOptions()
       );
       await EnvironmentConfig.load(ConfigMode.dev);
       // Stripe.publishableKey = Constants.stripePublishableKey;
@@ -77,6 +74,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    // SharedPreferencesService.remove('promoCode');
+    // SharedPreferencesService.clear();
+    //internetStatus = false;
+
+    // logger.w('Check: ${SharedPreferencesService.instance}');
+
     _currentError = widget.initialError;
     WidgetsBinding.instance.addObserver(this);
 
@@ -99,6 +103,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
       setState(() {
         connectionStatus = message;
+        //internetStatus = true;
       });
 
       // Show notification
