@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:wine_delivery_app/repository/decision_repository.dart';
 
 import '../model/profile.dart';
 import '../utils/constants.dart';
-import '../utils/exceptions.dart';
 import '../utils/utils.dart';
 import 'auth_repository.dart';
 
@@ -26,7 +26,24 @@ class UserRepository {
   static final String _updateUrl = '${Constants.baseUrl}/api/users/';
 
   Future<Profile> getUserProfile() async {
-    try {
+    return decisionRepository.decide(
+      cacheKey: 'getUserProfile',
+      endpoint: _url,
+      onSuccess: (data) async {
+        final userJson = data['user'];
+
+        if (userJson != null) {
+          return Profile.fromJson(userJson);
+        }
+        throw 'Error parsing user from the server.';
+      },
+      onError: (error) async {
+        logger.e('ERROR: ${error.toString()}');
+        return const Profile(id: 'id', email: 'email', username: 'username', profileImage: 'profileImage', favorites: []);
+      },
+    );
+
+    /*try {
       final response = await Utils.makeRequest(_url);
 
       if (response.statusCode == 200) {
@@ -56,7 +73,7 @@ class UserRepository {
             'If the issue persists, contact our support team at [email protected].');
       }
       rethrow;
-    }
+    }*/
   }
 
   // New Method to Update User Profile

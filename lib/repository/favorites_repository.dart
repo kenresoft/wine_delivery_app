@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/model/product.dart';
+import 'package:wine_delivery_app/repository/decision_repository.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/extensions.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
@@ -25,8 +26,30 @@ class FavoritesRepository {
   static final String _url = '${Constants.baseUrl}/api/favorites';
 
   Future<List<Product>> getFavorites() async {
+    return decisionRepository.decide<List<Product>>(
+      cacheKey: 'getFavorites',
+      endpoint: _url,
+      onSuccess: (data) async {
+        final List<dynamic>? favoritesJson = data['favorite'];
 
-    try {
+        if (favoritesJson != null) {
+          final products = <Product>[];
+          for (final favoriteJson in favoritesJson) {
+            final favorite = Favorite.fromJson(favoriteJson);
+            final product = await productRepository.getProductById(favorite.product);
+            logger.t(data);
+            products.add(product);
+          }
+          return products;
+        }
+        throw 'Error parsing favorites from the server.';
+      },
+      onError: (error) async {
+        logger.e('ERROR: ${error.toString()}');
+        return [Product.empty()];
+      },
+    );
+/*    try {
       final response = await Utils.makeRequest(_url);
 
       if (response.statusCode == 200) {
@@ -56,12 +79,12 @@ class FavoritesRepository {
       logger.e(e.toString());
 
       if (e is SocketException) {
-        throw 'Failed to retrieve user favorites (error code: ${/*response.statusCode ??*/ 404}). \n'
+        throw 'Failed to retrieve user favorites (error code: ${*/ /*response.statusCode ??*/ /* 404}). \n'
             'Please check your internet connection and try again. \n'
             'If the issue persists, contact our support team at [email protected].';
       }
       rethrow;
-    }
+    }*/
   }
 
   Future<bool> isLiked(String productId) async {
