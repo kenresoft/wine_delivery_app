@@ -11,13 +11,13 @@ class StorageRepository {
   );
 
   Future<void> saveTokens(String accessToken, String refreshToken) async {
-    authToken = accessToken;
+    setAuthToken = accessToken;
     // await _storage.write(key: 'accessToken', value: accessToken);
     await _storage.write(key: 'refreshToken', value: refreshToken);
   }
 
   Future<String> getAccessToken() async {
-    return authToken;
+    return await authToken;
     // return await _storage.read(key: 'accessToken') ?? Constants.empty;
   }
 

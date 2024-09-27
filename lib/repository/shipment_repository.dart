@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:wine_delivery_app/model/shipment.dart';
+import 'package:wine_delivery_app/repository/decision_repository.dart';
 
 import '../utils/constants.dart';
 import '../utils/enums.dart';
@@ -22,10 +23,21 @@ class ShipmentRepository {
 
   static final String _baseUrl = '${Constants.baseUrl}/api/shipment';
 
-  Future<Shipment> getShipmentDetails() async {
-    // final token = await authRepository.getAccessToken();
+  Future<Shipment?> getShipmentDetails() async {
+    return decisionRepository.decide(
+      cacheKey: 'getShipmentDetails',
+      endpoint: _baseUrl,
+      onSuccess: (data) async {
+        final shipment = data['shipment'];
 
-    try {
+        return Shipment.fromJson(shipment);
+      },
+      onError: (error) async {
+        return null;
+      },
+    );
+
+    /*try {
       final response = await Utils.makeRequest(_baseUrl);
 
       if (response.statusCode == 200) {
@@ -48,7 +60,7 @@ class ShipmentRepository {
             'If the issue persists, contact our support team.';
       }
       rethrow;
-    }
+    }*/
   }
 
   Future<Shipment> saveShipmentDetails({
