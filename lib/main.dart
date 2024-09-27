@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/utils/environment_config.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 
 import 'app.dart';
+import 'bloc/providers.dart';
 
 void main() async {
   // Run the app in a guarded zone for uncaught errors
@@ -30,11 +32,21 @@ void main() async {
       // Stripe.publishableKey = Constants.stripePublishableKey;
 
       logger.d('No error during initialization');
-      runApp(const MyApp());
+      runApp(
+        MultiBlocProvider(
+          providers: Providers.blocProviders,
+          child: const MyApp(),
+        ),
+      );
     } catch (error) {
       // Handle any initialization errors
       logger.e("Error during initialization: $error");
-      runApp(MyApp(initialError: error)); // Pass the error to MyApp
+      runApp(
+        MultiBlocProvider(
+          providers: Providers.blocProviders,
+          child: MyApp(initialError: error),
+        ),
+      ); // Pass the error to MyApp
     }
   }, (error, stack) {
     // Handle uncaught errors
