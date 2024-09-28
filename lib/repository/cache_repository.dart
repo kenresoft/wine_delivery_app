@@ -63,6 +63,7 @@ class CacheRepository {
 
   /// Clears all cached data (optional function for broader cache management).
   Future<void> clearAllCache() async {
+    //TODO:
     await SharedPreferencesService.clear(); // Be cautious; this clears all data, not just cache.
   }
 }

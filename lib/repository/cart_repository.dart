@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/model/cart_item.dart';
 import 'package:wine_delivery_app/repository/auth_repository.dart';
@@ -26,7 +27,7 @@ class CartRepository {
   Future<List<CartItem>> getCartItems() async {
     const cacheKey = 'getCartItems';
 
-    return decisionRepository.decide<List<CartItem>>(
+    return DecisionRepository().decide<List<CartItem>>(
       cacheKey: cacheKey,
       endpoint: _baseUrl,
       onSuccess: (data) async {
@@ -39,7 +40,7 @@ class CartRepository {
 
           return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
         }).toList());
-        logger.i('Data fetched from cache');
+        // logger.i('Data fetched from cache');
         logToDevice('Data fetched from cache');
 
         logToDevice(cartItems.toString(), 'cart.log');
@@ -116,6 +117,11 @@ class CartRepository {
   }
 
   Future<List<CartItem>> removeFromCart(String itemId) async {
+    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
+    if (!hasInternetAccess) {
+      logger.e('No internet access');
+      return getCartItems();
+    }
     final token = await authRepository.getAccessToken();
 
     try {
@@ -138,6 +144,11 @@ class CartRepository {
   }
 
   Future<List<CartItem>> removeAllFromCart() async {
+    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
+    if (!hasInternetAccess) {
+      logger.e('No internet access');
+      return getCartItems();
+    }
     final token = await authRepository.getAccessToken();
 
     try {
@@ -160,6 +171,11 @@ class CartRepository {
   }
 
   Future<List<CartItem>> incrementCartItem(String itemId) async {
+    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
+    if (!hasInternetAccess) {
+      logger.e('No internet access');
+      return getCartItems();
+    }
     try {
       final response = await Utils.makeRequest('$_baseUrl/increment/$itemId', method: RequestMethod.put);
       if (response.statusCode == 200) {
@@ -180,6 +196,11 @@ class CartRepository {
   }
 
   Future<List<CartItem>> decrementCartItem(String itemId) async {
+    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
+    if (!hasInternetAccess) {
+      logger.e('No internet access');
+      return getCartItems();
+    }
     final token = await authRepository.getAccessToken();
 
     try {
@@ -202,7 +223,7 @@ class CartRepository {
   }
 
   Future<double> getTotalPrice({String? couponCode}) async {
-    return decisionRepository.decide<double>(
+    return DecisionRepository().decide<double>(
       cacheKey: 'getTotalPrice',
       endpoint: '$_baseUrl/price',
       requestMethod: RequestMethod.post,
