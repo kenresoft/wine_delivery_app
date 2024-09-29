@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:wine_delivery_app/utils/exceptions.dart';
-import 'package:wine_delivery_app/utils/internet_connection_checker.dart';
+import 'package:extensionresoft/src/connectivity/internet_connection_checker.dart';
 import 'package:wine_delivery_app/utils/preferences.dart';
 import 'package:wine_delivery_app/views/auth/login_page.dart';
 import 'package:wine_delivery_app/views/home/main_screen.dart';
@@ -106,9 +106,9 @@ class Utils {
 
     try {
       response = await _makeAuthenticatedRequest(endpoint);
-      final internet = await internetConnectionChecker.hasInternetConnection();
+      final internet = await InternetConnectionChecker().internetResult();
 
-      if (sessionActive && seenOnboarding || !internet.isConnected) {
+      if (sessionActive && seenOnboarding || !internet.hasInternetAccess) {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {

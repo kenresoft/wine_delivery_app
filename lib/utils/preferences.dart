@@ -50,23 +50,16 @@ String get userID => SharedPreferencesService.get('userID') ?? Constants.empty;
 set userID(String value) => SharedPreferencesService.set('userID', value);
 
 /// AUTH TOKEN
-Future<String> get authToken async => await SharedPreferencesService.getAsync('authToken') ?? Constants.empty;
+Future<String> get authToken async => await SharedPreferencesService.getAsync<String>('authToken') ?? Constants.empty;
 
-set authToken(Future<String> value) => SharedPreferencesService.set('authToken', value);
+set setAuthToken(String value) => SharedPreferencesService.set('authToken', value);
 
 Future<void> removeAuthToken() => SharedPreferencesService.remove('authToken');
 
 /// SEEN ONBOARDING
-/*
 bool get seenOnboarding => SharedPreferencesService.get<bool>('seenOnboarding') ?? false;
 
 set seenOnboarding(bool value) => SharedPreferencesService.set<bool>('seenOnboarding', value);
-*/
-
-/// SEEN ONBOARDING
-Future<bool> get seenOnboarding async => await SharedPreferencesService.getAsync<bool>('seenOnboarding') ?? false;
-
-set seenOnboarding(Future<bool> value) => SharedPreferencesService.set<bool>('seenOnboarding', value);
 
 /// PROMO CODE
 String get promoCode => SharedPreferencesService.get<String>('promoCode') ?? Constants.empty;
