@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/views/connection_banner.dart';
+import 'package:wine_delivery_app/utils/extensions.dart';
 
 import 'bloc/network/network_bloc.dart';
 import 'utils/enums.dart';
@@ -40,7 +40,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      context.read<NetworkBloc>().add(GetCurrentNetworkStatus());
+      // context.read<NetworkBloc>().add(GetCurrentNetworkStatus());
+      context.read<NetworkBloc>().add(StartNetworkListening());
     }
   }
 
@@ -62,22 +63,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         textDirection: TextDirection.ltr,
         child: Stack(
           children: [
-            buildMaterialApp(currentContext),
-            BlocBuilder<NetworkBloc, NetworkState>(
+            BlocListener<NetworkBloc, NetworkState>(
+              listener: (context, state) {
+                if (state is BannerVisible) {
+                  state.message.toast;
+                }
+              },
+              child: buildMaterialApp(currentContext),
+            ),
+            /*BlocBuilder<NetworkBloc, NetworkState>(
               builder: (context, state) {
                 if (state is BannerVisible) {
                   return ConnectionBanner(
                     message: state.message,
                     isVisible: true,
                     style: state.style,
-                    onClose: () => context.read<NetworkBloc>().add(HideBanner()),
+                    onClose: () => context.read<NetworkBloc>().add(const HideBanner()),
                   );
                 } else if (state is BannerHidden) {
                   return const SizedBox.shrink();
                 }
                 return const SizedBox.shrink();
               },
-            ),
+            ),*/
           ],
         ),
       ),

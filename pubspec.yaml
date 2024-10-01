@@ -44,7 +44,6 @@ dependencies:
 
   http: ^1.2.2
   socket_io_client: ^2.0.3+1
-  connectivity_plus: ^6.0.5
 #  flutter_stripe: ^11.0.0
 
   bloc: ^8.1.4
