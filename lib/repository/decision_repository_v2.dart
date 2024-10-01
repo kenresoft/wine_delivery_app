@@ -33,7 +33,7 @@ class DecisionRepository {
 
     final CacheEntry<String>? cachedEntry = _cacheRepository.getCache(cacheKey, (data) => data as String);
 
-    /*try {
+    try {
       final result = await confirmInternetOnData(
         cacheKey: cacheKey,
         endpoint: endpoint,
@@ -89,58 +89,6 @@ class DecisionRepository {
       return onError(e);
     } finally {
       stopwatch.stop();
-    }*/
-
-    try {
-      final result = await confirmInternetOnData(
-        cacheKey: cacheKey,
-        endpoint: endpoint,
-        requestMethod: requestMethod,
-        body: body,
-        cachedEntry: cachedEntry,
-      );
-
-      final freshApiData = result.freshApiData;
-
-      if (freshApiData != null) {
-        // Decode the fresh API data
-        final decodedApiData = jsonDecode(freshApiData);
-
-        // Return the data immediately to the UI
-        onSuccess(decodedApiData);
-
-        // Perform cache updating and data change detection in the background
-        _processDataInBackground(cachedEntry, freshApiData, cacheKey);
-
-        logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
-        return onSuccess(decodedApiData);
-      } else if (cachedEntry != null) {
-        // Fallback to cache if API fails or no data is fetched
-        final decodedCacheData = jsonDecode(cachedEntry.data);
-        logger.i('API failed, using cached data.');
-
-        logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
-        return onSuccess(decodedCacheData);
-      } else {
-        logger.e("No data available from cache or API.");
-        logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
-        return onError('No data available from cache or API.');
-      }
-    } on SocketException {
-      if (cachedEntry != null) {
-        logger.e('Socket Exception - No internet, using cached data.');
-        final decodedCacheData = jsonDecode(cachedEntry.data);
-        logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
-        return onSuccess(decodedCacheData);
-      }
-      logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
-      return onError('SocketException: No API or cache data available.');
-    } on Exception catch (e) {
-      logger.e('Exception occurred: $e');
-      logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
-      return onError(e);
-    } finally {
-      stopwatch.stop();
     }
   }
 
@@ -159,14 +107,14 @@ class DecisionRepository {
     try {
       final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
       logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
-      
+
       if (hasInternetAccess) {
         logger.i('Internet connection available. Fetching fresh data from API.');
-      
+
         // Always attempt to fetch fresh data from the API when online
         final apiResponse = await Utils.makeRequest(endpoint, method: requestMethod, body: body);
         logger.i("API request completed in ${stopwatch.elapsedMilliseconds} ms");
-      
+
         if (apiResponse.statusCode == 200) {
           logger.i('API request successful for $cacheKey');
           logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
@@ -236,7 +184,6 @@ class DecisionRepository {
       await _cacheRepository.cache(cacheKey, newCacheEntry);
     }
   }
-
 }
 
 // final DecisionRepository decisionRepository = DecisionRepository._(cacheRepository);

@@ -1,3 +1,4 @@
+/*
 import 'dart:convert';
 
 import 'package:wine_delivery_app/repository/cache_repository.dart';
@@ -27,10 +28,10 @@ class DecisionRepositoryBackup {
         final response = await Utils.makeRequest(endpoint, method: requestMethod, body: body);
 
         if (response.statusCode == 200) {
-          print('Data fetched from API and cached.');
+          logger.i('Data fetched from API and cached.');
           await _cacheRepository.cache(cacheKey, response.body);
         } else {
-          print('API request failed with status: ${response.statusCode}');
+          logger.e('API request failed with status: ${response.statusCode}');
           await _cacheRepository.cache(cacheKey, null); // Optional: cache empty or null result
           return onError(Utils.handleError(response));
         }
@@ -44,7 +45,7 @@ class DecisionRepositoryBackup {
           return onSuccess(decodedData);
         } catch (e) {
           // Handle decoding error
-          print('Error decoding cached data: $e');
+          logger.e('Error decoding cached data: $e');
           return onError(e);
           // return await _fetchData(endpoint); // Or handle error gracefully
         }
@@ -53,19 +54,20 @@ class DecisionRepositoryBackup {
         final response = await Utils.makeRequest(endpoint, method: requestMethod, body: body);
 
         if (response.statusCode == 200) {
-          print('Data refetched from API and cached.');
+          logger.i('Data refetched from API and cached.');
           await _cacheRepository.cache(cacheKey, response.body);
           return onSuccess(jsonDecode(response.body));
         } else {
-          print('Failed to fetch data from API after cache miss.');
+          logger.e('Failed to fetch data from API after cache miss.');
           return onError(Utils.handleError(response));
         }
       }
     } on Exception catch (e) {
-      print('Exception occurred: $e');
+      logger.e('Exception occurred: $e');
       return onError(e);
     }
   }
 }
 
 final DecisionRepositoryBackup decisionRepository = DecisionRepositoryBackup._(cacheRepository);
+*/
