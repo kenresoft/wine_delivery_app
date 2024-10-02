@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:extensionresoft/extensionresoft.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/model/cart_item.dart';
 import 'package:wine_delivery_app/repository/auth_repository.dart';
@@ -10,7 +9,7 @@ import 'package:wine_delivery_app/utils/constants.dart';
 
 import '../model/cart.dart';
 import '../utils/enums.dart';
-import '../utils/logger.dart';
+import '../utils/preferences.dart';
 import '../utils/utils.dart';
 
 class CartRepository {
@@ -27,53 +26,53 @@ class CartRepository {
   Future<List<CartItem>> getCartItems() async {
     const cacheKey = 'getCartItems';
 
-    return DecisionRepository().decide<List<CartItem>>(
-      cacheKey: cacheKey,
-      endpoint: _baseUrl,
-      onSuccess: (data) async {
-        final cartItemsJson = data['cart']['items'] as List<dynamic>;
+    // Start the stopwatch
+    final stopwatch = Stopwatch()..start();
+    logger.i("Fetching cart items started...");
 
-        // Fetch all products in parallel
-        List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
-          final cartItem = Cart.fromJson(itemJson);
-          final product = await productRepository.getProductById(cartItem.product!);
+    try {
+      return DecisionRepository().decide<List<CartItem>>(
+        cacheKey: cacheKey,
+        endpoint: _baseUrl,
+        onSuccess: (data) async {
+          logger.i("API response received, time elapsed: ${stopwatch.elapsedMilliseconds} ms");
 
-          return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
-        }).toList());
-        // logger.i('Data fetched from cache');
-        logToDevice('Data fetched from cache');
+          final cartItemsJson = data['cart']['items'] as List<dynamic>;
 
-        logToDevice(cartItems.toString(), 'cart.log');
-        return cartItems;
-      },
-      onError: (error) async {
-        logger.e('ERROR: ${error.toString()}');
-        return [];
-      },
-      // function: (data) => _fetchCartItems(data),
-    );
-  }
+          // Start timing the product fetching process
+          final fetchProductsStopwatch = Stopwatch()..start();
 
-  Future<List<CartItem>> _fetchCartItems(data) async {
-    final cartItemsJson = data['cart']['items'] as List<dynamic>;
+          // Fetch all products in parallel
+          List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
+            final cartItem = Cart.fromJson(itemJson);
+            final product = await productRepository.getProductById(cartItem.product!);
+            return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
+          }).toList());
 
-    // Fetch all products in parallel
-    List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
-      final cartItem = Cart.fromJson(itemJson);
-      final product = await productRepository.getProductById(cartItem.product!);
+          logger.i("Fetched all products, time elapsed: ${fetchProductsStopwatch.elapsedMilliseconds} ms");
 
-      return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
-    }).toList());
-    logger.i('Data fetched from cache');
-    logToDevice('Data fetched from cache');
+          // Log total time
+          logger.i("Total time for fetching cart items: ${stopwatch.elapsedMilliseconds} ms");
 
-    logger.i(cartItems.toString());
-    logToDevice(cartItems.toString(), 'cart.log');
-    return cartItems;
+          return cartItems;
+        },
+        onError: (error) async {
+          logger.e('ERROR: ${error.toString()}');
+          logger.i("Error occurred, total time elapsed: ${stopwatch.elapsedMilliseconds} ms");
+          return [];
+        },
+      );
+    } finally {
+      stopwatch.stop();
+    }
   }
 
   Future<List<CartItem>> addToCart(String productId, int quantity) async {
     final token = await authRepository.getAccessToken();
+
+    // Start a stopwatch to track execution time
+    final stopwatch = Stopwatch()..start();
+    logger.i("Started adding product to cart...");
 
     try {
       final response = await http.post(
@@ -85,13 +84,18 @@ class CartRepository {
         body: jsonEncode({'productId': productId, 'quantity': quantity}),
       );
 
+      logger.i("API response received, time elapsed: ${stopwatch.elapsedMilliseconds} ms");
       return await parseCartResponse(response);
 
       /*if (response.statusCode != 200) {
         throw 'Error adding to cart: ${response.statusCode} - ${response.reasonPhrase}';
       }*/
     } catch (e) {
+      logger.e('Failed to add to cart: ${e.toString()}');
+      logger.i("Error occurred, total time elapsed: ${stopwatch.elapsedMilliseconds} ms");
       throw 'Failed to add to cart: ${e.toString()}';
+    } finally {
+      stopwatch.stop();
     }
   }
 
@@ -117,8 +121,7 @@ class CartRepository {
   }
 
   Future<List<CartItem>> removeFromCart(String itemId) async {
-    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
-    if (!hasInternetAccess) {
+    if (!isInternet) {
       logger.e('No internet access');
       return getCartItems();
     }
@@ -144,8 +147,7 @@ class CartRepository {
   }
 
   Future<List<CartItem>> removeAllFromCart() async {
-    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
-    if (!hasInternetAccess) {
+    if (!isInternet) {
       logger.e('No internet access');
       return getCartItems();
     }
@@ -171,8 +173,7 @@ class CartRepository {
   }
 
   Future<List<CartItem>> incrementCartItem(String itemId) async {
-    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
-    if (!hasInternetAccess) {
+    if (!isInternet) {
       logger.e('No internet access');
       return getCartItems();
     }
@@ -196,8 +197,7 @@ class CartRepository {
   }
 
   Future<List<CartItem>> decrementCartItem(String itemId) async {
-    final hasInternetAccess = await InternetConnectionChecker().hasInternetAccess();
-    if (!hasInternetAccess) {
+    if (!isInternet) {
       logger.e('No internet access');
       return getCartItems();
     }
@@ -276,6 +276,24 @@ class CartRepository {
     } catch (e) {
       throw 'Failed to check if product is in cart: ${e.toString()}';
     }
+  }
+
+  Future<List<CartItem>> _fetchCartItems(data) async {
+    final cartItemsJson = data['cart']['items'] as List<dynamic>;
+
+    // Fetch all products in parallel
+    List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
+      final cartItem = Cart.fromJson(itemJson);
+      final product = await productRepository.getProductById(cartItem.product!);
+
+      return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
+    }).toList());
+    //logger.i('Data fetched from cache');
+    //logToDevice('Data fetched from cache');
+
+    //logger.i(cartItems.toString());
+    // logToDevice(cartItems.toString(), 'cart.log');
+    return cartItems;
   }
 
   Future<List<CartItem>> parseCartResponse(http.Response response) async {
