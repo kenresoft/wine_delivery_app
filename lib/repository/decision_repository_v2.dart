@@ -28,7 +28,8 @@ class DecisionRepository {
     required Future<T> Function(dynamic error) onError,
   }) async {
     // Initialize stopwatch
-    final stopwatch = Stopwatch()..start();
+    final stopwatch = Stopwatch()
+      ..start();
     logger.i("Decision process started for cacheKey: $cacheKey");
 
     final CacheEntry<String>? cachedEntry = _cacheRepository.getCache(cacheKey, (data) => data as String);
@@ -101,7 +102,8 @@ class DecisionRepository {
     CacheEntry<String>? cachedEntry,
   }) async {
     // Initialize stopwatch
-    final stopwatch = Stopwatch()..start();
+    final stopwatch = Stopwatch()
+      ..start();
     logger.i("Checking internet connection and fetching data for $cacheKey");
 
     try {
@@ -166,24 +168,5 @@ class DecisionRepository {
 
     return null;
   }
-
-  /// This method processes data in the background after returning the API response.
-  void _processDataInBackground(CacheEntry<String>? cachedEntry, String freshApiData, String cacheKey) async {
-    final decodedApiData = jsonDecode(freshApiData);
-
-    if (cachedEntry != null) {
-      final decodedCacheData = jsonDecode(cachedEntry.data);
-      if (_hasDataChanged(decodedCacheData, decodedApiData)) {
-        logger.w('Data changed. Updating cache.');
-        final newCacheEntry = CacheEntry.withDefaultExpiration(freshApiData);
-        await _cacheRepository.cache(cacheKey, newCacheEntry);
-      }
-    } else {
-      logger.w('No cache available. Storing new API data in cache.');
-      final newCacheEntry = CacheEntry.withDefaultExpiration(freshApiData);
-      await _cacheRepository.cache(cacheKey, newCacheEntry);
-    }
-  }
 }
-
 // final DecisionRepository decisionRepository = DecisionRepository._(cacheRepository);

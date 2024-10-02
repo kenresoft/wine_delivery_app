@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:extensionresoft/extensionresoft.dart';
 
+import '../model/cache_entry.dart';
+
 class CacheRepository {
   CacheRepository._();
 
@@ -9,41 +11,27 @@ class CacheRepository {
 
   static CacheRepository getInstance() => _instance;
 
-  static const int defaultExpirationInSeconds = 3600; // Default cache duration (1 hour)
-
-  /// Caches data with a specified key. Data will expire after [expirationInSeconds].
-  /// If no data is passed (null), it skips caching.
-  Future<void> cache(
+  /// Caches data with a specified key and expiration.
+  Future<void> cache<T>(
     String key,
-    String? body, {
-    int expirationInSeconds = defaultExpirationInSeconds, // Added parameter flexibility
-  }) async {
-    if (body != null && body.isNotEmpty) {
-      final now = DateTime.now();
-      final expirationTime = now.add(Duration(seconds: expirationInSeconds));
-      final cachedData = {
-        'data': body,
-        'expiration': expirationTime.millisecondsSinceEpoch,
-      };
-
-      await SharedPreferencesService.setString(key, jsonEncode(cachedData));
-    } else {
-      // Handle case where no data is cached for the key
-    }
+    CacheEntry<T> entry,
+  ) async {
+    final cachedData = jsonEncode(entry.toJson());
+    await SharedPreferencesService.setString(key, cachedData);
   }
 
-  /// Retrieves cached data by key if it exists and hasn't expired.
-  /// Returns null if data has expired or doesn't exist.
-  String? getCache(String key) {
+  /// Retrieves a cached entry by key if it exists and hasn't expired.
+  /// Returns null if the data has expired or doesn't exist.
+  CacheEntry<T>? getCache<T>(String key, T Function(dynamic) dataParser) {
     final cachedDataString = SharedPreferencesService.getString(key);
     if (cachedDataString?.isNotEmpty == true) {
       final cachedData = jsonDecode(cachedDataString!) as Map<String, dynamic>;
-      final expirationTime = DateTime.fromMillisecondsSinceEpoch(cachedData['expiration']);
+      final cacheEntry = CacheEntry.fromJson(cachedData, dataParser);
 
-      if (DateTime.now().isBefore(expirationTime)) {
-        return cachedData['data'] as String;
+      if (!cacheEntry.isExpired()) {
+        return cacheEntry;
       } else {
-        // Data has expired, so clear the cache for this key.
+        // Data has expired, clear the cache for this key.
         clearCache(key);
       }
     }
@@ -51,9 +39,9 @@ class CacheRepository {
   }
 
   /// Checks if valid (non-expired) cache exists for a specific key.
-  bool hasCache(String key) {
-    final cacheData = getCache(key);
-    return cacheData != null && cacheData.isNotEmpty;
+  bool hasCache<T>(String key, T Function(dynamic) dataParser) {
+    final cacheEntry = getCache(key, dataParser);
+    return cacheEntry != null && !cacheEntry.isExpired();
   }
 
   /// Clears the cache for the provided key.
@@ -65,6 +53,25 @@ class CacheRepository {
   Future<void> clearAllCache() async {
     //TODO:
     await SharedPreferencesService.clear(); // Be cautious; this clears all data, not just cache.
+  }
+
+  // Caching a response
+  Future<void> storeApiResponse(String cacheKey, dynamic apiResponse) async {
+    final cacheEntry = CacheEntry.withDefaultExpiration(apiResponse);
+    await cacheRepository.cache(cacheKey, cacheEntry);
+  }
+
+  // Retrieving cached data
+  dynamic getApiResponseFromCache(String cacheKey) {
+    final cacheEntry = cacheRepository.getCache(cacheKey, (data) {
+      return jsonDecode(data);
+    });
+    if (cacheEntry != null) {
+      return cacheEntry.data; // Return cached data if valid
+    } else {
+      // Handle case where cache is expired or doesn't exist
+      return null;
+    }
   }
 }
 

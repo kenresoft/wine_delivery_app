@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:extensionresoft/extensionresoft.dart';
-import 'package:wine_delivery_app/model/order.dart';
 import 'package:wine_delivery_app/repository/cache_repository.dart';
 import 'package:wine_delivery_app/utils/enums.dart';
-import 'package:wine_delivery_app/utils/extensions.dart';
 
 import '../model/cache_entry.dart';
 import '../utils/preferences.dart';
@@ -134,4 +131,29 @@ class DecisionRepository {
   bool _hasDataChanged(dynamic cachedData, dynamic apiData) {
     return jsonEncode(cachedData) != jsonEncode(apiData);
   }
+
+  /// Detects conflicts between cached data and API data using version fields.
+  bool _hasConflict(dynamic cachedData, dynamic apiData) {
+    return _findVersion(cachedData) != _findVersion(apiData);
+  }
+
+  /// Extracts the version field from data to be used for conflict detection.
+  int? _findVersion(Map<String, dynamic> data) {
+    if (data.containsKey('__v')) {
+      return data['__v'] as int?;
+    }
+
+    for (var value in data.values) {
+      if (value is Map<String, dynamic>) {
+        final foundVersion = _findVersion(value);
+        if (foundVersion != null) {
+          return foundVersion;
+        }
+      }
+    }
+
+    return null;
+  }
 }
+
+// final DecisionRepository decisionRepository = DecisionRepository._(cacheRepository);
