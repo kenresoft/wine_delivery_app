@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:wine_delivery_app/repository/decision_repository.dart';
+import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
 
 import '../model/profile.dart';
 import '../utils/constants.dart';
@@ -26,7 +26,7 @@ class UserRepository {
   static final String _updateUrl = '${Constants.baseUrl}/api/users/';
 
   Future<Profile> getUserProfile() async {
-    return decisionRepository.decide(
+    return DecisionRepository().decide(
       cacheKey: 'getUserProfile',
       endpoint: _url,
       onSuccess: (data) async {
