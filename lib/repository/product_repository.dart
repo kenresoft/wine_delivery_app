@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:wine_delivery_app/repository/decision_repository.dart';
 
 import '../model/product.dart';
 import '../utils/constants.dart';
 import '../utils/enums.dart';
 import '../utils/utils.dart';
+import 'decision_repository.dart';
 
 class ProductRepository {
   ProductRepository._();
@@ -71,7 +71,7 @@ class ProductRepository {
   }
 
   Future<Product> getProductById(String id) async {
-    return decisionRepository.decide(
+    return DecisionRepository().decide(
       cacheKey: 'getProductById:$id',
       endpoint: '${Constants.baseUrl}/api/products/$id',
       onSuccess: (data) async {
@@ -88,11 +88,17 @@ class ProductRepository {
         return Product.empty();
       },
     );
-    /*try {
+/*    try {
       final response = await Utils.makeRequest('${Constants.baseUrl}/api/products/$id');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
+        if (data['product'] != null) {
+          final productData = data['product'] as Map<String, dynamic>;
+          //logger.d(productData);
+          return Product.fromJson(productData);
+        } else {
+          throw 'Error: Product not found in response.';
+        }
       }
 
       if (response.statusCode == 401) {

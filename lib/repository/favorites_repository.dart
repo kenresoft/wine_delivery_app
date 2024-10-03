@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/model/product.dart';
-import 'package:wine_delivery_app/repository/decision_repository.dart';
+import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/extensions.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
@@ -26,7 +25,7 @@ class FavoritesRepository {
   static final String _url = '${Constants.baseUrl}/api/favorites';
 
   Future<List<Product>> getFavorites() async {
-    return decisionRepository.decide<List<Product>>(
+    return DecisionRepository().decide<List<Product>>(
       cacheKey: 'getFavorites',
       endpoint: _url,
       onSuccess: (data) async {
@@ -37,7 +36,7 @@ class FavoritesRepository {
           for (final favoriteJson in favoritesJson) {
             final favorite = Favorite.fromJson(favoriteJson);
             final product = await productRepository.getProductById(favorite.product);
-            logger.t(data);
+            // logger.t(data);
             products.add(product);
           }
           return products;
