@@ -16,7 +16,11 @@ class ShipmentBloc extends Bloc<ShipmentEvent, ShipmentState> {
   void getShipmentDetails(GetShipmentDetails event, Emitter<ShipmentState> emit) async {
     try {
       final shipment = await shipmentRepository.getShipmentDetails();
-      emit(ShipmentLoaded(shipment));
+      if (shipment != null) {
+        emit(ShipmentLoaded(shipment));
+      } else {
+        emit(ShipmentError('Shipment not available.'));
+      }
     } catch (e) {
       emit(ShipmentError(e.toString()));
     }
