@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:wine_delivery_app/model/shipment.dart';
-import 'package:wine_delivery_app/repository/decision_repository.dart';
+import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
 
 import '../utils/constants.dart';
 import '../utils/enums.dart';
@@ -24,7 +24,7 @@ class ShipmentRepository {
   static final String _baseUrl = '${Constants.baseUrl}/api/shipment';
 
   Future<Shipment?> getShipmentDetails() async {
-    return decisionRepository.decide(
+    return DecisionRepository().decide(
       cacheKey: 'getShipmentDetails',
       endpoint: _baseUrl,
       onSuccess: (data) async {

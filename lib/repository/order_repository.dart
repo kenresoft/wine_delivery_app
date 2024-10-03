@@ -3,6 +3,7 @@ import 'dart:convert';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/auth_repository.dart';
+import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 import 'package:wine_delivery_app/utils/exceptions.dart';
@@ -11,7 +12,6 @@ import '../model/order.dart';
 import '../model/order_item.dart';
 import '../model/order_product_item.dart';
 import '../utils/utils.dart';
-import 'cache_repository.dart';
 
 class OrderRepository {
   // Private constructor
@@ -58,6 +58,7 @@ class OrderRepository {
     }
   }
 
+  // Make a purchase
   Future<bool> makePurchase({
     required String orderId,
     required String description,
@@ -97,6 +98,7 @@ class OrderRepository {
         final data = jsonDecode(response.body);
         final order = Order.fromJson(data['order']);
         final paymentIntent = order.paymentDetails?.paymentIntent;
+
         if (paymentIntent != null && paymentIntent.isNotEmpty) {
 
           /*await Stripe.instance.initPaymentSheet(
@@ -122,16 +124,29 @@ class OrderRepository {
 
   // Get orders by user
   Future<List<Order>> getUserOrders() async {
-    const cacheKey = 'userOrders';
+    const cacheKey = 'getUserOrders';
 
-    try {
+    return DecisionRepository().decide(
+      cacheKey: cacheKey,
+      endpoint: '$_baseUrl/user',
+      onSuccess: (data) async {
+        final List<dynamic> ordersJson = data['orders'];
+        return ordersJson.map((json) => Order.fromJson(json)).toList();
+      },
+      onError: (error) async {
+        logger.e('ERROR: ${error.toString()}');
+        return [];
+      },
+    );
+
+    /*try {
       if (!cacheRepository.hasCache(cacheKey)) {
         final response = await Utils.makeRequest('$_baseUrl/user');
 
         if (response.statusCode == 200) {
           await cacheRepository.cache(cacheKey, response.body);
         } else {
-          await cacheRepository.cache(cacheKey, null); // Or handle error
+          await cacheRepository.cache(cacheKey, null); // Handle error
           Utils.handleError(response);
         }
       }
@@ -151,7 +166,7 @@ class OrderRepository {
       }
     } catch (e) {
       throw Exception('Failed to fetch orders: ${e.toString()}');
-    }
+    }*/
   }
 
   List<Order> _fetchOrders(data) {
@@ -207,7 +222,7 @@ class OrderRepository {
           } catch (e) {
             // Handle error fetching individual product
             logger.e('Error fetching product: ${orderItem.productId}');
-            return null; // Or return a placeholder item
+            return null;
           }
         });
 
@@ -217,7 +232,7 @@ class OrderRepository {
         throw Utils.handleError(response);
       }
     } catch (e) {
-      throw Exception('Failed to fetch orders: ${e.toString()}');
+      throw Exception('Failed to fetch order items: ${e.toString()}');
     }
   }
 
@@ -228,7 +243,7 @@ class OrderRepository {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return Order.fromJson(data['order']); // Parse the order data
+        return Order.fromJson(data['order']);
       } else {
         throw Utils.handleError(response);
       }
@@ -258,7 +273,7 @@ class OrderRepository {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return Order.fromJson(data['order']); // Parse the updated order data
+        return Order.fromJson(data['order']);
       } else {
         throw Utils.handleError(response);
       }
