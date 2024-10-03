@@ -37,3 +37,25 @@ class UpdateOrderStatus extends OrderEvent {
   @override
   List<Object?> get props => [orderId, status];
 }
+
+class UpdateOrder extends OrderEvent {
+  final Order order;
+
+  const UpdateOrder({required this.order});
+
+  @override
+  List<Object?> get props => [order];
+}
+
+class ListenToOrderStatusUpdates extends OrderEvent {
+  final String orderId;
+  final String status;
+
+  const ListenToOrderStatusUpdates({
+    required this.orderId,
+    required this.status,
+  });
+
+  @override
+  List<Object> get props => [orderId, status];
+}

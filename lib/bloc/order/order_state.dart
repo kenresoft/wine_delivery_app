@@ -44,8 +44,9 @@ class OrderProductsLoaded extends OrderState {
 
 class OrderLoaded extends OrderState {
   final Order order;
+  final double orderProgress;
 
-  const OrderLoaded(this.order);
+  const OrderLoaded(this.order, this.orderProgress);
 
   @override
   List<Object?> get props => [order];
