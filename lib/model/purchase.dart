@@ -1,29 +1,32 @@
+import 'package:equatable/equatable.dart';
+
 import 'product.dart';
 
-class Purchase {
+class Purchase extends Equatable {
   final String purchaseId;
-  final Product wine;
+  final Product product;
   final int quantity;
   final DateTime purchaseDate;
 
-  Purchase({
+  const Purchase({
     required this.purchaseId,
-    required this.wine,
+    required this.product,
     required this.quantity,
     required this.purchaseDate,
   });
 
-  factory Purchase.empty() => Purchase(
-    purchaseId: '',
-    wine: Product.empty(), // Assuming Wine class has an empty factory constructor
-    quantity: 0,
-    purchaseDate: DateTime.now(),
-  );
-}
-
-// Extension to compare DateTime objects by date only
-extension DateTimeComparison on DateTime {
-  bool isSameDate(DateTime other) {
-    return year == other.year && month == other.month && day == other.day;
+  factory Purchase.empty() {
+    return Purchase(
+      purchaseId: '',
+      product: Product.empty(),
+      quantity: 0,
+      purchaseDate: DateTime.now(),
+    );
   }
+
+  @override
+  List<Object?> get props => [purchaseId, product, quantity, purchaseDate];
+
+  @override
+  bool get stringify => true;
 }
