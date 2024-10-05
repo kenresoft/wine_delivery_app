@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:wine_delivery_app/model/cart_item.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
@@ -135,220 +136,149 @@ class CartItemsList extends StatelessWidget {
     );
   }
 
-/*  Card _buildCartCard(CartItem cartItem, BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        leading: Image.asset(
-          'assets/images/${cartItem.product!.image}',
-          width: 50,
-          height: 50,
-          fit: BoxFit.contain,
-        ),
-        title: Row(
-          children: [
-            Container(
-              width: 95,
-              margin: const EdgeInsets.only(right: 2),
-              child: Text(
-                cartItem.product!.name,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                context.read<CartBloc>().add(DecrementCartItem(itemId: cartItem.product!.id));
-              },
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.remove, color: Color(0xffBD7879), size: 20),
-              ),
-            ),
-            SizedBox(
-              width: 20,
-              child: Text(
-                '${cartItem.quantity}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                context.read<CartBloc>().add(IncrementCartItem(itemId: cartItem.product!.id));
-              },
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.add, color: Color(0xff7D557A), size: 20),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                context.read<CartBloc>().add(RemoveFromCart(itemId: cartItem.product!.id));
-              },
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                margin: const EdgeInsets.only(left: 6),
-                child: const Icon(CupertinoIcons.delete, color: Color(0xffBD7879), size: 20),
-              ),
-            ),
-          ],
-        ),
-        subtitle: Text('Quantity: ${cartItem.quantity}'),
-        trailing: Text('\$${(cartItem.product!.price * cartItem.quantity!).toStringAsFixed(2)}'),
-        // trailing: Text('\$${(cartItem.itemPrice * cartItem.quantity).toStringAsFixed(2)}'),
-      ),
-    );
-  }*/
-
   Card _buildCartCard(CartItem cartItem, BuildContext context) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8).h,
       child: Container(
-        height: 100,
-        padding: const EdgeInsets.all(8.0),
+        height: 100.h,
+        padding: const EdgeInsets.symmetric(horizontal: 14).w,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Product Image
-            ClipOval(
-              child: Container(
-                padding: EdgeInsets.all(10),
-                color: Colors.grey.shade300,
-                child: Image.asset(
-                  'assets/images/${cartItem.product!.image}',
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-
-            const SizedBox(width: 10),
-
-            // Product Information and Actions
-            Expanded(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: 62),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      cartItem.product!.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal,
+            Flexible(
+              flex: 16,
+              child: Row(
+                children: [
+                  // Product Image
+                  ClipOval(
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      color: Colors.grey.shade300,
+                      child: Image.asset(
+                        'assets/images/${cartItem.product!.image}',
+                        width: 50.h,
+                        height: 50.h,
+                        fit: BoxFit.fitHeight,
                       ),
                     ),
+                  ),
 
-                    // Quantity and Price Information
-                    /*const SizedBox(height: 8),
-                    Text(
-                      overflow: TextOverflow.ellipsis,
-                      'Quantity: ${cartItem.quantity}',
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                    ),*/
+                  SizedBox(width: 16.w),
 
-                    // Product Price
-                    const SizedBox(height: 8),
-                    Text(
-                      overflow: TextOverflow.ellipsis,
-                      '\$${(cartItem.product!.price * cartItem.quantity!).toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 16,
+                  // Product Information and Actions
+                  Flexible(
+                    child: SizedBox(
+                      width: 400,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            cartItem.product!.name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16.r,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+
+                          // Product Price
+                          SizedBox(height: 8.h),
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            '\$${(cartItem.product!.price * cartItem.quantity!).toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontSize: 16.r,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              flex: 4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Increment Button
+                  GestureDetector(
+                    onTap: () {
+                      context.read<CartBloc>().add(IncrementCartItem(itemId: cartItem.product!.id));
+                    },
+                    child: Container(
+                      //padding: const EdgeInsets.all(4),
+                      // width: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: Color(0xff7D557A),
+                        size: 20,
+                      ),
+                    ),
+                  ),
+
+                  // Quantity Display
+                  Container(
+                    // padding: const EdgeInsets.all(4),
+                    alignment: Alignment.center,
+                    width: 20.w,
+                    child: Text(
+                      '${cartItem.quantity}',
+                      // textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.r,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  // Decrement Button
+                  GestureDetector(
+                    onTap: () {
+                      context.read<CartBloc>().add(DecrementCartItem(itemId: cartItem.product!.id));
+                    },
+                    child: Container(
+                      //padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.remove,
+                        color: Color(0xffBD7879),
+                        size: 20,
+                      ),
+                    ),
+                  ),
+
+                  // Remove Button
+                  /*GestureDetector(
+                    onTap: () {
+                      context.read<CartBloc>().add(RemoveFromCart(itemId: cartItem.product!.id));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      margin: const EdgeInsets.only(left: 6),
+                      child: const Icon(
+                        CupertinoIcons.delete,
+                        color: Color(0xffBD7879),
+                        size: 20,
+                      ),
+                    ),
+                  ),*/
+                ],
               ),
-            ),
-
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Increment Button
-                GestureDetector(
-                  onTap: () {
-                    context.read<CartBloc>().add(IncrementCartItem(itemId: cartItem.product!.id));
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration:  BoxDecoration(
-                      color: Colors.grey.shade300,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.add,
-                      color: Color(0xff7D557A),
-                      size: 20,
-                    ),
-                  ),
-                ),
-
-                // Quantity Display
-                SizedBox(
-                  width: 20,
-                  child: Text(
-                    '${cartItem.quantity}',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                // Decrement Button
-                GestureDetector(
-                  onTap: () {
-                    context.read<CartBloc>().add(DecrementCartItem(itemId: cartItem.product!.id));
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.remove,
-                      color: Color(0xffBD7879),
-                      size: 20,
-                    ),
-                  ),
-                ),
-
-                // Remove Button
-                /*GestureDetector(
-                  onTap: () {
-                    context.read<CartBloc>().add(RemoveFromCart(itemId: cartItem.product!.id));
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    margin: const EdgeInsets.only(left: 6),
-                    child: const Icon(
-                      CupertinoIcons.delete,
-                      color: Color(0xffBD7879),
-                      size: 20,
-                    ),
-                  ),
-                ),*/
-              ],
             ),
           ],
         ),
@@ -371,16 +301,25 @@ class SubtotalSection extends StatelessWidget {
           return Card(
             elevation: 1,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            margin: const EdgeInsets.symmetric(vertical: 8),
+            margin: EdgeInsets.symmetric(vertical: 8),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Subtotal', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text(
-                    '\$${state.totalPrice}',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Flexible(
+                    child: Text(
+                      'Subtotal',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 16.r, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      '\$${state.totalPrice}',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 16.r, fontWeight: FontWeight.bold),
+                    ),
                   )
                 ],
               ),
@@ -394,7 +333,7 @@ class SubtotalSection extends StatelessWidget {
               elevation: 1,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               margin: const EdgeInsets.symmetric(vertical: 8),
-              child: SizedBox(width: MediaQuery.sizeOf(context).width, height: 50),
+              child: SizedBox(width: MediaQuery.sizeOf(context).width, height: 50.h),
             ),
           );
           // return const Center(child: CircularProgressIndicator());
@@ -420,6 +359,7 @@ class PromoCodeInput extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         controller: controller,
+        style: TextStyle(fontSize: 14.r),
         onChanged: (value) async {
           promo = await couponRepository.getCouponByCode(value);
           promoCode = promo?.code ?? '';
@@ -511,11 +451,15 @@ class CheckoutButton extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                minimumSize: const Size(double.infinity, 50),
+                minimumSize: Size(double.infinity, 50.h),
               ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Text('Proceed to Checkout', style: TextStyle(fontSize: 18)),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                child: Text(
+                  'Proceed to Checkout',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18.r),
+                ),
               ),
             ),
           ),
