@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:wine_delivery_app/bloc/theme/theme_mode_cubit.dart';
-import 'package:wine_delivery_app/model/cart_item.dart';
-import 'package:wine_delivery_app/utils/constants.dart';
-import 'package:wine_delivery_app/utils/extensions.dart';
-import 'package:wine_delivery_app/views/product/cart/quantity_button.dart';
-import 'package:wine_delivery_app/views/product/order/check_out_screen.dart';
 
 import '../../../bloc/cart/cart_bloc.dart';
 import '../../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../../bloc/order/order_bloc.dart';
 import '../../../bloc/promo_code/promo_code_bloc.dart';
+import '../../../bloc/theme/theme_cubit.dart';
+import '../../../model/cart_item.dart';
 import '../../../model/coupon.dart';
 import '../../../model/order.dart';
 import '../../../repository/coupon_repository.dart';
+import '../../../utils/constants.dart';
+import '../../../utils/extensions.dart';
 import '../../../utils/preferences.dart';
 import '../../../utils/themes.dart';
 import '../../../utils/utils.dart';
+import '../order/check_out_screen.dart';
+import 'quantity_button.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   const ShoppingCartScreen({super.key});
@@ -39,54 +39,43 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeMode>(
-      builder: (context, themeState) {
-        return BlocBuilder<NavigationBloc, NavigationState>(
-          builder: (context, state) {
-            if (state == const PageChanged(selectedIndex: 2)) {
-              return Scaffold(
-                backgroundColor: Colors.grey.shade300,
-                appBar: AppBar(
-                  title: const Text('Shopping Cart'),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {},
-                  ),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: [
-                      Expanded(child: CartItemsList(themeMode: themeState)), // No need to pass cartItems
-                      const SubtotalSection(), // Pass state to SubtotalSection
-                      const PromoCodeInput(),
-                      const CheckoutButton(), // Pass state to CheckoutButton
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        );
+    return BlocBuilder<NavigationBloc, NavigationState>(
+      builder: (context, state) {
+        if (state == const PageChanged(selectedIndex: 2)) {
+          return Scaffold(
+            backgroundColor: Colors.grey.shade300,
+            appBar: AppBar(
+              title: const Text('Shopping Cart'),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {},
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  Expanded(child: CartItemsList()), // No need to pass cartItems
+                  const SubtotalSection(), // Pass state to SubtotalSection
+                  const PromoCodeInput(),
+                  const CheckoutButton(), // Pass state to CheckoutButton
+                ],
+              ),
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
 }
 
 class CartItemsList extends StatelessWidget {
-  final ThemeMode themeMode;
-
-  const CartItemsList({super.key, required this.themeMode});
+  const CartItemsList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = themeMode == ThemeMode.light ? AppTheme().themeData : AppTheme().darkThemeData;
-
-    /*final themeCubit = context.watch<ThemeCubit>();
-    final theme = themeCubit.state is ThemeLight ? (themeCubit.state as ThemeLight).themeData : (themeCubit.state as ThemeDark).themeData;
-*/
     return BlocBuilder<CartBloc, CartState>(
       buildWhen: (previous, current) => current is CartLoaded,
       builder: (context, state) {
@@ -99,7 +88,7 @@ class CartItemsList extends StatelessWidget {
             itemCount: state.cartItems.length,
             itemBuilder: (context, index) {
               final cartItem = state.cartItems[index];
-              return _buildCartCard(cartItem, context, theme);
+              return _buildCartCard(cartItem, context);
             },
           );
         } else {
@@ -150,13 +139,20 @@ class CartItemsList extends StatelessWidget {
     );
   }
 
-  Widget _buildCartCard(CartItem cartItem, BuildContext context, ThemeData theme) {
+  Widget _buildCartCard(CartItem cartItem, BuildContext context) {
+    // context.watch<ThemeCubit>().state == ThemeMode.light ? AppTheme().themeData : AppTheme().darkThemeData;
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       margin: const EdgeInsets.symmetric(vertical: 8).h,
       child: Dismissible(
         key: UniqueKey(),
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.endToStart) {
+            return true;
+          }
+        },
         onDismissed: (direction) {
           if (direction == DismissDirection.endToStart) {
             context.read<CartBloc>().add(RemoveFromCart(itemId: cartItem.product!.id));
@@ -169,10 +165,7 @@ class CartItemsList extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
+              Icon(Icons.delete, color: Colors.white),
               SizedBox(width: 16.w),
             ],
           ),
@@ -248,21 +241,23 @@ class CartItemsList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Increment Button
-                      QuantityButton(
-                        onPressed: () {
-                          context.read<CartBloc>().add(IncrementCartItem(itemId: cartItem.product!.id));
-                        },
-                        icon: Icons.add,
+                      Flexible(
+                        child: QuantityButton(
+                          onPressed: () {
+                            context.read<CartBloc>().add(IncrementCartItem(itemId: cartItem.product!.id));
+                          },
+                          icon: Icons.add,
+                        ),
                       ),
 
                       // Quantity Display
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 2),
                         alignment: Alignment.center,
                         child: Text(
                           '${cartItem.quantity}',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColorDark,
                           ),
@@ -270,28 +265,14 @@ class CartItemsList extends StatelessWidget {
                       ),
 
                       // Decrement Button
-                      QuantityButton(
-                        onPressed: () {
-                          context.read<CartBloc>().add(DecrementCartItem(itemId: cartItem.product!.id));
-                        },
-                        icon: Icons.remove,
-                      ),
-
-                      // Remove Button
-                      /*GestureDetector(
-                        onTap: () {
-                          context.read<CartBloc>().add(RemoveFromCart(itemId: cartItem.product!.id));
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          margin: const EdgeInsets.only(left: 6),
-                          child: const Icon(
-                            CupertinoIcons.delete,
-                            color: Color(0xffBD7879),
-                            size: 20,
-                          ),
+                      Flexible(
+                        child: QuantityButton(
+                          onPressed: () {
+                            context.read<CartBloc>().add(DecrementCartItem(itemId: cartItem.product!.id));
+                          },
+                          icon: Icons.remove,
                         ),
-                      ),*/
+                      ),
                     ],
                   ),
                 ),
