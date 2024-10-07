@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:wine_delivery_app/views/user/theme_dialog.dart';
 
 import '../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../bloc/product/favorite/favs/favs_bloc.dart';
@@ -270,7 +272,7 @@ class UserProfileScreen extends StatelessWidget {
 
   Widget _buildProfileHeader(BuildContext context, ProfileLoaded state) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0).r,
       color: Colors.deepPurple.shade50,
       child: Row(
         children: [
@@ -281,28 +283,30 @@ class UserProfileScreen extends StatelessWidget {
               print('AuthStatus: ${await authRepository.checkAuthStatus()}');*/
             },
             child: CircleAvatar(
-              radius: 40,
+              radius: 40.r,
               backgroundImage: NetworkImage(Constants.baseUrl + state.profile.profileImage),
             ),
           ),
-          const SizedBox(width: 16.0),
-          SizedBox(
-            width: 285,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  state.profile.username,
-                  maxLines: 2,
-                  style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4.0),
-                Text(
-                  state.profile.email,
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
-                ),
-              ],
+          SizedBox(width: 16.w),
+          Flexible(
+            child: SizedBox(
+              width: 285.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.profile.username,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 20.r, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    state.profile.email,
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 16.r, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -312,12 +316,12 @@ class UserProfileScreen extends StatelessWidget {
 
   Widget _buildAccountInfo(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0).r,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Account Information', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8.0),
+          Text('Account Information', style: TextStyle(fontSize: 18.r, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8.h),
           BlocBuilder<ShipmentBloc, ShipmentState>(
             builder: (context, state) {
               String? shippingAddress;
@@ -326,8 +330,8 @@ class UserProfileScreen extends StatelessWidget {
               }
               return ListTile(
                 leading: const Icon(Icons.location_on, color: Colors.deepPurple),
-                title: const Text('Shipping Address'),
-                subtitle: Text(shippingAddress ?? 'No address specified!'),
+                title: Text('Shipping Address', style: TextStyle(fontSize: 14.r)),
+                subtitle: Text(shippingAddress ?? 'No address specified!', style: TextStyle(fontSize: 14.r)),
                 trailing: const Icon(Icons.edit),
                 onTap: () => Navigator.push(
                   context,
@@ -343,8 +347,8 @@ class UserProfileScreen extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.credit_card, color: Colors.deepPurple),
-            title: const Text('Payment Methods'),
-            subtitle: const Text('Visa **** 1234'),
+            title: Text('Payment Methods', style: TextStyle(fontSize: 14.r)),
+            subtitle: Text('Visa **** 1234', style: TextStyle(fontSize: 14.r)),
             trailing: const Icon(Icons.edit),
             onTap: () {
               // Navigate to Manage Payment Methods page
@@ -361,24 +365,30 @@ class UserProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Order History', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+          Text('Order History', style: TextStyle(fontSize: 18.r, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8.0),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: 3, // Example: Show the last 3 orders
             itemBuilder: (context, index) {
-              return Card(
-                child: ListTile(
-                  leading: Image.asset('assets/images/wine-${index + 1}.png', width: 50, height: 50),
-                  // Placeholder image
-                  title: Text('Order #${index + 1}'),
-                  subtitle: const Text('Delivered on 12 Aug, 2024'),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    // Navigate to Order Details page
-                  },
-                ),
+              return Row(
+                children: [
+                  Image.asset('assets/images/wine-${index + 1}.png', width: 50.r, height: 50.r),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Order #${index + 1}', style: TextStyle(fontSize: 14.r)),
+                        Text('Delivered on 12 Aug, 2024', style: TextStyle(fontSize: 14.r)),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 24.r,
+                  ),
+                ],
               );
             },
           ),
@@ -398,12 +408,12 @@ class UserProfileScreen extends StatelessWidget {
 
   Widget _buildFavoritesSection(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0).r,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Favorites', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8.0),
+          Text('Favorites', style: TextStyle(fontSize: 18.r, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8.h),
           BlocBuilder<FavsBloc, FavsState>(
             builder: (context, state) {
               return switch (state) {
@@ -412,9 +422,9 @@ class UserProfileScreen extends StatelessWidget {
                 FavsLoaded() => GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      //childAspectRatio: 2 / 3,
+                      childAspectRatio: 3.5.w / 4.h,
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 5,
                     ),
@@ -433,12 +443,12 @@ class UserProfileScreen extends StatelessWidget {
                               Image.asset(
                                 'assets/images/${favItem.image}',
                                 // 'assets/images/wine-${index + 1}.png',
-                                fit: BoxFit.contain,
-                                width: 60,
-                                height: 60,
+                                fit: BoxFit.fitHeight,
+                                width: 60.h,
+                                height: 60.h,
                               ),
-                              const SizedBox(height: 4.0),
-                              Text(favItem.name, style: const TextStyle(fontSize: 16.0)),
+                              SizedBox(height: 4.h),
+                              Text(favItem.name, style: TextStyle(fontSize: 16.r)),
                             ],
                           ),
                         ),
@@ -499,6 +509,10 @@ class UserProfileScreen extends StatelessWidget {
             title: const Text('App Theme'),
             onTap: () {
               // Navigate to App Theme settings page
+              showDialog(
+                context: context,
+                builder: (context) => ThemeSettingsDialog(),
+              );
             },
           ),
         ],

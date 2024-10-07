@@ -1,7 +1,7 @@
-// Theme Settings Dialog
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/bloc/theme/theme_mode_cubit.dart';
+
+import '../../bloc/theme/theme_cubit.dart';
 
 class ThemeSettingsDialog extends StatelessWidget {
   const ThemeSettingsDialog({super.key});
@@ -32,7 +32,8 @@ class ThemeSettingsDialog extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   trailing: themeState == ThemeMode.dark ? const Icon(Icons.check) : null,
-                ),ListTile(
+                ),
+                ListTile(
                   title: const Text('System Theme'),
                   onTap: () {
                     context.read<ThemeCubit>().updateTheme(ThemeMode.system);
