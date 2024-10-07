@@ -48,6 +48,7 @@ dependencies:
 
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
+  hydrated_bloc: ^9.1.5
   equatable: ^2.0.5
   logger: ^2.4.0
 
