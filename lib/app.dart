@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/utils/extensions.dart';
 
 import 'bloc/network/network_bloc.dart';
+import 'bloc/theme/theme_cubit.dart';
 import 'utils/enums.dart';
 import 'utils/environment_config.dart';
 import 'utils/themes.dart';
@@ -69,7 +70,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   state.message.toast;
                 }
               },
-              child: buildMaterialApp(currentContext),
+              child: BlocBuilder<ThemeCubit, ThemeMode>(
+                builder: (context, state) {
+                  return buildMaterialApp(currentContext, state);
+                },
+              ),
             ),
             /*BlocBuilder<NetworkBloc, NetworkState>(
               builder: (context, state) {
@@ -92,13 +97,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 
-  MaterialApp buildMaterialApp(BuildContext mainContext) {
+  MaterialApp buildMaterialApp(BuildContext mainContext, ThemeMode themeMode) {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme().themeData,
-      // darkTheme: AppTheme().darkThemeData,
-      themeMode: ThemeMode.system,
+      darkTheme: AppTheme().darkThemeData,
+      themeMode: themeMode,
+      /*builder: (context, child) {
+        mainContext.read<ThemeCubit>().updateThemeFromSystem(mainContext);
+        return child!;
+      },*/
       routes: {
         '/': condition(
           widget.initialError != null,

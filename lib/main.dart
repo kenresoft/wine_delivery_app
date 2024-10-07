@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:extensionresoft/extensionresoft.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:wine_delivery_app/utils/environment_config.dart';
 import 'package:wine_delivery_app/utils/utils.dart';
 
@@ -30,6 +33,11 @@ void main() async {
       );
       await EnvironmentConfig.load(ConfigMode.dev);
       // Stripe.publishableKey = Constants.stripePublishableKey;
+
+      // initialize hydrated bloc
+      HydratedBloc.storage = await HydratedStorage.build(
+        storageDirectory: kIsWeb ? HydratedStorage.webStorageDirectory : await getApplicationDocumentsDirectory(),
+      );
 
       logger.d('No error during initialization');
       runApp(
