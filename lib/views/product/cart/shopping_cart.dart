@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:wine_delivery_app/utils/utils.dart';
 
 import '../../../bloc/cart/cart_bloc.dart';
-import '../../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../../bloc/order/order_bloc.dart';
 import '../../../bloc/promo_code/promo_code_bloc.dart';
-import '../../../bloc/theme/theme_cubit.dart';
 import '../../../model/cart_item.dart';
 import '../../../model/coupon.dart';
 import '../../../model/order.dart';
@@ -16,8 +15,6 @@ import '../../../repository/coupon_repository.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/extensions.dart';
 import '../../../utils/preferences.dart';
-import '../../../utils/themes.dart';
-import '../../../utils/utils.dart';
 import '../order/check_out_screen.dart';
 import 'quantity_button.dart';
 
@@ -39,34 +36,36 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavigationBloc, NavigationState>(
-      builder: (context, state) {
-        if (state == const PageChanged(selectedIndex: 2)) {
-          return Scaffold(
-            backgroundColor: Colors.grey.shade300,
-            appBar: AppBar(
-              title: const Text('Shopping Cart'),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {},
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Shopping Cart'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {},
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            Expanded(child: CartItemsList()),
+            const SubtotalSection(),
+            const PromoCodeInput(),
+            const CheckoutButton(),
+            BlocListener<OrderBloc, OrderState>(
+              child: SizedBox(),
+              listenWhen: (previous, current) => previous != current,
+              listener: (context, state) {
+                if (state is OrderCreated) {
+                  //print(state.toString());
+                  logger.w('toast');
+                  // Trigger navigation to the checkout screen when order is created checkout
+                }
+              },
             ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  Expanded(child: CartItemsList()), // No need to pass cartItems
-                  const SubtotalSection(), // Pass state to SubtotalSection
-                  const PromoCodeInput(),
-                  const CheckoutButton(), // Pass state to CheckoutButton
-                ],
-              ),
-            ),
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
+          ],
+        ),
+      ),
     );
   }
 }
@@ -77,7 +76,6 @@ class CartItemsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CartBloc, CartState>(
-      buildWhen: (previous, current) => current is CartLoaded,
       builder: (context, state) {
         if (state is CartLoaded) {
           // context.read<CartBloc>().add(GetTotalPrice());
@@ -141,7 +139,6 @@ class CartItemsList extends StatelessWidget {
 
   Widget _buildCartCard(CartItem cartItem, BuildContext context) {
     // context.watch<ThemeCubit>().state == ThemeMode.light ? AppTheme().themeData : AppTheme().darkThemeData;
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -150,7 +147,25 @@ class CartItemsList extends StatelessWidget {
         key: UniqueKey(),
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.endToStart) {
-            return true;
+            return await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Confirm Delete'),
+                  content: const Text('Are you sure you want to remove this item from your cart?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(true),
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                );
+              },
+            );
           }
         },
         onDismissed: (direction) {
@@ -172,7 +187,7 @@ class CartItemsList extends StatelessWidget {
         ),
         child: Container(
           height: 90,
-          padding: const EdgeInsets.symmetric(horizontal: 14).w,
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -291,9 +306,9 @@ class SubtotalSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CartBloc, CartState>(
-      buildWhen: (previous, current) {
+      /*buildWhen: (previous, current) {
         return previous is CartLoaded && current is CartLoaded && previous.totalPrice != current.totalPrice;
-      },
+      },*/
       builder: (context, state) {
         if (state is CartLoaded) {
           return Card(
@@ -405,44 +420,62 @@ class PromoCodeInput extends StatelessWidget {
   }
 }
 
-class CheckoutButton extends StatelessWidget {
+class CheckoutButton extends StatefulWidget {
   const CheckoutButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CartBloc, CartState>(
-      builder: (context, cartState) {
-        return BlocListener<OrderBloc, OrderState>(
-          listener: (context, orderState) {
-            if (orderState is OrderCreated) {
-              'Item(s) moved from cart!'.toast;
-              //context.read<CartBloc>().add(const RemoveAllFromCart());
+  State<CheckoutButton> createState() => _CheckoutButtonState();
+}
 
-              // Navigate to the checkout page when order is successfully created
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CheckOutScreen(order: orderState.order);
-                  },
-                ),
-              );
-            } else if (orderState is OrderError) {
-              // Show error message if order creation failed
-              logger.e(orderState.message);
-              'Order creation failed! Please try again.'.toast;
-            }
-          },
-          child: Padding(
+class _CheckoutButtonState extends State<CheckoutButton> {
+  bool hasNavigated = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<OrderBloc, OrderState>(
+      listenWhen: (previous, current) => previous != current,
+      listener: (context, orderState) {
+        if (orderState is OrderCreated && !hasNavigated) {
+          hasNavigated = true;
+          // 'Item(s) moved from cart!'.toast;
+          print('Navigated? ${hasNavigated.toString()}');
+          //context.read<CartBloc>().add(const RemoveAllFromCart());
+
+          // Navigate to the checkout page when order is successfully created
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return CheckOutScreen(order: orderState.order);
+              },
+            ),
+          );
+        } else if (orderState is OrderError) {
+          // Show error message if order creation failed
+          logger.e(orderState.message);
+          'Order creation failed! Please try again.'.toast;
+        }
+      },
+      child: BlocBuilder<CartBloc, CartState>(
+        builder: (context, cartState) {
+          return Padding(
             padding: const EdgeInsets.only(bottom: 8.0).h,
             child: ElevatedButton(
               onPressed: () {
                 if (cartState is CartLoaded) {
                   if (cartState.cartItems.isNotEmpty) {
+                    print(cartState.cartItems.isNotEmpty);
                     context.read<OrderBloc>().add(
                           CreateOrder(
                             subTotal: cartState.totalPrice,
                             note: 'Coupon code for this purchase: ${cartState.couponCode}',
+                            callback: (order) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CheckOutScreen(order: order),
+                                ),
+                              );
+                            },
                           ),
                         );
                   } else {
@@ -463,9 +496,9 @@ class CheckoutButton extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

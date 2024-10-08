@@ -21,7 +21,6 @@ class QuantityButton extends StatelessWidget {
         backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
         // backgroundColor: WidgetStatePropertyAll(Colors.grey.shade300),
         iconSize: WidgetStatePropertyAll(20),
-        iconColor: WidgetStatePropertyAll(Theme.of(context).canvasColor),
       ),
       icon: Icon(icon),
     );
