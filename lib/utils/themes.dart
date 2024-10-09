@@ -101,4 +101,103 @@ class AppTheme {
       showUnselectedLabels: true,
     ),
   );
+
+  /// DARK MODE
+
+  final ThemeData darkThemeData = ThemeData(
+    primaryColor: const Color(0xffBD7879),
+    primaryColorDark: const Color(0xff394346),
+    scaffoldBackgroundColor: const Color(0xFF141414),
+    fontFamily: FontResoft.poppins,
+    package: FontResoft.package,
+    textTheme: const TextTheme(bodyMedium: TextStyle(color: const Color(0xffF5F5F5))),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: const Color(0xff181B20), // Darker background color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white, // Whiter foreground color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: const Color(0xffB3BDC0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        side: const BorderSide(
+          color: Color(0xff394346), // Lighter border color
+        ),
+      ),
+    ),
+    inputDecorationTheme: const InputDecorationTheme(
+      border: OutlineInputBorder(),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xff394346), // Lighter border color
+          width: 2,
+        ),
+      ),
+    ),
+    buttonTheme: const ButtonThemeData(
+      buttonColor: Color(0xffBD7879),
+      textTheme: ButtonTextTheme.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(8),
+        ),
+      ),
+    ),
+    cardTheme: CardTheme(
+      color: const Color(0xff212121),
+      surfaceTintColor: const Color(0xff212121),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: Color(0xffB3BDC0), width: 1),
+      ),
+      elevation: 0,
+    ),
+    brightness: Brightness.light,
+    iconTheme: const IconThemeData(color: Color(0xffB3BDC0)),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xffB3BDC0),
+    ).copyWith(
+      primary: const Color(0xffB3BDC0),
+      primaryContainer: const Color(0xff465760),
+      secondary: const Color(0xff794F50),
+      tertiary: const Color(0xff687A80),
+      surface: const Color(0xFF394346),
+      surfaceTint: const Color(0xff465760),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: Color(0xFF394346),
+      selectedItemColor: Color(0xffB3BDC0),
+      unselectedItemColor: Color(0xff687A80),
+      selectedIconTheme: IconThemeData(
+        color: Color(0xffB3BDC0),
+      ),
+      unselectedIconTheme: IconThemeData(
+        color: Color(0xff687A80),
+      ),
+      selectedLabelStyle: TextStyle(color: Color(0xffB3BDC0)),
+      unselectedLabelStyle: TextStyle(color: Color(0xff687A80)),
+      showUnselectedLabels: true,
+    ),
+  );
 }
