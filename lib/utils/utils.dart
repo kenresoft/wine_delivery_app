@@ -15,6 +15,10 @@ import 'enums.dart';
 
 final logger = Logger();
 
+ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
+
+ThemeData theme(BuildContext context) => Theme.of(context);
+
 class Utils {
   Utils._();
 
