@@ -67,12 +67,14 @@ String get promoCode => SharedPreferencesService.get<String>('promoCode') ?? Con
 set promoCode(String value) => SharedPreferencesService.set<String>('promoCode', value);
 
 /// INTERNET STATUS
-bool get internetStatus => SharedPreferencesService.getBool('internetStatus') ?? false;
+bool get isInternet => SharedPreferencesService.getBool('isInternet') ?? false;
 
-set internetStatus(bool value) => SharedPreferencesService.setBool('internetStatus', value);
+set isInternet(bool value) => SharedPreferencesService.setBool('isInternet', value);
 
 /// SESSION ACTIVE
 bool get sessionActive => SharedPreferencesService.get('sessionActive') ?? false;
 
 set sessionActive(bool value) => SharedPreferencesService.set('sessionActive', value);
+
+///
 
