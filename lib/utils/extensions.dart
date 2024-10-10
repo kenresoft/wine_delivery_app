@@ -19,7 +19,7 @@ extension ToastExtension<T> on T {
       msg: toString(),
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.SNACKBAR,
-      backgroundColor: AppTheme().themeData.colorScheme.primary,
+      //backgroundColor: AppTheme().themeData.colorScheme.primary,
       textColor: Colors.white,
       fontSize: 18,
     );
