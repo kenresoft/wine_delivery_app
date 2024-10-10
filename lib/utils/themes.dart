@@ -47,11 +47,7 @@ class AppTheme {
       primaryColor: primaryColor,
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: 'Poppins',
-      textTheme: TextTheme(
-        bodyMedium: TextStyle(
-          color: textColor,
-        ),
-      ),
+      textTheme: textTheme,
       appBarTheme: AppBarTheme(
         elevation: 0,
         backgroundColor: colorScheme.surface,
@@ -135,12 +131,50 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         backgroundColor: colorScheme.surfaceContainerHighest,
-        selectedItemColor: colorScheme.onSurface,
+        selectedItemColor: colorScheme.surfaceContainer,
         unselectedItemColor: colorScheme.onSurfaceVariant,
         elevation: 0,
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         showUnselectedLabels: true,
       ),
+      chipTheme: chipTheme,
+      iconTheme: IconThemeData(
+        color: colorScheme.onPrimary,
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: primaryColor,
+        foregroundColor: colorScheme.onPrimary,
+      ),
+    );
+  }
+
+  TextTheme get textTheme {
+    return TextTheme(
+      bodyLarge: TextStyle(color: textColor, fontSize: 18),
+      bodyMedium: TextStyle(color: textColor, fontSize: 16),
+      bodySmall: TextStyle(color: textColor, fontSize: 14),
+      headlineLarge: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 24),
+      headlineMedium: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 20),
+      headlineSmall: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 18),
+      titleLarge: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 22),
+      titleMedium: TextStyle(color: textColor, fontWeight: FontWeight.w500, fontSize: 18),
+      titleSmall: TextStyle(color: textColor, fontWeight: FontWeight.w500, fontSize: 16),
+      labelLarge: TextStyle(color: buttonTextColor, fontSize: 14, fontWeight: FontWeight.bold),
+    );
+  }
+
+  ChipThemeData get chipTheme {
+    return ChipThemeData(
+      backgroundColor: surfaceColor,
+      selectedColor: primaryColor,
+      disabledColor: colorScheme.onSurface.withOpacity(0.12),
+      labelStyle: TextStyle(
+        color: textColor,
+      ),
+      secondaryLabelStyle: TextStyle(
+        color: buttonTextColor,
+      ),
+      padding: const EdgeInsets.all(8.0),
     );
   }
 
