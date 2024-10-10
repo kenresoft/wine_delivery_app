@@ -44,7 +44,7 @@ class AppTheme {
       useMaterial3: true, // Enable Material 3 theme features
       brightness: colorScheme.brightness,
       colorScheme: colorScheme,
-      primaryColor: primaryColor,
+      primaryColor: colorScheme.primary,
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: 'Poppins',
       textTheme: textTheme,
@@ -62,14 +62,8 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: colorScheme.onPrimary,
+          foregroundColor: colorScheme.tertiary,
           backgroundColor: primaryColor,
-          shape: border,
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: primaryColor,
           shape: border,
         ),
       ),
@@ -82,11 +76,24 @@ class AppTheme {
           ),
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: primaryColor,
+          shape: border,
+        ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          foregroundColor: iconColor,
+          backgroundColor: iconButtonBackgroundColor,
+          shape: border,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: primaryColor,
+            color: colorScheme.secondary,
             width: 2,
           ),
         ),
@@ -94,11 +101,7 @@ class AppTheme {
       buttonTheme: ButtonThemeData(
         buttonColor: primaryColor,
         textTheme: ButtonTextTheme.primary,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(8),
-          ),
-        ),
+        shape: border,
       ),
       cardTheme: CardTheme(
         color: cardColor,
@@ -131,7 +134,7 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         backgroundColor: colorScheme.surfaceContainerHighest,
-        selectedItemColor: colorScheme.surfaceContainer,
+        selectedItemColor: colorScheme.primary,
         unselectedItemColor: colorScheme.onSurfaceVariant,
         elevation: 0,
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
@@ -139,7 +142,7 @@ class AppTheme {
       ),
       chipTheme: chipTheme,
       iconTheme: IconThemeData(
-        color: colorScheme.onPrimary,
+        color: iconColor,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: primaryColor,
@@ -180,53 +183,64 @@ class AppTheme {
 
   // Define light and dark color schemes for Material 3 compliance
   static const seedColors = (
-  Color(0xffBD7879),  // Light mode seed color
-  Color(0xff7d557a),  // Dark mode seed color
+    // Color(0xffBD7879), // Light mode seed color
+    Color(0xff7d557a), // Dark mode seed color
+    Color(0xfff69202), // Light mode seed color
   );
 
   static const primaryColors = (
-  Color(0xff394346),  // Light mode primary
-  Color(0xff212121),  // Dark mode primary
+    Color(0xff394346), // Light mode primary
+    Color(0xff212121), // Dark mode primary
   );
 
   static const secondaryColors = (
-  Color(0xffB3BDC0),  // Light mode secondary
-  Color(0xff687A80),  // Dark mode secondary
+    Color(0xffB3BDC0), // Light mode secondary
+    Color(0xff687A80), // Dark mode secondary
   );
 
   static const tertiaryColors = (
-  Color(0xFFBD7879),  // Light mode tertiary
-  Color(0xff794F50),  // Dark mode tertiary
+    Color(0xFFBD7879), // Light mode tertiary
+    Color(0xff794F50), // Dark mode tertiary
   );
 
   static const surfaceColors = (
-  Color(0xFFF4F4F4),  // Light mode surface
-  Color(0xFF394346),  // Dark mode surface
+    Color(0xFFF4F4F4), // Light mode surface
+    Color(0xFF394346), // Dark mode surface
   );
 
   static const surfaceTintColors = (
-  Color(0xffF4F4F4),  // Light mode surface tint
-  Color(0xff465760),  // Dark mode surface tint
+    Color(0xffF4F4F4), // Light mode surface tint
+    Color(0xff465760), // Dark mode surface tint
   );
 
   static const scaffoldBackgroundColors = (
-  Color(0xFFFAF9F6),  // Light mode scaffold background
-  Color(0xFF141414),  // Dark mode scaffold background
+    Color(0xFFFAF9F6), // Light mode scaffold background
+    Color(0xFF141414), // Dark mode scaffold background
   );
 
   static const textColors = (
-  Color(0xff394346),  // Light mode text
-  Color(0xffF5F5F5),  // Dark mode text
+    Color(0xff394346), // Light mode text
+    Color(0xffF5F5F5), // Dark mode text
   );
 
   static const buttonTextColors = (
-  Colors.white,  // Light mode button text
-  Colors.black,  // Dark mode button text
+    Colors.white, // Light mode button text
+    Colors.black, // Dark mode button text
+  );
+
+  static const iconColors = (
+    Color(0xff394346), // Light mode icon color
+    Color(0xffF5F5F5), // Dark mode icon color
+  );
+
+  static const iconButtonBackgroundColors = (
+    Colors.transparent, // Light mode icon button background
+    Colors.transparent, // Dark mode icon button background
   );
 
   static const cardColors = (
-  Color(0xFFF5F5F5),  // Light mode card
-  Color(0xff212121),  // Dark mode card
+    Color(0xFFF5F5F5), // Light mode card
+    Color(0xff212121), // Dark mode card
   );
 
   // Use getters to access the correct color based on isDarkMode
@@ -247,6 +261,10 @@ class AppTheme {
   Color get textColor => isDarkMode ? textColors.$2 : textColors.$1;
 
   Color get buttonTextColor => isDarkMode ? buttonTextColors.$2 : buttonTextColors.$1;
+
+  Color get iconColor => isDarkMode ? iconColors.$2 : iconColors.$1;
+
+  Color get iconButtonBackgroundColor => isDarkMode ? iconButtonBackgroundColors.$2 : iconButtonBackgroundColors.$1;
 
   Color get cardColor => isDarkMode ? cardColors.$2 : cardColors.$1;
 
