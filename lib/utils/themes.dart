@@ -30,8 +30,8 @@ class AppTheme {
       seedColor: seedColor,
       brightness: brightness,
     ).copyWith(
-      primary: secondaryColor,
-      primaryContainer: surfaceTintColor,
+      primary: primaryColor,
+      primaryContainer: primaryContainerColor,
       secondary: secondaryColor,
       tertiary: tertiaryColor,
       surface: surfaceColor,
@@ -40,8 +40,8 @@ class AppTheme {
   }
 
   ThemeData get themeData {
-
     return ThemeData(
+      useMaterial3: true, // Enable Material 3 theme features
       brightness: colorScheme.brightness,
       colorScheme: colorScheme,
       primaryColor: primaryColor,
@@ -53,7 +53,6 @@ class AppTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
-        // backgroundColor: Colors.transparent,
         elevation: 0,
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
@@ -67,7 +66,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: buttonTextColor, // Use record for button text color
+          foregroundColor: colorScheme.onPrimary,
           backgroundColor: primaryColor,
           shape: border,
         ),
@@ -145,55 +144,55 @@ class AppTheme {
     );
   }
 
-  // Define a record to hold light and dark colors for easy access
+  // Define light and dark color schemes for Material 3 compliance
   static const seedColors = (
-    rootColor,
-    baseColor,
+  Color(0xffBD7879),  // Light mode seed color
+  Color(0xff7d557a),  // Dark mode seed color
   );
 
   static const primaryColors = (
-    Color(0xff394346),
-    baseColor,
+  Color(0xff394346),  // Light mode primary
+  Color(0xff212121),  // Dark mode primary
   );
 
   static const secondaryColors = (
-    Color(0xffB3BDC0),
-    Color(0xff687A80),
+  Color(0xffB3BDC0),  // Light mode secondary
+  Color(0xff687A80),  // Dark mode secondary
   );
 
   static const tertiaryColors = (
-    Color(0xFFBD7879),
-    Color(0xff794F50),
+  Color(0xFFBD7879),  // Light mode tertiary
+  Color(0xff794F50),  // Dark mode tertiary
   );
 
   static const surfaceColors = (
-    Color(0xFFF4F4F4),
-    Color(0xFF394346),
+  Color(0xFFF4F4F4),  // Light mode surface
+  Color(0xFF394346),  // Dark mode surface
   );
 
   static const surfaceTintColors = (
-    Color(0xffF4F4F4),
-    Color(0xff465760),
+  Color(0xffF4F4F4),  // Light mode surface tint
+  Color(0xff465760),  // Dark mode surface tint
   );
 
   static const scaffoldBackgroundColors = (
-    Color(0xFFFAF9F6),
-    Color(0xFF141414),
+  Color(0xFFFAF9F6),  // Light mode scaffold background
+  Color(0xFF141414),  // Dark mode scaffold background
   );
 
   static const textColors = (
-    Color(0xff394346),
-    Color(0xffF5F5F5),
+  Color(0xff394346),  // Light mode text
+  Color(0xffF5F5F5),  // Dark mode text
   );
 
   static const buttonTextColors = (
-    Colors.white,
-    Colors.black,
+  Colors.white,  // Light mode button text
+  Colors.black,  // Dark mode button text
   );
 
   static const cardColors = (
-    Color(0xFFF5F5F5),
-    Color(0xff212121),
+  Color(0xFFF5F5F5),  // Light mode card
+  Color(0xff212121),  // Dark mode card
   );
 
   // Use getters to access the correct color based on isDarkMode
@@ -217,7 +216,5 @@ class AppTheme {
 
   Color get cardColor => isDarkMode ? cardColors.$2 : cardColors.$1;
 
-  static const Color baseColor = Color(0xffBD7879);
-  static const Color rootColor = Color(0xff7d557a);
+  Color get primaryContainerColor => isDarkMode ? surfaceColors.$2 : surfaceColors.$1;
 }
-
