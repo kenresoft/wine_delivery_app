@@ -1,212 +1,3 @@
-/*
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fontresoft/fontresoft.dart';
-
-class AppTheme {
-  AppTheme();
-
-  final ThemeData themeData = ThemeData(
-    primaryColor: const Color(0xff394346),
-    primaryColorDark: const Color(0xffBD7879),
-    scaffoldBackgroundColor: const Color(0xFFFAF9F6),
-    fontFamily: FontResoft.poppins,
-    package: FontResoft.package,
-    textTheme: const TextTheme(bodyMedium: TextStyle(color: Color(0xff394346))),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: const Color(0xff394346),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: const Color(0xff394346),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: const Color(0xffBD7879),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        side: const BorderSide(
-          color: Color(0xffB3BDC0),
-        ),
-      ),
-    ),
-    inputDecorationTheme: const InputDecorationTheme(
-      border: OutlineInputBorder(),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Color(0xffB3BDC0) */
-/*Color(0xff394346)*/ /*
-,
-          width: 2,
-        ),
-      ),
-      labelStyle: TextStyle(color: Color(0xffBD7879)),
-    ),
-    buttonTheme: const ButtonThemeData(
-      buttonColor: Color(0xffBD7879),
-      textTheme: ButtonTextTheme.primary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
-      ),
-    ),
-    cardTheme: CardTheme(
-      color: const Color(0xffF4F4F4),
-      surfaceTintColor: const Color(0xffF4F4F4),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: Color(0xffB3BDC0), width: 1),
-      ),
-      elevation: 0,
-    ),
-    brightness: Brightness.light,
-    iconTheme: const IconThemeData(color: Color(0xff394346)),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xff394346),
-    ).copyWith(
-      primary: const Color(0xff394346),
-      primaryContainer: const Color(0xff687A80),
-      secondary: const Color(0xffBD7879),
-      tertiary: const Color(0xffB3BDC0),
-      surface: const Color(0xFFFAF9F6),
-      surfaceTint: const Color(0xffF4F4F4),
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Color(0xFFFAF9F6),
-      selectedItemColor: Color(0xff394346),
-      unselectedItemColor: Color(0xffB3BDC0),
-      selectedIconTheme: IconThemeData(
-        color: Color(0xff394346),
-      ),
-      unselectedIconTheme: IconThemeData(
-        color: Color(0xffB3BDC0),
-      ),
-      selectedLabelStyle: TextStyle(color: Color(0xff394346)),
-      unselectedLabelStyle: TextStyle(color: Color(0xffB3BDC0)),
-      showUnselectedLabels: true,
-    ),
-  );
-
-  /// DARK MODE
-
-  final ThemeData darkThemeData = ThemeData(
-    primaryColor: const Color(0xffBD7879),
-    primaryColorDark: const Color(0xff394346),
-    scaffoldBackgroundColor: const Color(0xFF141414),
-    fontFamily: FontResoft.poppins,
-    package: FontResoft.package,
-    textTheme: const TextTheme(bodyMedium: TextStyle(color: const Color(0xffF5F5F5))),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarIconBrightness: Brightness.light,
-      ),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: const Color(0xff181B20), // Darker background color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.white, // Whiter foreground color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: const Color(0xffB3BDC0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        side: const BorderSide(
-          color: Color(0xff394346), // Lighter border color
-        ),
-      ),
-    ),
-    inputDecorationTheme: const InputDecorationTheme(
-      border: OutlineInputBorder(),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Color(0xff394346), // Lighter border color
-          width: 2,
-        ),
-      ),
-    ),
-    buttonTheme: const ButtonThemeData(
-      buttonColor: Color(0xffBD7879),
-      textTheme: ButtonTextTheme.primary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
-      ),
-    ),
-    cardTheme: CardTheme(
-      color: const Color(0xff212121),
-      surfaceTintColor: const Color(0xff212121),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: Color(0xffB3BDC0), width: 1),
-      ),
-      elevation: 0,
-    ),
-    brightness: Brightness.light,
-    iconTheme: const IconThemeData(color: Color(0xffB3BDC0)),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xffB3BDC0),
-    ).copyWith(
-      primary: const Color(0xffB3BDC0),
-      primaryContainer: const Color(0xff465760),
-      secondary: const Color(0xff794F50),
-      tertiary: const Color(0xff687A80),
-      surface: const Color(0xFF394346),
-      surfaceTint: const Color(0xff465760),
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Color(0xFF394346),
-      selectedItemColor: Color(0xffB3BDC0),
-      unselectedItemColor: Color(0xff687A80),
-      selectedIconTheme: IconThemeData(
-        color: Color(0xffB3BDC0),
-      ),
-      unselectedIconTheme: IconThemeData(
-        color: Color(0xff687A80),
-      ),
-      selectedLabelStyle: TextStyle(color: Color(0xffB3BDC0)),
-      unselectedLabelStyle: TextStyle(color: Color(0xff687A80)),
-      showUnselectedLabels: true,
-    ),
-  );
-}
-*/
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -253,7 +44,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: buttonTextColor, // variable for button text color
+          foregroundColor: buttonTextColor, // Use record for button text color
           backgroundColor: primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -330,34 +121,28 @@ class AppTheme {
     );
   }
 
-  // Add your color properties like primaryColor, scaffoldBackgroundColor, etc.
-  Color get primaryColor => isDarkMode ? _darkPrimaryColor : _lightPrimaryColor;
+  // Define a record to hold light and dark colors for easy access
+  final (Color light, Color dark) primaryColors = (Color(0xff394346), Color(0xffBD7879));
+  final (Color light, Color dark) scaffoldBackgroundColors = (Color(0xFFFAF9F6), Color(0xFF141414));
+  final (Color light, Color dark) textColors = (Color(0xff394346), Color(0xffF5F5F5));
+  final (Color light, Color dark) secondaryColors = (Color(0xffB3BDC0), Color(0xff687A80));
+  final (Color light, Color dark) surfaceTintColors = (Color(0xffF4F4F4), Color(0xff465760));
+  final (Color light, Color dark) buttonTextColors = (Colors.white, Colors.black);
+  final (Color light, Color dark) cardColors = (Color(0xFFF5F5F5), Color(0xff212121));
 
-  Color get scaffoldBackgroundColor => isDarkMode ? _darkScaffoldBackgroundColor : _lightScaffoldBackgroundColor;
+  // Use getters to access the correct color based on isDarkMode
+  Color get primaryColor => isDarkMode ? primaryColors.$2 : primaryColors.$1;
 
-  Color get textColor => isDarkMode ? _darkTextColor : _lightTextColor;
+  Color get scaffoldBackgroundColor => isDarkMode ? scaffoldBackgroundColors.$2 : scaffoldBackgroundColors.$1;
 
-  Color get secondaryColor => isDarkMode ? _darkSecondaryColor : _lightSecondaryColor;
+  Color get textColor => isDarkMode ? textColors.$2 : textColors.$1;
 
-  Color get surfaceTintColor => isDarkMode ? _darkSurfaceTintColor : _lightSurfaceTintColor;
+  Color get secondaryColor => isDarkMode ? secondaryColors.$2 : secondaryColors.$1;
 
-  Color get buttonTextColor => isDarkMode ? _darkButtonTextColor : _lightButtonTextColor; // New variable for button text
+  Color get surfaceTintColor => isDarkMode ? surfaceTintColors.$2 : surfaceTintColors.$1;
 
-  Color get cardColor => isDarkMode ? _darkCardColor : _lightCardColor;
+  Color get buttonTextColor => isDarkMode ? buttonTextColors.$2 : buttonTextColors.$1;
 
-  // Define your colors here.
-  static const Color _lightPrimaryColor = Color(0xff394346);
-  static const Color _darkPrimaryColor = Color(0xffBD7879);
-  static const Color _lightScaffoldBackgroundColor = Color(0xFFFAF9F6);
-  static const Color _darkScaffoldBackgroundColor = Color(0xFF141414);
-  static const Color _lightTextColor = Color(0xff394346);
-  static const Color _darkTextColor = Color(0xffF5F5F5);
-  static const Color _lightSecondaryColor = Color(0xffB3BDC0);
-  static const Color _darkSecondaryColor = Color(0xff687A80);
-  static const Color _lightSurfaceTintColor = Color(0xffF4F4F4);
-  static const Color _darkSurfaceTintColor = Color(0xff465760);
-  static const Color _lightButtonTextColor = Colors.white; // Define color for light theme button text
-  static const Color _darkButtonTextColor = Colors.black; // Define color for dark theme button text
-  static const Color _lightCardColor = Color(0xFFF5F5F5); // Define light card color
-  static const Color _darkCardColor = Color(0xff212121); // Define dark card color
+  Color get cardColor => isDarkMode ? cardColors.$2 : cardColors.$1;
 }
+
