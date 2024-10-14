@@ -14,6 +14,7 @@ import 'profile/profile_bloc.dart';
 import 'promo_code/promo_code_bloc.dart';
 import 'shipment/shipment_bloc.dart';
 import 'shipping_address/shipping_address_bloc.dart';
+import 'theme/theme_cubit.dart';
 
 class Providers {
   static List<BlocProvider> get blocProviders {
@@ -32,6 +33,7 @@ class Providers {
       BlocProvider<FavsBloc>(create: (context) => FavsBloc()),
       BlocProvider<PromoCodeBloc>(create: (context) => PromoCodeBloc()),
       BlocProvider<NetworkBloc>(create: (context) => NetworkBloc()),
+      BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
     ];
   }
 }
