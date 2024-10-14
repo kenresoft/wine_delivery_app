@@ -10,8 +10,9 @@ abstract class OrderEvent extends Equatable {
 class CreateOrder extends OrderEvent {
   final double subTotal;
   final String note;
+  final void Function(Order order) callback;
 
-  const CreateOrder({required this.subTotal, required this.note});
+  const CreateOrder({required this.subTotal, required this.note, required this.callback});
 
   @override
   List<Object?> get props => [subTotal, note];

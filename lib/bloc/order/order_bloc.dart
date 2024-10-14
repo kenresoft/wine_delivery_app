@@ -36,6 +36,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final order = await orderRepository.createOrder(
         subTotal: event.subTotal,
         note: event.note,
+        callback: event.callback,
       );
       emit(OrderCreated(order));
     } catch (e) {
