@@ -84,7 +84,6 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void _submitOtp(BuildContext context, bool mounted, String pin) async {
-    // if (_formKey.currentState?.validate() == true) {
     setState(() {
       _isLoading = true;
     });
@@ -106,6 +105,5 @@ class _OtpScreenState extends State<OtpScreen> {
         _isLoading = false;
       });
     }
-    // }
   }
 }
