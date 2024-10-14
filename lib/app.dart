@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             BlocListener<NetworkBloc, NetworkState>(
               listener: (context, state) {
                 if (state is BannerVisible) {
-                  state.message.toast;
+                  // state.message.toast;
                 }
               },
               child: BlocBuilder<ThemeCubit, ThemeMode>(
@@ -101,13 +101,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme().themeData,
-      darkTheme: AppTheme().darkThemeData,
+      theme: AppTheme(mainContext).themeData,
+      darkTheme: AppTheme(mainContext).themeData,
       themeMode: themeMode,
-      /*builder: (context, child) {
-        mainContext.read<ThemeCubit>().updateThemeFromSystem(mainContext);
-        return child!;
-      },*/
       routes: {
         '/': condition(
           widget.initialError != null,
