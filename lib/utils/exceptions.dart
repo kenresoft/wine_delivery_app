@@ -36,6 +36,10 @@ class ServerErrorException extends AppException {
   const ServerErrorException(super.message);
 }
 
+class NetworkErrorException extends AppException {
+  const NetworkErrorException(super.message);
+}
+
 class UnauthorizedException extends AppException {
   const UnauthorizedException(super.message);
 }
