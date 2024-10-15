@@ -76,5 +76,10 @@ bool get sessionActive => SharedPreferencesService.get('sessionActive') ?? false
 
 set sessionActive(bool value) => SharedPreferencesService.set('sessionActive', value);
 
+/// OTP SENT
+bool get otpSent => SharedPreferencesService.get('otpSent') ?? false;
+
+set otpSent(bool value) => SharedPreferencesService.set('otpSent', value);
+
 ///
 
