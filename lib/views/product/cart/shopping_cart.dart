@@ -143,6 +143,7 @@ class CartItemsList extends StatelessWidget {
               },
             );
           }
+          return null;
         },
         onDismissed: (direction) {
           if (direction == DismissDirection.endToStart) {

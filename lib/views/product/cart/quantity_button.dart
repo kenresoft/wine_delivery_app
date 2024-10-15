@@ -18,7 +18,7 @@ class QuantityButton extends StatelessWidget {
       constraints: BoxConstraints(minWidth: 25, minHeight: 25),
       style: ButtonStyle(
         shape: WidgetStatePropertyAll(CircleBorder()),
-        backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
+        backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary),
         // backgroundColor: WidgetStatePropertyAll(Colors.grey.shade300),
         iconSize: WidgetStatePropertyAll(20),
       ),
