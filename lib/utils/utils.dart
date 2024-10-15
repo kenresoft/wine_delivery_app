@@ -19,6 +19,8 @@ ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
 
 ThemeData theme(BuildContext context) => Theme.of(context);
 
+const int socketErrorCode = 888;
+
 class Utils {
   Utils._();
 
@@ -39,7 +41,7 @@ class Utils {
     try {
       response = await _getResponse(method, endpoint, headers, body);
     } catch (e) {
-      rethrow;
+      throw Utils.handleError(error: e);
     }
     return response;
   }
@@ -57,51 +59,6 @@ class Utils {
       RequestMethod.delete => await http.delete(Uri.parse(endpoint), headers: headers, body: body),
     };
   }
-
-  /*static Future<void> authCheck(BuildContext context) async {
-    const String endpoint = '${Constants.baseUrl}/api/categories';
-    try {
-      final response = await authRepository.makeAuthenticatedRequest(endpoint);
-      if (response.statusCode == 200) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return const MainScreen();
-          },
-        ),
-      );
-    } else {
-        // Handle error here
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return const LoginPage();
-            },
-          ),
-        );
-      }
-    } on NoAccessTokenException catch (e) {
-      print(e.message);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return const LoginPage();
-          },
-        ),
-      );
-    } on NoRefreshTokenException catch (e) {
-      print(e.message);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return const LoginPage();
-          },
-        ),
-      );
-    } catch (e) {
-      print(e);
-    }
-  }*/
 
   static Future<void> authCheck(BuildContext context) async {
     // final String endpoint = '${Constants.baseUrl}/api/categories';
@@ -172,8 +129,8 @@ class Utils {
         ),
       );
     } catch (e) {
-      logger.e(e);
-      Utils.handleError(response, e.toString());
+      // logger.e(e);
+      throw Utils.handleError(response: response, error: e);
     }
   }
 
@@ -182,20 +139,29 @@ class Utils {
   }
 
   // Handle errors based on status code
-  static AppException handleError(http.Response response, [String? error]) {
-    switch (response.statusCode) {
-      case 400:
-        return const BadRequestException('Bad request, please check your input.');
-      case 401:
-        return const InvalidAccessTokenException('Invalid access token. Please log in again.');
-      case 403:
-        return const UnauthorizedException('Unauthorized: Access Denied.');
-      case 404:
-        return const NotFoundException('Resource not found.');
-      case 500:
-        return const ServerErrorException('Internal server error, please try again later.');
-      default:
-        return UnexpectedException('Unexpected error: ${response.statusCode} - ${response.reasonPhrase}');
+  static AppException handleError({http.Response? response, Object? error}) {
+    logger.w(error.runtimeType);
+    if (response != null) {
+      switch (response.statusCode) {
+        case 400:
+          return const BadRequestException('Bad request, please check your input.');
+        case 401:
+          return const InvalidAccessTokenException('Invalid access token. Please log in again.');
+        case 403:
+          return const UnauthorizedException('Unauthorized: Access Denied.');
+        case 404:
+          return const NotFoundException('Resource not found.');
+        case 500:
+          return const ServerErrorException('Internal server error, please try again later.');
+        default:
+          return UnexpectedException('Unexpected error: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } else {
+      if (error is SocketException) {
+        return const NetworkErrorException('Network error, please try again later.');
+      } else {
+        return UnexpectedException(error.toString());
+      }
     }
   }
 }
