@@ -94,9 +94,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppTheme().themeData.colorScheme.tertiary,
-              AppTheme().themeData.colorScheme.surface,
-              AppTheme().themeData.colorScheme.tertiary,
+              AppTheme(context).themeData.colorScheme.tertiary,
+              AppTheme(context).themeData.colorScheme.surface,
+              AppTheme(context).themeData.colorScheme.tertiary,
             ], // Background gradient
           ),
         ),

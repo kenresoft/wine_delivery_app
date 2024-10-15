@@ -3,7 +3,6 @@ import 'package:lottie/lottie.dart';
 import 'package:wine_delivery_app/views/auth/registration_page.dart';
 
 import '../../utils/preferences.dart';
-// For sign-up/login
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -55,7 +54,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ? ElevatedButton(
                   onPressed: () async {
                     seenOnboarding = true;
-
                     // Navigate to Authentication Screen (Sign-up/Login)
                     Navigator.pushReplacement(
                       context,
