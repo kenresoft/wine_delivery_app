@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:wine_delivery_app/utils/utils.dart';
 
 import '../../../bloc/cart/cart_bloc.dart';
 import '../../../bloc/order/order_bloc.dart';
 import '../../../bloc/promo_code/promo_code_bloc.dart';
 import '../../../model/cart_item.dart';
 import '../../../model/coupon.dart';
-import '../../../model/order.dart';
 import '../../../repository/coupon_repository.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/extensions.dart';
@@ -38,11 +36,8 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shopping Cart'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
-        ),
+        title: Text('Shopping Cart'),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -52,17 +47,6 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
             const SubtotalSection(),
             const PromoCodeInput(),
             const CheckoutButton(),
-            BlocListener<OrderBloc, OrderState>(
-              child: SizedBox(),
-              listenWhen: (previous, current) => previous != current,
-              listener: (context, state) {
-                if (state is OrderCreated) {
-                  //print(state.toString());
-                  logger.w('toast');
-                  // Trigger navigation to the checkout screen when order is created checkout
-                }
-              },
-            ),
           ],
         ),
       ),
@@ -110,38 +94,30 @@ class CartItemsList extends StatelessWidget {
   Card _buildShimmerCartCard() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-        leading: Container(
+        leading: SizedBox(
           width: 50,
           height: 50,
-          color: Colors.white,
         ),
-        title: Container(
+        title: SizedBox(
           height: 20,
           width: 100,
-          color: Colors.white,
         ),
-        subtitle: Container(
+        subtitle: SizedBox(
           height: 20,
           width: 50,
-          color: Colors.white,
         ),
-        trailing: Container(
+        trailing: SizedBox(
           height: 20,
           width: 40,
-          color: Colors.white,
         ),
       ),
     );
   }
 
   Widget _buildCartCard(CartItem cartItem, BuildContext context) {
-    // context.watch<ThemeCubit>().state == ThemeMode.light ? AppTheme().themeData : AppTheme().darkThemeData;
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       margin: const EdgeInsets.symmetric(vertical: 8).h,
       child: Dismissible(
         key: UniqueKey(),
@@ -174,17 +150,16 @@ class CartItemsList extends StatelessWidget {
           }
         },
         background: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColorDark,
-          ),
+          color: Theme.of(context).primaryColorDark,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Icon(Icons.delete, color: Colors.white),
+              Icon(Icons.delete /*, color: Colors.white*/),
               SizedBox(width: 16.w),
             ],
           ),
         ),
+        secondaryBackground: null,
         child: Container(
           height: 90,
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8),
@@ -274,7 +249,6 @@ class CartItemsList extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColorDark,
                           ),
                         ),
                       ),
@@ -313,7 +287,7 @@ class SubtotalSection extends StatelessWidget {
         if (state is CartLoaded) {
           return Card(
             elevation: 1,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             margin: EdgeInsets.symmetric(vertical: 4).h,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -432,97 +406,47 @@ class _CheckoutButtonState extends State<CheckoutButton> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<OrderBloc, OrderState>(
-      listenWhen: (previous, current) => previous != current,
-      listener: (context, orderState) {
-        if (orderState is OrderCreated && !hasNavigated) {
-          hasNavigated = true;
-          // 'Item(s) moved from cart!'.toast;
-          print('Navigated? ${hasNavigated.toString()}');
-          //context.read<CartBloc>().add(const RemoveAllFromCart());
-
-          // Navigate to the checkout page when order is successfully created
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return CheckOutScreen(order: orderState.order);
-              },
-            ),
-          );
-        } else if (orderState is OrderError) {
-          // Show error message if order creation failed
-          logger.e(orderState.message);
-          'Order creation failed! Please try again.'.toast;
-        }
-      },
-      child: BlocBuilder<CartBloc, CartState>(
-        builder: (context, cartState) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0).h,
-            child: ElevatedButton(
-              onPressed: () {
-                if (cartState is CartLoaded) {
-                  if (cartState.cartItems.isNotEmpty) {
-                    print(cartState.cartItems.isNotEmpty);
-                    context.read<OrderBloc>().add(
-                          CreateOrder(
-                            subTotal: cartState.totalPrice,
-                            note: 'Coupon code for this purchase: ${cartState.couponCode}',
-                            callback: (order) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => CheckOutScreen(order: order),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                  } else {
-                    'Cart is empty!'.toast;
-                  }
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, cartState) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0).h,
+          child: ElevatedButton(
+            onPressed: () {
+              if (cartState is CartLoaded) {
+                if (cartState.cartItems.isNotEmpty) {
+                  context.read<OrderBloc>().add(
+                        CreateOrder(
+                          subTotal: cartState.totalPrice,
+                          note: 'Coupon code for this purchase: ${cartState.couponCode}',
+                          callback: (order) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => CheckOutScreen(order: order),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                } else {
+                  'Cart is empty!'.toasts;
                 }
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                minimumSize: Size(double.infinity, 50.h),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                child: Text(
-                  'Proceed to Checkout',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18.r),
-                ),
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              minimumSize: Size(double.infinity, 50.h),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              child: Text(
+                'Proceed to Checkout',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18.r),
               ),
             ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class CheckoutPage extends StatelessWidget {
-  final Order order;
-
-  const CheckoutPage({super.key, required this.order});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Checkout')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Order ID: ${order.id}'),
-            Text('Total Price: \$${order.totalCost}'),
-            // Add other order details and checkout functionality here
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
