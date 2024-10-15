@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:wine_delivery_app/views/user/theme_dialog.dart';
 
-import '../../bloc/navigation/bottom_navigation_bloc.dart';
 import '../../bloc/product/favorite/favs/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
 import '../../bloc/shipment/shipment_bloc.dart';
@@ -14,48 +13,52 @@ import '../auth/login_page.dart';
 import '../product/order/shipping_form_address.dart';
 import 'user_profile_edit_page.dart';
 
-class UserProfileScreen extends StatelessWidget {
+class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
 
   @override
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileBloc>().add(const ProfileFetch());
+    context.read<FavsBloc>().add(LoadFavs());
+    context.read<ShipmentBloc>().add(GetShipmentDetails());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavigationBloc, NavigationState>(
-      builder: (context, state) {
-        if (state != const PageChanged(selectedIndex: 3)) {
-          return const Center(child: CircularProgressIndicator());
-        } else {
-        context.read<ProfileBloc>().add(const ProfileFetch());
-        context.read<FavsBloc>().add(LoadFavs());
-        context.read<ShipmentBloc>().add(GetShipmentDetails());
-        return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
-          return switch (state) {
-            ProfileFetching() => _buildShimmerLoading(),
-            // ProfileFetching() => const Center(child: CircularProgressIndicator()),
-            ProfileError() => _buildShimmerLoading(),
-            // ProfileError() => const Center(child: CircularProgressIndicator()),
-            // ProfileError() => Center(child: Text(state.error)),
-            ProfileLoaded() => Scaffold(
-              appBar: AppBar(
-                title: const Text('User Profile'),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return UserProfileEditPage(profile: state.profile);
-                        },
-                      ),
+    return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
+      return switch (state) {
+        ProfileFetching() => _buildShimmerLoading(),
+        // ProfileFetching() => const Center(child: CircularProgressIndicator()),
+        ProfileError() => _buildShimmerLoading(),
+        // ProfileError() => const Center(child: CircularProgressIndicator()),
+        // ProfileError() => Center(child: Text(state.error)),
+        ProfileLoaded() => Scaffold(
+            appBar: AppBar(
+              title: const Text('User Profile'),
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return UserProfileEditPage(profile: state.profile);
+                      },
                     ),
                   ),
-                ],
-              ),
-              body: buildBody(context, state),
+                ),
+              ],
             ),
-          };
-        });
-      }
+            body: buildBody(context, state),
+          ),
+      };
     });
   }
 
@@ -144,10 +147,9 @@ class UserProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               height: 20,
               width: 200,
-              color: Colors.grey[300],
             ),
             const SizedBox(height: 8.0),
             ListView.builder(
@@ -157,25 +159,23 @@ class UserProfileScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                    leading: Container(
+                    leading: SizedBox(
                       width: 50,
                       height: 50,
-                      color: Colors.grey[300],
                     ),
-                    title: Container(
+                    title: SizedBox(
                       height: 20,
                       width: 150,
-                      color: Colors.grey[300],
+
                     ),
-                    subtitle: Container(
+                    subtitle: SizedBox(
                       height: 15,
                       width: 100,
-                      color: Colors.grey[300],
+
                     ),
-                    trailing: Container(
+                    trailing: SizedBox(
                       width: 20,
                       height: 20,
-                      color: Colors.grey[300],
                     ),
                   ),
                 );
@@ -273,15 +273,10 @@ class UserProfileScreen extends StatelessWidget {
   Widget _buildProfileHeader(BuildContext context, ProfileLoaded state) {
     return Container(
       padding: const EdgeInsets.all(16.0).r,
-      color: Colors.deepPurple.shade50,
       child: Row(
         children: [
           GestureDetector(
-            onTap: () async {
-              /*print('AccessToken: ${await authRepository.getAccessToken()}');
-              print('RefreshToken: ${await authRepository.getRefreshToken()}');
-              print('AuthStatus: ${await authRepository.checkAuthStatus()}');*/
-            },
+            onTap: () async {},
             child: CircleAvatar(
               radius: 40.r,
               backgroundImage: NetworkImage(Constants.baseUrl + state.profile.profileImage),
@@ -303,7 +298,7 @@ class UserProfileScreen extends StatelessWidget {
                   Text(
                     state.profile.email,
                     maxLines: 1,
-                    style: TextStyle(fontSize: 16.r, color: Colors.grey[600]),
+                    //style: TextStyle(fontSize: 16.r, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -329,7 +324,7 @@ class UserProfileScreen extends StatelessWidget {
                 shippingAddress = state.shipment.address;
               }
               return ListTile(
-                leading: const Icon(Icons.location_on, color: Colors.deepPurple),
+                leading: const Icon(Icons.location_on/**/),
                 title: Text('Shipping Address', style: TextStyle(fontSize: 14.r)),
                 subtitle: Text(shippingAddress ?? 'No address specified!', style: TextStyle(fontSize: 14.r)),
                 trailing: const Icon(Icons.edit),
@@ -346,7 +341,7 @@ class UserProfileScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.credit_card, color: Colors.deepPurple),
+            leading: const Icon(Icons.credit_card/**/),
             title: Text('Payment Methods', style: TextStyle(fontSize: 14.r)),
             subtitle: Text('Visa **** 1234', style: TextStyle(fontSize: 14.r)),
             trailing: const Icon(Icons.edit),
@@ -398,7 +393,7 @@ class UserProfileScreen extends StatelessWidget {
               onPressed: () {
                 // Navigate to full Order History page
               },
-              child: const Text('View All Orders', style: TextStyle(color: Colors.deepPurple)),
+              child: const Text('View All Orders', style: TextStyle(/*color: Colors.deepPurple*/)),
             ),
           ),
         ],
@@ -464,7 +459,7 @@ class UserProfileScreen extends StatelessWidget {
               onPressed: () {
                 // Navigate to full Favorite page
               },
-              child: const Text('View All Favorites', style: TextStyle(color: Colors.deepPurple)),
+              child: const Text('View All Favorites', style: TextStyle(/*color: Colors.deepPurple*/)),
             ),
           ),
         ],
@@ -481,7 +476,7 @@ class UserProfileScreen extends StatelessWidget {
           const Text('Account Settings', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8.0),
           ListTile(
-            leading: const Icon(Icons.notifications, color: Colors.deepPurple),
+            leading: const Icon(Icons.notifications),
             title: const Text('Notification Preferences'),
             onTap: () {
               // Navigate to Notification Preferences page
@@ -489,7 +484,7 @@ class UserProfileScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.language, color: Colors.deepPurple),
+            leading: const Icon(Icons.language),
             title: const Text('Language & Region'),
             onTap: () {
               // Navigate to Language & Region page
@@ -497,7 +492,7 @@ class UserProfileScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.privacy_tip, color: Colors.deepPurple),
+            leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy Settings'),
             onTap: () {
               // Navigate to Privacy Settings page
@@ -505,7 +500,7 @@ class UserProfileScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.brightness_6, color: Colors.deepPurple),
+            leading: const Icon(Icons.brightness_6),
             title: const Text('App Theme'),
             onTap: () {
               // Navigate to App Theme settings page
@@ -529,7 +524,7 @@ class UserProfileScreen extends StatelessWidget {
           const Text('Help & Support', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8.0),
           ListTile(
-            leading: const Icon(Icons.help, color: Colors.deepPurple),
+            leading: const Icon(Icons.help),
             title: const Text('Help Center'),
             onTap: () {
               // Navigate to Help Center
@@ -537,7 +532,7 @@ class UserProfileScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.contact_support, color: Colors.deepPurple),
+            leading: const Icon(Icons.contact_support),
             title: const Text('Contact Support'),
             onTap: () {
               // Navigate to Contact Support page
@@ -545,7 +540,7 @@ class UserProfileScreen extends StatelessWidget {
           ),
           const Divider(),
           const ListTile(
-            leading: Icon(Icons.info_outline, color: Colors.deepPurple),
+            leading: Icon(Icons.info_outline),
             title: Text('App Version'),
             subtitle: Text('Version 1.0.0'),
           ),
@@ -560,7 +555,7 @@ class UserProfileScreen extends StatelessWidget {
       child: Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.redAccent,
+            // backgroundColor: Colors.redAccent,
             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
           ),
           onPressed: () {
