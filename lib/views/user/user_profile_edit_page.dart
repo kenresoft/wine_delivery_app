@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wine_delivery_app/model/product.dart';
 import 'package:wine_delivery_app/repository/user_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
+import 'package:wine_delivery_app/utils/utils.dart';
 
+import '../../model/profile.dart';
 import '../home/main_screen.dart';
 
 class UserProfileEditPage extends StatefulWidget {
@@ -86,7 +87,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Edit Profile'),
-          backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(CupertinoIcons.back),
@@ -99,18 +99,12 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
             ),
           ),
         ),
-        backgroundColor: const Color(0xFFFAF9F6),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+          padding: const EdgeInsets.all(12),
           child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            elevation: 5,
-            color: Colors.white,
-            surfaceTintColor: Colors.white,
+            elevation: 3,
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(16),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -118,12 +112,12 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                   children: [
                     _buildProfileImage(),
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       'Edit Your Profile',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xff394346),
+                        color: colorScheme(context).onSurface,
                       ),
                       textAlign: TextAlign.center,
                     ),
