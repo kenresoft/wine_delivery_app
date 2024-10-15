@@ -14,7 +14,7 @@ extension DateTimeComparison on DateTime {
 }
 
 extension ToastExtension<T> on T {
-  T get toast {
+  T get toasts {
     Fluttertoast.showToast(
       msg: toString(),
       toastLength: Toast.LENGTH_LONG,
@@ -26,13 +26,14 @@ extension ToastExtension<T> on T {
     return this;
   }
 
-  void toasts(BuildContext context) {
+  void toast(BuildContext context) {
     FToast().init(context).showToast(
           gravity: ToastGravity.BOTTOM,
           toastDuration: const Duration(seconds: 8),
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xff383838),
+              color: AppTheme(context).themeData.colorScheme.primary,
+              // color: const Color(0xff383838),
               borderRadius: BorderRadius.circular(15),
             ),
             //constraints: BoxConstraints(maxWidth: .8.sw),
