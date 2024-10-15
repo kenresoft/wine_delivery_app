@@ -48,14 +48,7 @@ class AppTheme {
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       fontFamily: 'Poppins',
       textTheme: textTheme,
-      appBarTheme: AppBarTheme(
-        elevation: 0,
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
-        ),
-      ),
+      platform: TargetPlatform.iOS,
       listTileTheme: ListTileThemeData(
         shape: border,
         selectedColor: colorScheme.secondary,
@@ -109,7 +102,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: BorderSide(
-            color: secondaryColor,
+            color: isDarkMode ? colorScheme.primary : secondaryColor.withOpacity(0.3), //onPrimaryFixedVariant
             width: 1,
           ),
         ),
@@ -133,12 +126,24 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: colorScheme.surfaceContainerHighest,
-        selectedItemColor: colorScheme.primary,
-        unselectedItemColor: colorScheme.onSurfaceVariant,
+        backgroundColor: isDarkMode? colorScheme.surface : colorScheme.surfaceContainerHighest,
+        // backgroundColor: colorScheme.surfaceContainerHighest,
+        selectedItemColor: colorScheme.onSurfaceVariant,
+        unselectedItemColor: colorScheme.primary,
         elevation: 0,
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         showUnselectedLabels: true,
+      ),
+      appBarTheme: AppBarTheme(
+        centerTitle: false,
+        backgroundColor: isDarkMode? colorScheme.surface : colorScheme.surfaceContainerHighest,
+        // backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+        shadowColor: primaryColor,
+        titleTextStyle: textTheme.titleLarge,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
+        ),
       ),
       chipTheme: chipTheme,
       iconTheme: IconThemeData(
@@ -154,12 +159,18 @@ class AppTheme {
   TextTheme get textTheme {
     return TextTheme(
       bodyLarge: TextStyle(color: textColor, fontSize: 18),
+      // normal text
       bodyMedium: TextStyle(color: textColor, fontSize: 16),
       bodySmall: TextStyle(color: textColor, fontSize: 14),
       headlineLarge: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 24),
       headlineMedium: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 20),
       headlineSmall: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 18),
-      titleLarge: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 22),
+      // appbar title
+      titleLarge: TextStyle(
+        color: isDarkMode ? colorScheme.primaryFixed : primaryColor,
+        fontWeight: FontWeight.bold,
+        fontSize: 22,
+      ),
       titleMedium: TextStyle(color: textColor, fontWeight: FontWeight.w500, fontSize: 18),
       titleSmall: TextStyle(color: textColor, fontWeight: FontWeight.w500, fontSize: 16),
       labelLarge: TextStyle(color: buttonTextColor, fontSize: 14, fontWeight: FontWeight.bold),
@@ -184,8 +195,10 @@ class AppTheme {
   // Define light and dark color schemes for Material 3 compliance
   static const seedColors = (
     // Color(0xffBD7879), // Light mode seed color
-    Color(0xff7d557a), // Dark mode seed color
-    Color(0xfff69202), // Light mode seed color
+    // Color(0xff7d557a), // Dark mode seed color
+
+    Color(0xff794F50), // Light mode seed color
+    Color(0xfff69202), // Dark mode seed color
   );
 
   static const primaryColors = (
@@ -194,8 +207,8 @@ class AppTheme {
   );
 
   static const secondaryColors = (
-    Color(0xffB3BDC0), // Light mode secondary
-    Color(0xff687A80), // Dark mode secondary
+    Color(0xff687A80), // Light mode secondary
+    Color(0xffB3BDC0), // Dark mode secondary
   );
 
   static const tertiaryColors = (
@@ -214,7 +227,9 @@ class AppTheme {
   );
 
   static const scaffoldBackgroundColors = (
-    Color(0xFFFAF9F6), // Light mode scaffold background
+    // Color(0xFFF2F2F2), // Light mode scaffold background
+    Color(0xffF2F0F0), // Light mode scaffold background
+    // Color(0xFFFAF9F6), // Light mode scaffold background
     Color(0xFF141414), // Dark mode scaffold background
   );
 
@@ -239,7 +254,8 @@ class AppTheme {
   );
 
   static const cardColors = (
-    Color(0xFFF5F5F5), // Light mode card
+    Color(0xFFFFFFFF), // Light mode card
+    // Color(0xFFF5F5F5), // Light mode card
     Color(0xff212121), // Dark mode card
   );
 
