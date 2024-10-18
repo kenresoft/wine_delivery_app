@@ -3,13 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/utils/extensions.dart';
+import 'package:wine_delivery_app/utils/themes.dart';
 
 import 'bloc/network/network_bloc.dart';
 import 'bloc/theme/theme_cubit.dart';
 import 'utils/enums.dart';
 import 'utils/environment_config.dart';
-import 'utils/themes.dart';
 import 'utils/utils.dart';
 import 'views/admin/oder_management_page.dart';
 import 'views/error_screen.dart';
@@ -101,8 +100,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme(mainContext).themeData,
-      darkTheme: AppTheme(mainContext).themeData,
+      theme: color(mainContext).themeData,
+      darkTheme: color(mainContext).themeData,
       themeMode: themeMode,
       routes: {
         '/': condition(
