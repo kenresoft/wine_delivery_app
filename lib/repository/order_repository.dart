@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 // import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/auth_repository.dart';
-import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
 import 'package:wine_delivery_app/repository/product_repository.dart';
 import 'package:wine_delivery_app/utils/constants.dart';
 import 'package:wine_delivery_app/utils/exceptions.dart';
@@ -11,7 +11,9 @@ import 'package:wine_delivery_app/utils/exceptions.dart';
 import '../model/order.dart';
 import '../model/order_item.dart';
 import '../model/order_product_item.dart';
+import '../utils/typedefs.dart';
 import '../utils/utils.dart';
+import 'decision_repository.dart';
 
 class OrderRepository {
   // Private constructor
@@ -31,6 +33,7 @@ class OrderRepository {
   Future<Order> createOrder({
     required double subTotal,
     required String note,
+    required void Function(Order order) callback,
   }) async {
     final token = await authRepository.getAccessToken();
 
@@ -49,21 +52,23 @@ class OrderRepository {
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        return Order.fromJson(data['order']);
+        final order = Order.fromJson(data['order']);
+        callback.call(order);
+        return order;
       } else {
-        throw Utils.handleError(response);
+        throw Utils.handleError(response: response);
       }
     } catch (e) {
       throw Exception('Failed to create order: ${e.toString()}');
     }
   }
 
-  // Make a purchase
-  Future<bool> makePurchase({
+  Future<void> makePurchase({
     required String orderId,
     required String description,
     required String currency,
     required String paymentMethod,
+    required PurchaseCallback callback,
   }) async {
     final token = await authRepository.getAccessToken();
 
@@ -84,24 +89,12 @@ class OrderRepository {
       );
 
       if (response.statusCode == 200) {
-        /*final data = jsonDecode(response.body);
-        final paymentResponse = data['paymentResponse']; // Assuming your response structure
-
-        if (paymentResponse['success']) {
-          // Payment successful, update order locally if needed
-          // (But avoid sensitive details)
-          final updatedOrder = Order.fromJson(data['order']);
-          return updatedOrder;
-        } else {
-          throw Exception(paymentResponse['message']);
-        }*/
         final data = jsonDecode(response.body);
         final order = Order.fromJson(data['order']);
         final paymentIntent = order.paymentDetails?.paymentIntent;
 
         if (paymentIntent != null && paymentIntent.isNotEmpty) {
-
-          /*await Stripe.instance.initPaymentSheet(
+          await Stripe.instance.initPaymentSheet(
             paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: paymentIntent,
               merchantDisplayName: "Wine Delivery",
@@ -109,16 +102,21 @@ class OrderRepository {
           );
 
           await Stripe.instance.presentPaymentSheet();
-          await Stripe.instance.confirmPaymentSheetPayment();*/
+          await Stripe.instance.confirmPaymentSheetPayment();
 
-          return true;
+          // Payment success, invoke callback with true
+          callback(true);
+        } else {
+          // No payment intent, invoke callback with false
+          callback(false, message: "Payment intent not found");
         }
-        return false;
       } else {
-        throw Utils.handleError(response);
+        throw Utils.handleError(response: response);
       }
+    } on StripeException catch (e) {
+      callback(false, message: e.error.localizedMessage);
     } catch (e) {
-      throw Exception('Failed to make payment: ${e.toString()}');
+      callback(false, message: 'Failed to make payment: ${e.toString()}');
     }
   }
 
@@ -229,7 +227,7 @@ class OrderRepository {
         final orderProductItems = await Future.wait(futures);
         return orderProductItems.whereType<OrderProductItem>().toList();
       } else {
-        throw Utils.handleError(response);
+        throw Utils.handleError(response: response);
       }
     } catch (e) {
       throw Exception('Failed to fetch order items: ${e.toString()}');
@@ -245,10 +243,10 @@ class OrderRepository {
         final data = jsonDecode(response.body);
         return Order.fromJson(data['order']);
       } else {
-        throw Utils.handleError(response);
+        throw Utils.handleError(response: response);
       }
     } catch (e) {
-      throw Utils.handleError(http.Response('', 999, reasonPhrase: '$e'));
+      rethrow;
     }
   }
 
@@ -275,7 +273,7 @@ class OrderRepository {
         final data = jsonDecode(response.body);
         return Order.fromJson(data['order']);
       } else {
-        throw Utils.handleError(response);
+        throw Utils.handleError(response: response);
       }
     } catch (e) {
       throw UnexpectedException('Failed to update order status: ${e.toString()}');
