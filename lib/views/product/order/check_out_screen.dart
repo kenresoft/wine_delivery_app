@@ -12,6 +12,7 @@ import '../../../repository/order_repository.dart';
 import '../../../repository/product_repository.dart';
 import '../../../utils/extensions.dart';
 import '../../../utils/themes.dart';
+import '../../../utils/utils.dart';
 import 'order_confirmation_screen.dart';
 import 'products_stack_view.dart';
 import 'shipping_form_address.dart';
@@ -531,58 +532,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
                       EdgeInsets.symmetric(horizontal: 12),
                     ),
                   ),
-                  onPressed: () async {
-                    /*final items = order.items.map(
-                    (e) async {
-                      final product = await productRepository.getProductById(e.productId);
-                      final order = OrderProductItem(product: product, quantity: e.quantity);
-                      return order;
-                    },
-                  ).toList();*/
-
-                    // Fetch all products concurrently using Future.wait
-                    final items = await Future.wait(
-                      order.items.map((item) async {
-                        final product = await productRepository.getProductById(item.productId);
-                        return OrderProductItem(product: product, quantity: item.quantity);
-                      }).toList(),
-                    );
-
-                    await orderRepository.makePurchase(
-                      orderId: order.id,
-                      description: "_description",
-                      currency: "usd",
-                      // currency: "gpb", // currency: "ngn", // currency: "euro"
-                      paymentMethod: "_paymentMethod",
-                      callback: (bool success, {String? message}) {
-                        if (success) {
-                          // Show success message and navigate to order confirmation screen
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Order created successfully!')),
-                          );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return OrderConfirmationScreen(
-                                  order: order,
-                                  estimatedDelivery: order.createdAt,
-                                  shippingAddress: order.shipmentId,
-                                  totalCost: order.totalCost,
-                                  orderedItems: items,
-                                );
-                              },
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(message ?? 'Failed to create order')),
-                          );
-                        }
-                      },
-                    );
-                  },
+                  onPressed: () async => await _placeOrder(order, context),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -596,6 +546,47 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _placeOrder(Order order, BuildContext context) async {
+    // Fetch all products concurrently using Future.wait
+    final items = await Future.wait(
+      order.items.map((item) async {
+        final product = await productRepository.getProductById(item.productId);
+        return OrderProductItem(product: product, quantity: item.quantity);
+      }).toList(),
+    );
+
+    await orderRepository.makePurchase(
+      orderId: order.id,
+      description: "_description",
+      currency: "usd",
+      // currency: "gpb", // currency: "ngn", // currency: "euro"
+      paymentMethod: "_paymentMethod",
+      callback: (bool success, {String? message}) {
+        if (success) {
+          // Show success message and navigate to order confirmation screen
+          snackBar(context, 'Order created successfully!');
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return OrderConfirmationScreen(
+                  order: order,
+                  estimatedDelivery: order.createdAt,
+                  shippingAddress: order.shipmentId,
+                  totalCost: order.totalCost,
+                  orderedItems: items,
+                );
+              },
+            ),
+          );
+        } else {
+          snackBar(context, message ?? 'Failed to create order');
+        }
+      },
     );
   }
 }
