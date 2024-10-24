@@ -9,11 +9,7 @@ import '../repository/auth_repository.dart';
 import '../views/auth/login_page.dart';
 import '../views/home/main_screen.dart';
 import '../views/shared/custom_confirmation_dialog.dart';
-import 'constants.dart';
-import 'enums.dart';
-import 'exceptions.dart';
-import 'globals.dart';
-import 'preferences.dart';
+import 'helpers.dart';
 
 class Utils {
   Utils._();
@@ -37,18 +33,18 @@ class Utils {
   static ImageProvider<Object> networkImage(String? imagePath) {
     return conditionFunction(
       imagePath != null,
-          () => NetworkImage('${Constants.baseUrl}$imagePath'),
-          () => AssetImage(Constants.imagePlaceholder),
+      () => NetworkImage('${Constants.baseUrl}$imagePath'),
+      () => AssetImage(Constants.imagePlaceholder),
     );
   }
 
   /// API Request Wrapper
   static Future<http.Response> makeRequest(
-      String endpoint, {
-        RequestMethod method = RequestMethod.get,
-        Map<String, String>? headers,
-        dynamic body,
-      }) async {
+    String endpoint, {
+    RequestMethod method = RequestMethod.get,
+    Map<String, String>? headers,
+    dynamic body,
+  }) async {
     String accessToken = await authRepository.getAccessToken();
 
     headers ??= {};
@@ -65,11 +61,11 @@ class Utils {
   }
 
   static Future<http.Response> _getResponse(
-      RequestMethod method,
-      String endpoint,
-      Map<String, String> headers,
-      body,
-      ) async {
+    RequestMethod method,
+    String endpoint,
+    Map<String, String> headers,
+    body,
+  ) async {
     return switch (method) {
       RequestMethod.get => await http.get(Uri.parse(endpoint), headers: headers),
       RequestMethod.post => await http.post(Uri.parse(endpoint), headers: headers, body: body),
@@ -184,13 +180,13 @@ class Utils {
   }
 
   static Future<bool?> dialog(
-      BuildContext context, {
-        required String title,
-        required String content,
-        required String confirmButtonText,
-        VoidCallback? onCancel,
-        VoidCallback? onConfirm,
-      }) async {
+    BuildContext context, {
+    required String title,
+    required String content,
+    required String confirmButtonText,
+    VoidCallback? onCancel,
+    VoidCallback? onConfirm,
+  }) async {
     return await showDialog<bool?>(
       context: context,
       builder: (BuildContext context) {
