@@ -8,7 +8,6 @@ import 'order/order_bloc.dart';
 import 'product/category_filter/category_filter_bloc.dart';
 import 'product/category_list/wines_bloc.dart';
 import 'product/favorite/favs/favs_bloc.dart';
-import 'product/favorite/like/like_bloc.dart';
 import 'product/product_bloc.dart';
 import 'profile/profile_bloc.dart';
 import 'promo_code/promo_code_bloc.dart';
@@ -28,7 +27,7 @@ class Providers {
       BlocProvider<CarouselBloc>(create: (context) => CarouselBloc()),
       BlocProvider<CategoryFilterBloc>(create: (context) => CategoryFilterBloc()),
       BlocProvider<WinesBloc>(create: (context) => WinesBloc()),
-      BlocProvider<LikeBloc>(create: (context) => LikeBloc()),
+      // BlocProvider<LikeBloc>(create: (context) => LikeBloc()),
       BlocProvider<ProfileBloc>(create: (context) => ProfileBloc()),
       BlocProvider<FavsBloc>(create: (context) => FavsBloc()),
       BlocProvider<PromoCodeBloc>(create: (context) => PromoCodeBloc()),
