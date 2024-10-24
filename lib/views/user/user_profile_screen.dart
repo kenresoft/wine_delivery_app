@@ -1,16 +1,20 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:wine_delivery_app/utils/helpers.dart';
+import 'package:wine_delivery_app/views/product/favorites.dart';
 import 'package:wine_delivery_app/views/user/theme_dialog.dart';
 
 import '../../bloc/product/favorite/favs/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
 import '../../bloc/shipment/shipment_bloc.dart';
+import '../../model/product.dart';
 import '../../repository/auth_repository.dart';
-import '../../utils/constants.dart';
 import '../auth/login_page.dart';
 import '../product/order/shipping_form_address.dart';
+import '../product/product_detail_screen.dart';
 import 'user_profile_edit_page.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -27,6 +31,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     context.read<ProfileBloc>().add(const ProfileFetch());
     context.read<FavsBloc>().add(LoadFavs());
     context.read<ShipmentBloc>().add(GetShipmentDetails());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)?.isCurrent == true) {
+      context.read<FavsBloc>().add(LoadFavs());
+    }
   }
 
   @override
@@ -62,8 +74,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
 
-  ///
-
+  // Build the Shimmers
   Widget _buildShimmerLoading() {
     return ListView(
       children: [
@@ -271,15 +282,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Widget _buildProfileHeader(BuildContext context, ProfileLoaded state) {
+    final imagePath = state.profile.profileImage;
     return Container(
       padding: const EdgeInsets.all(16.0).r,
       child: Row(
         children: [
           GestureDetector(
             onTap: () async {},
-            child: CircleAvatar(
-              radius: 40.r,
-              backgroundImage: NetworkImage(Constants.baseUrl + state.profile.profileImage),
+            child: Card(
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: colorScheme(context).tertiary),
+                borderRadius: BorderRadius.circular(40),
+              ),
+              child: CircleAvatar(
+                radius: 40,
+                backgroundImage: conditionFunction(
+                  imagePath != null,
+                  () => NetworkImage('${Constants.baseUrl}$imagePath'),
+                  () => AssetImage(Constants.imagePlaceholder),
+                ),
+              ),
             ),
           ),
           SizedBox(width: 16.w),
@@ -292,13 +315,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   Text(
                     state.profile.username,
                     maxLines: 2,
-                    style: TextStyle(fontSize: 20.r, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4.0),
                   Text(
                     state.profile.email,
                     maxLines: 1,
-                    //style: TextStyle(fontSize: 16.r, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -315,7 +337,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Account Information', style: TextStyle(fontSize: 18.r, fontWeight: FontWeight.bold)),
+          Text('Account Information', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           SizedBox(height: 8.h),
           BlocBuilder<ShipmentBloc, ShipmentState>(
             builder: (context, state) {
@@ -324,9 +346,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 shippingAddress = state.shipment.address;
               }
               return ListTile(
-                leading: const Icon(Icons.location_on/**/),
-                title: Text('Shipping Address', style: TextStyle(fontSize: 14.r)),
-                subtitle: Text(shippingAddress ?? 'No address specified!', style: TextStyle(fontSize: 14.r)),
+                leading: const Icon(Icons.location_on),
+                title: Text('Shipping Address', style: TextStyle(fontSize: 14)),
+                subtitle: Text(shippingAddress ?? 'No address specified!', style: TextStyle(fontSize: 14)),
                 trailing: const Icon(Icons.edit),
                 onTap: () => Navigator.push(
                   context,
@@ -342,8 +364,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.credit_card/**/),
-            title: Text('Payment Methods', style: TextStyle(fontSize: 14.r)),
-            subtitle: Text('Visa **** 1234', style: TextStyle(fontSize: 14.r)),
+            title: Text('Payment Methods', style: TextStyle(fontSize: 14)),
+            subtitle: Text('Visa **** 1234', style: TextStyle(fontSize: 14)),
             trailing: const Icon(Icons.edit),
             onTap: () {
               // Navigate to Manage Payment Methods page
@@ -360,7 +382,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Order History', style: TextStyle(fontSize: 18.r, fontWeight: FontWeight.bold)),
+          Text('Order History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8.0),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
@@ -369,13 +391,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             itemBuilder: (context, index) {
               return Row(
                 children: [
-                  Image.asset('assets/images/wine-${index + 1}.png', width: 50.r, height: 50.r),
+                  Image.asset('assets/images/wine-${index + 1}.png', width: 50, height: 50),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Order #${index + 1}', style: TextStyle(fontSize: 14.r)),
-                        Text('Delivered on 12 Aug, 2024', style: TextStyle(fontSize: 14.r)),
+                        Text('Order #${index + 1}', style: TextStyle(fontSize: 14)),
+                        Text('Delivered on 12 Aug, 2024', style: TextStyle(fontSize: 14)),
                       ],
                     ),
                   ),
@@ -389,11 +411,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           const SizedBox(height: 8.0),
           Center(
-            child: TextButton(
+            child: OutlinedButton(
               onPressed: () {
                 // Navigate to full Order History page
               },
-              child: const Text('View All Orders', style: TextStyle(/*color: Colors.deepPurple*/)),
+              child: const Text('View All Orders'),
             ),
           ),
         ],
@@ -407,12 +429,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Favorites', style: TextStyle(fontSize: 18.r, fontWeight: FontWeight.bold)),
+          Text('Favorites', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           SizedBox(height: 8.h),
           BlocBuilder<FavsBloc, FavsState>(
             builder: (context, state) {
               return switch (state) {
-                FavsInitial() => const Center(child: CircularProgressIndicator()),
+                // FavsLoading() => const Center(child: CircularProgressIndicator()),
                 FavsError() => Center(child: Text(state.error)),
                 FavsLoaded() => GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -423,43 +445,69 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 5,
                     ),
-                    itemCount: state.favs.take(6).length,
-                    // Example: Show the last 4 favorites
+                    itemCount: state.favorites.take(6).length,
                     itemBuilder: (context, index) {
-                      final favItem = state.favs[index];
+                      final product = state.favorites[index].product;
                       return GestureDetector(
                         onTap: () {
                           // Navigate to Wine Details page
+                          _viewProductDetails(product);
                         },
                         child: Card(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/${favItem.image}',
-                                // 'assets/images/wine-${index + 1}.png',
-                                fit: BoxFit.fitHeight,
-                                width: 60.h,
-                                height: 60.h,
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(favItem.name, style: TextStyle(fontSize: 16.r)),
-                            ],
+                          // color: Colors.red,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      minWidth: double.infinity,
+                                      maxHeight: 90,
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image(
+                                        image: Utils.networkImage(product.image),
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  product.name ?? 'No product',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
                     },
                   ),
+                _ => SizedBox(),
               };
             },
           ),
           const SizedBox(height: 8.0),
           Center(
-            child: TextButton(
+            child: OutlinedButton(
               onPressed: () {
-                // Navigate to full Favorite page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return FavoritesScreen();
+                    },
+                  ),
+                );
               },
-              child: const Text('View All Favorites', style: TextStyle(/*color: Colors.deepPurple*/)),
+              child: const Text('View All Favorites'),
             ),
           ),
         ],
@@ -604,5 +652,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         );
       },
     );
+  }
+
+  void _viewProductDetails(Product product) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return ProductDetailScreen(product: product);
+      },
+    ));
   }
 }

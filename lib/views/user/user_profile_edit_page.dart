@@ -1,13 +1,13 @@
 import 'dart:io';
 
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wine_delivery_app/repository/user_repository.dart';
-import 'package:wine_delivery_app/utils/constants.dart';
-import 'package:wine_delivery_app/utils/utils.dart';
 
 import '../../model/profile.dart';
+import '../../utils/helpers.dart';
 import '../home/main_screen.dart';
 
 class UserProfileEditPage extends StatefulWidget {
@@ -87,7 +87,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Edit Profile'),
-          elevation: 0,
           leading: IconButton(
             icon: const Icon(CupertinoIcons.back),
             onPressed: () => Navigator.of(context).pushReplacement(
@@ -174,7 +173,8 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 52),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        // backgroundColor: colorScheme(context).surface,
+                        // foregroundColor: colorScheme(context).primaryFixed,
                       ),
                       child: const Text(
                         'Save Changes',
@@ -192,24 +192,32 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
   }
 
   Widget _buildProfileImage() {
+    final imagePath = widget.profile.profileImage;
     return Stack(
       alignment: Alignment.center,
       children: [
-        CircleAvatar(
-          radius: 60,
-          backgroundColor: const Color(0xffe0e0e0),
-          backgroundImage: _profileImage != null
-              ? FileImage(_profileImage!)
-              : Image(
-                  image: NetworkImage(Constants.baseUrl + widget.profile.profileImage),
-                ).image,
-          child: _profileImage == null
-              ? const Icon(
-                  CupertinoIcons.person_circle,
-                  size: 80,
-                  color: Color(0xff8c8c8c),
-                )
-              : null,
+        Card(
+          elevation: 1,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: colorScheme(context).tertiary),
+            borderRadius: BorderRadius.circular(60),
+          ),
+          child: CircleAvatar(
+            radius: 60,
+            backgroundColor: const Color(0xffe0e0e0),
+            backgroundImage: _profileImage != null
+                ? FileImage(_profileImage!)
+                : Utils.networkImage(imagePath),
+            child: condition(
+              _profileImage == null,
+              Icon(
+                CupertinoIcons.person_circle,
+                size: 80,
+                color: color(context).holderColor,
+              ),
+              null,
+            ),
+          ),
         ),
         Positioned(
           bottom: 0,
@@ -218,7 +226,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
             onTap: _pickImage,
             child: CircleAvatar(
               radius: 20,
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: color(context).holderBackground,
               child: const Icon(
                 CupertinoIcons.camera,
                 color: Colors.white,
