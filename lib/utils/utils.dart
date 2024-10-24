@@ -3,34 +3,52 @@ import 'dart:io';
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
-import 'package:wine_delivery_app/utils/exceptions.dart';
-import 'package:wine_delivery_app/utils/preferences.dart';
-import 'package:wine_delivery_app/views/auth/login_page.dart';
-import 'package:wine_delivery_app/views/home/main_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../repository/auth_repository.dart';
+import '../views/auth/login_page.dart';
+import '../views/home/main_screen.dart';
+import '../views/shared/custom_confirmation_dialog.dart';
 import 'constants.dart';
 import 'enums.dart';
-
-final logger = Logger();
-
-ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
-
-ThemeData theme(BuildContext context) => Theme.of(context);
-
-const int socketErrorCode = 888;
+import 'exceptions.dart';
+import 'globals.dart';
+import 'preferences.dart';
 
 class Utils {
   Utils._();
 
-/// API Request Wrapper
+  // Helper method to get badge color based on stock status
+  static Color getStockStatusColor(String stockStatus) {
+    switch (stockStatus) {
+      case 'In Stock':
+        return Colors.green;
+      case 'Out of Stock':
+        return Colors.red;
+      case 'Low Stock':
+        return Colors.orange;
+      case 'Coming Soon':
+        return Colors.blue;
+      default:
+        return Colors.grey; // Default color for unknown statuses
+    }
+  }
+
+  static ImageProvider<Object> networkImage(String? imagePath) {
+    return conditionFunction(
+      imagePath != null,
+          () => NetworkImage('${Constants.baseUrl}$imagePath'),
+          () => AssetImage(Constants.imagePlaceholder),
+    );
+  }
+
+  /// API Request Wrapper
   static Future<http.Response> makeRequest(
-    String endpoint, {
-    RequestMethod method = RequestMethod.get,
-    Map<String, String>? headers,
-    dynamic body,
-  }) async {
+      String endpoint, {
+        RequestMethod method = RequestMethod.get,
+        Map<String, String>? headers,
+        dynamic body,
+      }) async {
     String accessToken = await authRepository.getAccessToken();
 
     headers ??= {};
@@ -47,11 +65,11 @@ class Utils {
   }
 
   static Future<http.Response> _getResponse(
-    RequestMethod method,
-    String endpoint,
-    Map<String, String> headers,
-    body,
-  ) async {
+      RequestMethod method,
+      String endpoint,
+      Map<String, String> headers,
+      body,
+      ) async {
     return switch (method) {
       RequestMethod.get => await http.get(Uri.parse(endpoint), headers: headers),
       RequestMethod.post => await http.post(Uri.parse(endpoint), headers: headers, body: body),
@@ -163,5 +181,33 @@ class Utils {
         return UnexpectedException(error.toString());
       }
     }
+  }
+
+  static Future<bool?> dialog(
+      BuildContext context, {
+        required String title,
+        required String content,
+        required String confirmButtonText,
+        VoidCallback? onCancel,
+        VoidCallback? onConfirm,
+      }) async {
+    return await showDialog<bool?>(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomConfirmationDialog(
+          title: title,
+          content: content,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: confirmButtonText,
+          onCancel: onCancel,
+          onConfirm: onConfirm,
+        );
+      },
+    );
+  }
+
+  static void shareProduct(String name, String description, String imageUrl, String productUrl) {
+    final String shareContent = 'Check out this product:\n\n$name\n\n$description\n\nImage: $imageUrl\n\nMore details: $productUrl';
+    Share.share(shareContent);
   }
 }
