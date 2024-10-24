@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,14 +17,18 @@ extension DateTimeComparison on DateTime {
 
 extension ToastExtension<T> on T {
   T get toasts {
-    Fluttertoast.showToast(
-      msg: toString(),
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.SNACKBAR,
-      //backgroundColor: AppTheme().themeData.colorScheme.primary,
-      textColor: Colors.white,
-      fontSize: 18,
-    );
+    if (!Platform.isWindows) {
+      Fluttertoast.showToast(
+        msg: toString(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.SNACKBAR,
+        //backgroundColor: colorScheme(context).primary,
+        textColor: Colors.white,
+        fontSize: 18,
+      );
+    } else {
+      debugPrint('Toasts are not supported on Windows');
+    }
     return this;
   }
 
@@ -32,7 +38,7 @@ extension ToastExtension<T> on T {
           toastDuration: const Duration(seconds: 8),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme(context).themeData.colorScheme.primary,
+              color: colorScheme(context).primary,
               // color: const Color(0xff383838),
               borderRadius: BorderRadius.circular(15),
             ),

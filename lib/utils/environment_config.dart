@@ -6,6 +6,7 @@ class EnvironmentConfig {
   static String? _baseUrl;
   static String? _wsBaseUrl;
   static String? _stripeKey;
+  static String? _imagePlaceholder;
 
   static Future<void> load(ConfigMode configMode) async {
     await dotenv.load(fileName: configMode == ConfigMode.prod ? '.env.prod' : '.env.dev');
@@ -14,6 +15,7 @@ class EnvironmentConfig {
     _baseUrl = dotenv.env['API_BASE_URL'];
     _wsBaseUrl = dotenv.env['WEBSOCKET_BASE_URL'];
     _stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'];
+    _imagePlaceholder = dotenv.env['IMAGE_PLACEHOLDER'];
   }
 
   static String get baseUrl {
@@ -35,6 +37,13 @@ class EnvironmentConfig {
       throw Exception('Stripe Publishable Key is missing in the environment file.');
     }
     return _stripeKey!;
+  }
+
+  static String get imagePlaceholder {
+    if (_imagePlaceholder == null) {
+      throw Exception('Image Placeholder Key is missing in the environment file.');
+    }
+    return _imagePlaceholder!;
   }
 }
 

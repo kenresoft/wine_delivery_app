@@ -1,8 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/theme/theme_cubit.dart';
+
+ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
+
+ThemeData theme(BuildContext context) => Theme.of(context);
+
+AppTheme color(BuildContext context) => AppTheme(context);
 
 class AppTheme {
   final BuildContext context;
@@ -55,8 +62,10 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: colorScheme.tertiary,
-          backgroundColor: primaryColor,
+          backgroundColor: colorScheme.surface,
+          foregroundColor: colorScheme.onSurface,
+          // foregroundColor: colorScheme.tertiary,
+          // backgroundColor: primaryColor,
           shape: border,
         ),
       ),
@@ -69,11 +78,17 @@ class AppTheme {
           ),
         ),
       ),
+      dividerColor: isDarkMode ? Color(0xffb49999) : Color(0xff849398),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryColor,
           shape: border,
         ),
+      ),
+      buttonTheme: ButtonThemeData(
+        buttonColor: primaryColor,
+        textTheme: ButtonTextTheme.primary,
+        shape: border,
       ),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
@@ -82,6 +97,15 @@ class AppTheme {
           shape: border,
         ),
       ),
+      iconTheme: IconThemeData(
+        color: iconColor,
+      ),
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (context) {
+          return Icon(CupertinoIcons.back, color: iconColor);
+        },
+      ),
+      chipTheme: chipTheme,
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
@@ -91,26 +115,22 @@ class AppTheme {
           ),
         ),
       ),
-      buttonTheme: ButtonThemeData(
-        buttonColor: primaryColor,
-        textTheme: ButtonTextTheme.primary,
-        shape: border,
-      ),
       cardTheme: CardTheme(
         color: cardColor,
         surfaceTintColor: surfaceTintColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: BorderSide(
-            color: isDarkMode ? colorScheme.primary : secondaryColor.withOpacity(0.3), //onPrimaryFixedVariant
+            color: cardBorderColor,
             width: 1,
           ),
         ),
         elevation: 0,
       ),
       tabBarTheme: TabBarTheme(
-        labelColor: colorScheme.secondary,
-        unselectedLabelColor: colorScheme.onSurfaceVariant,
+        labelColor: isDarkMode ? colorScheme.onSurfaceVariant : colorScheme.tertiary,
+        unselectedLabelColor: colorScheme.secondary,
+        indicatorColor: isDarkMode ? colorScheme.onSurfaceVariant : colorScheme.tertiary,
         indicator: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -126,28 +146,25 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: isDarkMode? colorScheme.surface : colorScheme.surfaceContainerHighest,
-        // backgroundColor: colorScheme.surfaceContainerHighest,
-        selectedItemColor: colorScheme.onSurfaceVariant,
-        unselectedItemColor: colorScheme.primary,
+        backgroundColor: colorScheme.surface,
+        // backgroundColor: isDarkMode? colorScheme.surface : colorScheme.surfaceContainerHighest,
+        selectedItemColor: isDarkMode ? colorScheme.onSurfaceVariant : colorScheme.tertiary,
+        unselectedItemColor: colorScheme.secondary,
         elevation: 0,
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         showUnselectedLabels: true,
       ),
       appBarTheme: AppBarTheme(
+        elevation: 1,
         centerTitle: false,
-        backgroundColor: isDarkMode? colorScheme.surface : colorScheme.surfaceContainerHighest,
-        // backgroundColor: colorScheme.surface,
+        backgroundColor: colorScheme.surface,
+        // backgroundColor: isDarkMode? colorScheme.surface : colorScheme.surfaceContainerHighest,
         foregroundColor: colorScheme.onSurface,
         shadowColor: primaryColor,
         titleTextStyle: textTheme.titleLarge,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
         ),
-      ),
-      chipTheme: chipTheme,
-      iconTheme: IconThemeData(
-        color: iconColor,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: primaryColor,
@@ -213,16 +230,19 @@ class AppTheme {
 
   static const tertiaryColors = (
     Color(0xFFBD7879), // Light mode tertiary
-    Color(0xff794F50), // Dark mode tertiary
+    Color(0xFF394346), // Dark mode tertiary
+    // Color(0xff794F50), // Dark mode tertiary
   );
 
   static const surfaceColors = (
-    Color(0xFFF4F4F4), // Light mode surface
+    // Color(0xFFF4F4F4), // Light mode surface
+    Color(0xffe8cccc), // Light mode surface
     Color(0xFF394346), // Dark mode surface
   );
 
   static const surfaceTintColors = (
-    Color(0xffF4F4F4), // Light mode surface tint
+    // Color(0xffF4F4F4), // Light mode surface tint
+    Color(0xfffceae9), // Light mode surface tint
     Color(0xff465760), // Dark mode surface tint
   );
 
@@ -245,6 +265,7 @@ class AppTheme {
 
   static const iconColors = (
     Color(0xff394346), // Light mode icon color
+    // tertiaryColors.$1,
     Color(0xffF5F5F5), // Dark mode icon color
   );
 
@@ -255,9 +276,10 @@ class AppTheme {
 
   static const cardColors = (
     Color(0xFFFFFFFF), // Light mode card
-    // Color(0xFFF5F5F5), // Light mode card
     Color(0xff212121), // Dark mode card
   );
+
+  static const _onSurfaceTextColor = Color(0xfff1caaa);
 
   // Use getters to access the correct color based on isDarkMode
   Color get seedColor => isDarkMode ? seedColors.$2 : seedColors.$1;
@@ -283,6 +305,14 @@ class AppTheme {
   Color get iconButtonBackgroundColor => isDarkMode ? iconButtonBackgroundColors.$2 : iconButtonBackgroundColors.$1;
 
   Color get cardColor => isDarkMode ? cardColors.$2 : cardColors.$1;
+
+  Color get cardBorderColor => isDarkMode ? colorScheme.primary : secondaryColor.withOpacity(0.3); //onPrimaryFixedVariant
+
+  Color get holderColor => isDarkMode ? colorScheme.tertiary : colorScheme.secondary;
+
+  Color get holderBackground => isDarkMode ? colorScheme.tertiary : colorScheme.primary;
+
+  Color get onSurfaceTextColor => isDarkMode ? _onSurfaceTextColor : tertiaryColors.$1;
 
   Color get primaryContainerColor => isDarkMode ? surfaceColors.$2 : surfaceColors.$1;
 }
