@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:wine_delivery_app/model/product.dart';
-import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
-import 'package:wine_delivery_app/repository/product_repository.dart';
-import 'package:wine_delivery_app/utils/extensions.dart';
-import 'package:wine_delivery_app/utils/utils.dart';
+import 'package:wine_delivery_app/repository/cart_repository.dart';
 
 import '../model/favorite.dart';
-import '../utils/constants.dart';
+import '../model/product.dart';
+import '../utils/helpers.dart';
 import 'auth_repository.dart';
+import 'decision_repository.dart';
+// import 'package:wine_delivery_app/model/product.dart';
+import 'product_repository.dart';
 
 class FavoritesRepository {
   FavoritesRepository();
@@ -24,28 +24,30 @@ class FavoritesRepository {
 
   static final String _url = '${Constants.baseUrl}/api/favorites';
 
-  Future<List<Product>> getFavorites() async {
-    return DecisionRepository().decide<List<Product>>(
+  Future<List<({Product product, int cartQuantity})>> getFavorites() async {
+    return DecisionRepository().decide<List<({Product product, int cartQuantity})>>(
       cacheKey: 'getFavorites',
       endpoint: _url,
       onSuccess: (data) async {
         final List<dynamic>? favoritesJson = data['favorite'];
 
         if (favoritesJson != null) {
-          final products = <Product>[];
+          final products = <({Product product, int cartQuantity})>[];
           for (final favoriteJson in favoritesJson) {
             final favorite = Favorite.fromJson(favoriteJson);
             final product = await productRepository.getProductById(favorite.product);
+            final cartItemQuantity = await cartRepository.getItemQuantity(favorite.product);
             // logger.t(data);
-            products.add(product);
+            products.add((product: product, cartQuantity: cartItemQuantity));
           }
+          logger.i(products.length);
           return products;
         }
         throw 'Error parsing favorites from the server.';
       },
       onError: (error) async {
         logger.e('ERROR: ${error.toString()}');
-        return [Product.empty()];
+        return [(product: Product(), cartQuantity: 0)];
       },
     );
 /*    try {
@@ -96,7 +98,7 @@ class FavoritesRepository {
       if (favorites != null) {
         return favorites.any((favorite) => favorite['product']['_id'] == productId);
       } else if (favorites == null) {
-        'Not currently logged in!'.toast;
+        'Not currently logged in!'.toasts;
       }
       return false;
     } on Exception {

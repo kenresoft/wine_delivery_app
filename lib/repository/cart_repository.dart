@@ -10,7 +10,7 @@ import 'package:wine_delivery_app/utils/constants.dart';
 import '../model/cart.dart';
 import '../utils/enums.dart';
 import '../utils/preferences.dart';
-import '../utils/utils.dart';
+import '../utils/helpers.dart';
 
 class CartRepository {
   const CartRepository._();
@@ -28,19 +28,16 @@ class CartRepository {
 
     // Start the stopwatch
     final stopwatch = Stopwatch()..start();
-    logger.i("Fetching cart items started...");
+    // logger.i("Fetching cart items started...");
 
     try {
       return DecisionRepository().decide<List<CartItem>>(
         cacheKey: cacheKey,
         endpoint: _baseUrl,
         onSuccess: (data) async {
-          logger.i("API response received, time elapsed: ${stopwatch.elapsedMilliseconds} ms");
+          // logger.i("API response received, time elapsed: ${stopwatch.elapsedMilliseconds} ms");
 
           final cartItemsJson = data['cart']['items'] as List<dynamic>;
-
-          // Start timing the product fetching process
-          final fetchProductsStopwatch = Stopwatch()..start();
 
           // Fetch all products in parallel
           List<CartItem> cartItems = await Future.wait(cartItemsJson.map((itemJson) async {
@@ -49,16 +46,16 @@ class CartRepository {
             return CartItem(id: cartItem.id, quantity: cartItem.quantity, product: product);
           }).toList());
 
-          logger.i("Fetched all products, time elapsed: ${fetchProductsStopwatch.elapsedMilliseconds} ms");
+          // logger.i("Fetched all products, time elapsed: ${fetchProductsStopwatch.elapsedMilliseconds} ms");
 
           // Log total time
-          logger.i("Total time for fetching cart items: ${stopwatch.elapsedMilliseconds} ms");
+          // logger.i("Total time for fetching cart items: ${stopwatch.elapsedMilliseconds} ms");
 
           return cartItems;
         },
         onError: (error) async {
           logger.e('ERROR: ${error.toString()}');
-          logger.i("Error occurred, total time elapsed: ${stopwatch.elapsedMilliseconds} ms");
+          // logger.i("Error occurred, total time elapsed: ${stopwatch.elapsedMilliseconds} ms");
           return [];
         },
       );
@@ -67,7 +64,11 @@ class CartRepository {
     }
   }
 
-  Future<List<CartItem>> addToCart(String productId, int quantity) async {
+  Future<List<CartItem>> addToCart(
+    String productId,
+    int quantity,
+    void Function() cb,
+  ) async {
     final token = await authRepository.getAccessToken();
 
     // Start a stopwatch to track execution time
@@ -85,7 +86,9 @@ class CartRepository {
       );
 
       logger.i("API response received, time elapsed: ${stopwatch.elapsedMilliseconds} ms");
-      return await parseCartResponse(response);
+      final cartItems = await parseCartResponse(response, 201);
+      cb.call();
+      return cartItems;
 
       /*if (response.statusCode != 200) {
         throw 'Error adding to cart: ${response.statusCode} - ${response.reasonPhrase}';
@@ -178,7 +181,10 @@ class CartRepository {
       return getCartItems();
     }
     try {
-      final response = await Utils.makeRequest('$_baseUrl/increment/$itemId', method: RequestMethod.put);
+      final response = await Utils.makeRequest(
+        '$_baseUrl/increment/$itemId',
+        method: RequestMethod.put,
+      );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         List<CartItem> cartItems = await _fetchCartItems(data);
@@ -220,6 +226,21 @@ class CartRepository {
     } catch (e) {
       throw 'Failed to decrement cart item: ${e.toString()}';
     }
+  }
+
+  Future<int> getItemQuantity(String itemId) {
+    return DecisionRepository().decide<int>(
+      cacheKey: 'getItemQuantity',
+      endpoint: '$_baseUrl/quantity/$itemId',
+      requestMethod: RequestMethod.get,
+      onSuccess: (data) async {
+        return int.parse(data['quantity'].toString());
+      },
+      onError: (error) async {
+        logger.e('ERROR: ${error.toString()}');
+        return 0;
+      },
+    );
   }
 
   Future<double> getTotalPrice({String? couponCode}) async {
@@ -296,8 +317,8 @@ class CartRepository {
     return cartItems;
   }
 
-  Future<List<CartItem>> parseCartResponse(http.Response response) async {
-    if (response.statusCode == 200) {
+  Future<List<CartItem>> parseCartResponse(http.Response response, [int statusCode = 200]) async {
+    if (response.statusCode == statusCode) {
       final data = jsonDecode(response.body);
       List<CartItem> cartItems = await _fetchCartItems(data);
 
