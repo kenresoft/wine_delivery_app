@@ -15,4 +15,7 @@ class Constants {
 
   static String stripePublishableKey = EnvironmentConfig.stripeKey;
 
+  static String imagePlaceholder = 'assets/images/${EnvironmentConfig.imagePlaceholder}';
+
+  static String wineImage = 'assets/images/wine-11.png';
 }
