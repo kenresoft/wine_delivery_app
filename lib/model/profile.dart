@@ -6,7 +6,7 @@ class Profile extends Equatable {
   final String id;
   final String email;
   final String username;
-  final String profileImage;
+  final String? profileImage;
   final List<Favorite> favorites;
 
   const Profile({
@@ -26,6 +26,16 @@ class Profile extends Equatable {
       favorites: (json['favorites'] as List<dynamic>).map((favoriteJson) {
         return Favorite.fromJson(favoriteJson);
       }).toList(),
+    );
+  }
+
+  factory Profile.empty() {
+    return Profile(
+      id: 'N/A',
+      email: 'no-email@vintioraapp.com',
+      username: 'Anonymous',
+      profileImage: null,
+      favorites: [],
     );
   }
 

@@ -18,7 +18,7 @@ class Purchase extends Equatable {
   factory Purchase.empty() {
     return Purchase(
       purchaseId: '',
-      product: Product.empty(),
+      product: Product(),
       quantity: 0,
       purchaseDate: DateTime.now(),
     );
