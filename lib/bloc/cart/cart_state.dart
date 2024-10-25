@@ -58,3 +58,12 @@ class ProductInCart extends CartState {
   @override
   List<Object?> get props => [productInCart];
 }
+
+class QuantityLoaded extends CartState {
+  final int quantity;
+
+  const QuantityLoaded(this.quantity);
+
+  @override
+  List<Object?> get props => [quantity];
+}

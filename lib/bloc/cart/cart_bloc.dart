@@ -38,6 +38,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         return _throttleTransformer<DecrementCartItem>(events, mapper);
       },
     );
+    on<ItemQuantity>(getItemQuantity);
     on<GetTotalPrice>(getTotalPrice);
     on<IsProductInCart>(isProductInCart);
 
@@ -90,7 +91,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void addToCart(AddToCart event, Emitter<CartState> emit) async {
     try {
-      final cartItems = await cartRepository.addToCart(event.productId, event.quantity);
+      final cartItems = await cartRepository.addToCart(event.productId, event.quantity, event.cb);
       final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
       promoCode = '';
       emit(CartLoaded(cartItems: cartItems, totalPrice: totalPrice));
@@ -186,6 +187,15 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           totalPrice: totalPrice,
         ),
       );
+    } catch (e) {
+      emit(CartError(e.toString()));
+    }
+  }
+
+  void getItemQuantity(ItemQuantity event, Emitter<CartState> emit) async {
+    try {
+      final quantity = await cartRepository.getItemQuantity(event.productId);
+      emit(QuantityLoaded(quantity));
     } catch (e) {
       emit(CartError(e.toString()));
     }

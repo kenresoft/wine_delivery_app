@@ -21,8 +21,9 @@ class GetCartItems extends CartEvent {
 class AddToCart extends CartEvent {
   final String productId;
   final int quantity;
+  final void Function() cb;
 
-  const AddToCart({required this.productId, required this.quantity});
+  const AddToCart({required this.productId, required this.quantity, required this.cb});
 
   @override
   List<Object?> get props => [productId, quantity];
@@ -64,6 +65,15 @@ class DecrementCartItem extends CartEvent {
   final String itemId;
 
   const DecrementCartItem({required this.itemId});
+
+  @override
+  List<Object?> get props => [];
+}
+
+class ItemQuantity extends CartEvent {
+  final String productId;
+
+  const ItemQuantity({required this.productId});
 
   @override
   List<Object?> get props => [];
