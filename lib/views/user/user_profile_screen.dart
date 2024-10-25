@@ -7,7 +7,7 @@ import 'package:wine_delivery_app/utils/helpers.dart';
 import 'package:wine_delivery_app/views/product/favorites.dart';
 import 'package:wine_delivery_app/views/user/theme_dialog.dart';
 
-import '../../bloc/product/favorite/favs/favs_bloc.dart';
+import '../../bloc/product/favorite/favs_bloc.dart';
 import '../../bloc/profile/profile_bloc.dart';
 import '../../bloc/shipment/shipment_bloc.dart';
 import '../../model/product.dart';
