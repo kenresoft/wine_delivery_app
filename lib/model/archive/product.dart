@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:wine_delivery_app/model/review.dart';
+import 'package:wine_delivery_app/model/archive/review.dart';
 
 import 'category.dart';
 
