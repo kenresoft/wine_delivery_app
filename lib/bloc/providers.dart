@@ -7,7 +7,7 @@ import 'network/network_bloc.dart';
 import 'order/order_bloc.dart';
 import 'product/category_filter/category_filter_bloc.dart';
 import 'product/category_list/wines_bloc.dart';
-import 'product/favorite/favs/favs_bloc.dart';
+import 'product/favorite/favs_bloc.dart';
 import 'product/product_bloc.dart';
 import 'profile/profile_bloc.dart';
 import 'promo_code/promo_code_bloc.dart';
