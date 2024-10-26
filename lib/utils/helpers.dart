@@ -10,3 +10,6 @@ export 'utils.dart';
 export 'preferences.dart';
 export 'themes.dart';
 export 'typedefs.dart';
+export 'routes/app_router.dart';
+export 'routes/routes.dart';
+export 'routes/nav.dart';
