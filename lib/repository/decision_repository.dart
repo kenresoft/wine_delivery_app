@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:wine_delivery_app/repository/cache_repository.dart';
 import 'package:wine_delivery_app/utils/enums.dart';
+import 'package:wine_delivery_app/utils/exceptions.dart';
 
 import '../model/cache_entry.dart';
 import '../utils/preferences.dart';
-import '../utils/utils.dart';
+import '../utils/helpers.dart';
 
 class DecisionRepository {
   final CacheRepository _cacheRepository;
@@ -18,7 +19,7 @@ class DecisionRepository {
   }
 
   /// Fetches data from both cache and API, compares them, and refreshes the cache if needed.
-  /// Bypasses cache when an active internet connection is available for faster responses.
+  /// Bypasses cache when `bypassCache` is true or an active internet connection is available for faster responses.
   Future<T> decide<T>({
     required String cacheKey,
     required String endpoint,
@@ -26,28 +27,30 @@ class DecisionRepository {
     dynamic body,
     required Future<T> Function(dynamic data) onSuccess,
     required Future<T> Function(dynamic error) onError,
+    // bool bypassCache = false,
   }) async {
     final stopwatch = Stopwatch()..start();
-    logger.i("Decision process started for cacheKey: $cacheKey");
+    // logger.i("Decision process started for cacheKey: $cacheKey");
 
-    final CacheEntry<String>? cachedEntry = _cacheRepository.getCache(cacheKey, (data) => data as String);
+    CacheEntry<String>? cachedEntry;
+
+    // Check if we need to use cache or bypass it
+    // if (!bypassCache) {
+      cachedEntry = _cacheRepository.getCache(cacheKey, (data) => data as String);
+    // }
 
     try {
-      final result = await _fetchData(cacheKey, endpoint, requestMethod, body, cachedEntry);
+      final result = await _fetchData(cacheKey, endpoint, requestMethod, body, cachedEntry/*, bypassCache*/);
       final freshApiData = result.freshApiData;
 
       if (freshApiData != null) {
         final decodedApiData = jsonDecode(freshApiData);
         await _updateCacheIfNeeded(cacheKey, cachedEntry, freshApiData, decodedApiData);
-        logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
         return onSuccess(decodedApiData);
-      } else if (cachedEntry != null) {
+      } else if (cachedEntry != null/* && !bypassCache*/) {
         final decodedCacheData = jsonDecode(cachedEntry.data);
-        logger.i('API failed, using cached data.');
-        logger.i("Decision process completed in ${stopwatch.elapsedMilliseconds} ms");
         return onSuccess(decodedCacheData);
       } else {
-        logger.e("No data available from cache or API.");
         return onError('No data available from cache or API.');
       }
     } on SocketException {
@@ -66,15 +69,15 @@ class DecisionRepository {
     RequestMethod requestMethod,
     dynamic body,
     CacheEntry<String>? cachedEntry,
+    // bool bypassCache,
   ) async {
-
-    if (isInternet) {
-      logger.d('Internet connection available. Fetching fresh data from API.');
+    if (isInternet/* || bypassCache*/) {
       final apiResponse = await Utils.makeRequest(endpoint, method: requestMethod, body: body);
       if (apiResponse.statusCode == 200) {
         return (cachedEntry: null, freshApiData: apiResponse.body);
       } else {
-        logger.e('API request failed with status: ${apiResponse.statusCode}');
+        // logger.e('API request failed with status: ${apiResponse.statusCode}');
+        throw NotFoundException('API request failed with status: ${apiResponse.statusCode}');
       }
     }
 
@@ -91,11 +94,11 @@ class DecisionRepository {
     if (cachedEntry != null) {
       final decodedCacheData = jsonDecode(cachedEntry.data);
       if (_hasDataChanged(decodedCacheData, decodedApiData)) {
-        logger.w('Data changed. Updating cache.');
+        // logger.w('Data changed. Updating cache.');
         await _cacheRepository.cache(cacheKey, CacheEntry.withDefaultExpiration(freshApiData));
       }
     } else {
-      logger.w('No cache available. Storing new API data in cache.');
+      // logger.w('No cache available. Storing new API data in cache.');
       await _cacheRepository.cache(cacheKey, CacheEntry.withDefaultExpiration(freshApiData));
     }
   }
