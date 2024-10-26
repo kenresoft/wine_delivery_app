@@ -1,4 +1,3 @@
-import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,12 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'bloc/network/network_bloc.dart';
 import 'bloc/theme/theme_cubit.dart';
 import 'utils/helpers.dart';
-import 'views/admin/oder_management_page.dart';
-import 'views/error_screen.dart';
-import 'views/home/home.dart';
-import 'views/onboarding/splash_screen.dart';
-import 'views/product/cart/shopping_cart.dart';
-import 'views/product/category/products_category_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, this.initialError});
@@ -25,17 +18,32 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Object? _currentError;
+  bool _networkListeningStarted = false;
 
   @override
   void initState() {
     super.initState();
     _currentError = widget.initialError;
     WidgetsBinding.instance.addObserver(this);
-    context.read<NetworkBloc>().add(StartNetworkListening());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_networkListeningStarted) {
+      // Start listening to the network only once
+      context.read<NetworkBloc>().add(StartNetworkListening());
+      _networkListeningStarted = true;
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _manageNetworkAndLifecycleState(state);
+  }
+
+  void _manageNetworkAndLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       // context.read<NetworkBloc>().add(GetCurrentNetworkStatus());
       context.read<NetworkBloc>().add(StartNetworkListening());
@@ -47,6 +55,30 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     context.read<NetworkBloc>().close();
     super.dispose();
+  }
+
+  void handleError(Object? error) {
+    if (mounted) {
+      setState(() => _currentError = error);
+    }
+  }
+
+  Future<void> retryInitialization() async {
+    try {
+      await loadConfig(
+        done: (error) {
+          if (error == null && mounted) {
+            setState(() => _currentError = null);
+            Nav.pushReplace(Routes.splash);
+          } else {
+            handleError(error);
+          }
+        },
+      );
+    } catch (error) {
+      logger.e("Error during initialization: $error");
+      handleError(error);
+    }
   }
 
   @override
@@ -72,21 +104,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 },
               ),
             ),
-            /*BlocBuilder<NetworkBloc, NetworkState>(
-              builder: (context, state) {
-                if (state is BannerVisible) {
-                  return ConnectionBanner(
-                    message: state.message,
-                    isVisible: true,
-                    style: state.style,
-                    onClose: () => context.read<NetworkBloc>().add(const HideBanner()),
-                  );
-                } else if (state is BannerHidden) {
-                  return const SizedBox.shrink();
-                }
-                return const SizedBox.shrink();
-              },
-            ),*/
           ],
         ),
       ),
@@ -94,48 +111,23 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   MaterialApp buildMaterialApp(BuildContext mainContext, ThemeMode themeMode) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: color(mainContext).themeData,
-      darkTheme: color(mainContext).themeData,
-      themeMode: themeMode,
-      routes: {
-        '/': condition(
-          widget.initialError != null,
-          (context) => ErrorScreen(
-            message: "Initialization failed: ${widget.initialError}",
-            errorType: ErrorType.initialization,
-            onRetry: () async {
-              try {
-                // Load configuration and services
-                await SharedPreferencesService.init();
-                await EnvironmentConfig.load(ConfigMode.dev);
+    final themeData = _currentError == null ? color(mainContext).themeData : ThemeData.light();
 
-                // If successful, clear the error and navigate to the home
-                    if (mounted) {
-                      setState(() => _currentError = null);
-                      Navigator.of(mainContext).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const SplashScreen(),
-                        ),
-                      );
-                    }
-                  } catch (error) {
-                    // Handle any initialization errors
-                    logger.e("Error during initialization: $error");
-                    if (mounted) {
-                      setState(() => _currentError = error);
-                    }
-                  }
-                },
-              ),
-              (context) => const SplashScreen(),
-        ),
-        '/cart_page': (context) => const ShoppingCartScreen(),
-        '/home': (context) => const Home(),
-        '/order_management_page': (context) => const OrderManagementPage(),
-        '/category': (context) => const CategoryScreen(),
+    return MaterialApp(
+      title: 'Vintiora',
+      debugShowCheckedModeBanner: false,
+      theme: themeData,
+      darkTheme: themeData,
+      themeMode: _currentError == null ? themeMode : ThemeMode.light,
+      navigatorKey: Nav.navigatorKey,
+      navigatorObservers: [Nav.routeObserver],
+      initialRoute: _currentError == null ? Routes.splash : Routes.error,
+      onGenerateRoute: (settings) {
+        return AppRouter().generateRoute(
+          settings,
+          error: _currentError,
+          onRetry: retryInitialization,
+        );
       },
     );
   }
