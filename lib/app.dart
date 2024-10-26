@@ -8,9 +8,9 @@ import 'bloc/theme/theme_cubit.dart';
 import 'utils/helpers.dart';
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key, this.initialError});
+  const MyApp({super.key, this.initializationError});
 
-  final Object? initialError;
+  final Object? initializationError;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _currentError = widget.initialError;
+    _currentError = widget.initializationError;
     WidgetsBinding.instance.addObserver(this);
   }
 
