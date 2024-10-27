@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:wine_delivery_app/model/shipment.dart';
-import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
 
 import '../utils/constants.dart';
 import '../utils/enums.dart';
-import '../utils/utils.dart';
+import '../utils/helpers.dart';
+import 'decision_repository.dart';
 
 class ShipmentRepository {
   ShipmentRepository();
@@ -138,14 +138,15 @@ class ShipmentRepository {
       throw 'Error fetching shipment details: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       if (kDebugMode) {
-        logger.e(e.toString());
+        // logger.e(e.toString());
       }
       if (e is SocketException) {
         throw 'Failed to retrieve shipment details. \n'
             'Please check your internet connection and try again. \n'
             'If the issue persists, contact our support team.';
+      } else {
+        rethrow;
       }
-      rethrow;
     }
   }
 

@@ -14,13 +14,13 @@ import 'product_repository.dart';
 class FavoritesRepository {
   FavoritesRepository();
 
-  FavoritesRepository._();
+  // FavoritesRepository._();
 
-  static final FavoritesRepository _instance = FavoritesRepository._();
+  // static final FavoritesRepository _instance = FavoritesRepository._();
 
-  static FavoritesRepository getInstance() {
+  /*static FavoritesRepository getInstance() {
     return _instance;
-  }
+  }*/
 
   static final String _url = '${Constants.baseUrl}/api/favorites';
 
@@ -28,19 +28,24 @@ class FavoritesRepository {
     return DecisionRepository().decide<List<({Product product, int cartQuantity})>>(
       cacheKey: 'getFavorites',
       endpoint: _url,
+      // bypassCache: true,
       onSuccess: (data) async {
         final List<dynamic>? favoritesJson = data['favorite'];
 
         if (favoritesJson != null) {
-          final products = <({Product product, int cartQuantity})>[];
-          for (final favoriteJson in favoritesJson) {
-            final favorite = Favorite.fromJson(favoriteJson);
-            final product = await productRepository.getProductById(favorite.product);
-            final cartItemQuantity = await cartRepository.getItemQuantity(favorite.product);
-            // logger.t(data);
-            products.add((product: product, cartQuantity: cartItemQuantity));
-          }
-          logger.i(products.length);
+          // Step 1: Fetch all products and cart quantities concurrently with error handling
+          final products = await Future.wait(favoritesJson.map((favoriteJson) async {
+            try {
+              final favorite = Favorite.fromJson(favoriteJson);
+              final product = await productRepository.getProductById(favorite.product);
+              final cartItemQuantity = await cartRepository.getItemQuantity(favorite.product);
+              return (product: product, cartQuantity: cartItemQuantity);
+            } catch (e) {
+              logger.e('Error fetching data for product: $e');
+              // If fetching the product or cart quantity fails, return default values.
+              return (product: Product(), cartQuantity: 0);
+            }
+          }).toList());
           return products;
         }
         throw 'Error parsing favorites from the server.';
@@ -50,42 +55,6 @@ class FavoritesRepository {
         return [(product: Product(), cartQuantity: 0)];
       },
     );
-/*    try {
-      final response = await Utils.makeRequest(_url);
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        final List<dynamic>? favoritesJson = data['favorite'];
-
-        if (favoritesJson != null) {
-          final products = <Product>[];
-          for (final favoriteJson in favoritesJson) {
-            final favorite = Favorite.fromJson(favoriteJson);
-            final product = await productRepository.getProductById(favorite.product);
-            logger.t(response.body);
-            products.add(product);
-          }
-          return products;
-        }
-        throw 'Error parsing favorites from the server.';
-      }
-      if (response.statusCode == 401) {
-        throw 'Unauthorized: Please log in again.';
-      }
-
-      throw 'Error fetching user favorites: ${response.statusCode} - ${response.reasonPhrase}';
-      // return [Product.empty()];
-    } catch (e) {
-      logger.e(e.toString());
-
-      if (e is SocketException) {
-        throw 'Failed to retrieve user favorites (error code: ${*/ /*response.statusCode ??*/ /* 404}). \n'
-            'Please check your internet connection and try again. \n'
-            'If the issue persists, contact our support team at [email protected].';
-      }
-      rethrow;
-    }*/
   }
 
   Future<bool> isLiked(String productId) async {
@@ -131,4 +100,4 @@ class FavoritesRepository {
   }
 }
 
-final FavoritesRepository favoritesRepository = FavoritesRepository.getInstance();
+// final FavoritesRepository favoritesRepository = FavoritesRepository.getInstance();

@@ -4,12 +4,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:wine_delivery_app/repository/decision_repository_v2.dart';
 
 import '../model/profile.dart';
-import '../utils/constants.dart';
-import '../utils/utils.dart';
+import '../utils/helpers.dart';
 import 'auth_repository.dart';
+import 'decision_repository.dart';
 
 class UserRepository {
   UserRepository();
@@ -39,7 +38,7 @@ class UserRepository {
       },
       onError: (error) async {
         logger.e('ERROR: ${error.toString()}');
-        return const Profile(id: 'id', email: 'email', username: 'username', profileImage: 'profileImage', favorites: []);
+        return Profile.empty();
       },
     );
 
@@ -118,7 +117,9 @@ class UserRepository {
       if (response.statusCode == 401) {
         throw 'Unauthorized: Please log in again.';
       }
-      throw 'Error updating user profile: ${response.statusCode} - ${response.reasonPhrase}';
+      // return Profile.empty();
+      throw response.body;
+      // throw 'Error updating user profile: ${response.statusCode} - ${response.reasonPhrase}';
     } catch (e) {
       if (kDebugMode) {
         logger.e(e.toString());
