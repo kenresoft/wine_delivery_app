@@ -118,7 +118,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       debugShowCheckedModeBanner: false,
       theme: themeData,
       darkTheme: themeData,
-      themeMode: _currentError == null ? themeMode : ThemeMode.light,
+      themeMode: themeMode,
       navigatorKey: Nav.navigatorKey,
       navigatorObservers: [Nav.routeObserver],
       initialRoute: _currentError == null ? Routes.splash : Routes.error,

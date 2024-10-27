@@ -26,7 +26,7 @@ void main() async {
 /// Flutter framework error handling
 void _handleFlutterError(FlutterErrorDetails details) {
   logger.e("Flutter Framework Error: ${details.exceptionAsString()}", stackTrace: details.stack);
-  Zone.current.handleUncaughtError(details.exception, details.stack!);
+  Zone.current.handleUncaughtError(details.exception, details.stack ?? StackTrace.empty);
 }
 
 /// Initializes the app configuration and runs the app
