@@ -39,7 +39,7 @@ class PurchaseRepository {
       purchaseDate: date,
     );
     purchases.add(newPurchase);
-    'Purchase added!'.toast;
+    'Purchase added!'.toasts;
   }
 
   void deletePurchase(String purchaseId) {
@@ -48,15 +48,15 @@ class PurchaseRepository {
     }, orElse: () => Purchase.empty());
     if (purchaseToDelete.purchaseId.isNotEmpty) {
       purchases.remove(purchaseToDelete);
-      'Purchase deleted!'.toast;
+      'Purchase deleted!'.toasts;
     } else {
-      'Purchase not found!'.toast;
+      'Purchase not found!'.toasts;
     }
   }
 
   void deleteAllPurchases() {
     purchases.clear();
-    'All purchases deleted!'.toast;
+    'All purchases deleted!'.toasts;
   }
 
   Purchase getPurchaseById(String purchaseId) {

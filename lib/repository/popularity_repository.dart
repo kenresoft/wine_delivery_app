@@ -16,8 +16,8 @@ class PopularityRepository {
   }
 
   void updatePopularity(Product wine, int purchases, int reviews) {
-    purchaseCountMap[wine.name] = (purchaseCountMap[wine.name] ?? 0) + purchases;
-    reviewCountMap[wine.name] = (reviewCountMap[wine.name] ?? 0) + reviews;
+    purchaseCountMap[wine.name!] = (purchaseCountMap[wine.name] ?? 0) + purchases;
+    reviewCountMap[wine.name!] = (reviewCountMap[wine.name] ?? 0) + reviews;
   }
 
   List<Product> getPopularWines(List<Product> allWines, {int limit = 5}) {
