@@ -26,7 +26,7 @@ class ProductDetailScreen extends StatefulWidget {
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTickerProviderStateMixin {
+class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTickerProviderStateMixin, RouteAware {
   String _selectedSize = '15 ml';
   late TabController _tabController;
   late PageController _pageController;
@@ -52,9 +52,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Nav.routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPushNext() {
+    final modalRoute = ModalRoute.of(context);
+    if (modalRoute != null && modalRoute.settings.name == '/B') {
+      Nav.popTo('/A');
+    }
+  }
+
+  // Remove listeners for resource management
+  @override
+  void didPopNext() {
+    Nav.routeObserver.unsubscribe(this);
+  }
+
+  @override
   void dispose() {
     _tabController.dispose();
     _pageController.dispose();
+    Nav.routeObserver.unsubscribe(this);
     super.dispose();
   }
 
