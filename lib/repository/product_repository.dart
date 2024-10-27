@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../model/product.dart';
 import '../utils/constants.dart';
 import '../utils/enums.dart';
-import '../utils/utils.dart';
+import '../utils/helpers.dart';
 import 'decision_repository.dart';
 
 class ProductRepository {
@@ -26,12 +26,15 @@ class ProductRepository {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['products'];
+        // logger.d(data);
+
         return data.map((productJson) => Product.fromJson(productJson)).toList();
       } else {
         //throw Exception('Failed to load products');
         return [];
       }
-    } on Exception {
+    } on Exception catch (e) {
+      logger.e(e);
       return [];
     }
   }
@@ -85,7 +88,7 @@ class ProductRepository {
       },
       onError: ( error) async {
         logger.e('ERROR: ${error.toString()}');
-        return Product.empty();
+        return Product();
       },
     );
 /*    try {
@@ -116,11 +119,12 @@ class ProductRepository {
         method: RequestMethod.post,
         body: json.encode({
           'name': product.name,
-          'category': product.category.id,
+          'category': product.category?.id,
           'image': product.image,
-          'price': product.price,
+          // 'price': product.price,
           'alcoholContent': product.alcoholContent,
           'description': product.description,
+          'suppliers': product.suppliers,
         }));
 
     if (response.statusCode == 201) {
@@ -136,9 +140,9 @@ class ProductRepository {
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'name': product.name,
-        'category': product.category.id,
+        'category': product.category?.id,
         'image': product.image,
-        'price': product.price,
+        // 'price': product.price,
         'alcoholContent': product.alcoholContent,
         'description': product.description,
       }),
