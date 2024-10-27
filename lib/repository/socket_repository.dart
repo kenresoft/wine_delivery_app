@@ -76,7 +76,6 @@ class SocketRepository {
     _reconnectDelay *= 2; // Double the delay
   }
 
-// ... other socket-related methods
 }
 
 SocketRepository socketRepository = SocketRepository.getInstance();

@@ -8,7 +8,7 @@ import 'package:wine_delivery_app/utils/constants.dart';
 import 'package:wine_delivery_app/utils/exceptions.dart';
 
 import '../utils/preferences.dart';
-import '../utils/utils.dart';
+import '../utils/helpers.dart';
 
 class AuthRepository {
   AuthRepository();
@@ -50,7 +50,7 @@ class AuthRepository {
     }
   }
 
-  Future<bool> login(String email, String password, ValueChanged<String> result) async {
+  Future<bool> login(String email, String password, ValueChanged<String> message) async {
     try {
       final response = await http.post(
         Uri.parse('$_baseUrl/login'),
@@ -63,35 +63,65 @@ class AuthRepository {
 
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        final String? accessToken = data['accessToken'];
-        final String? refreshToken = data['refreshToken'];
+        final String? messageData = data['message'];
 
-        if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
-          _saveTokens(accessToken, refreshToken);
-          sessionActive = true;
-          logger.i(accessToken);
-          result('Login successful!');
+        if (messageData != null && messageData.isNotEmpty) {
+          otpSent = true;
+          logger.i(messageData);
+          message('Otp sent!');
           return true;
         }
-        result('Error verifying user identity.');
+        message('Error verifying user identity.');
         return false;
       }
       if (response.statusCode == 401) {
-        result(data['message']);
+        message(data['message']);
         return false;
       }
-      result('Error logging in user: ${response.statusCode} - ${response.reasonPhrase}');
+      message('Error logging in user: ${response.statusCode} - ${response.reasonPhrase}');
       return false;
     } catch (e) {
       logger.e(e.toString());
       if (e is SocketException) {
-        result('Failed to retrieve user information (error code: 404). \n'
+        message('Failed to retrieve user information (error code: 404). \n'
             'Please check your internet connection and try again. \n'
-            'If the issue persists, contact our support team at [email protected].');
+            'If the issue persists, contact our support team at kenresoft@gmail.com.');
       }
       return false;
     }
   }
+
+  Future<bool> verifyOtp(String email, String otp, ValueChanged<String> result) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/verify-otp'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'otp': otp}),
+      );
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final String? accessToken = data['accessToken'];
+        final String? refreshToken = data['refreshToken'];
+
+        if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
+          await _saveTokens(accessToken, refreshToken);
+          sessionActive = true;
+          result('OTP verified successfully!');
+          return true;
+        }
+        result('Error verifying OTP.');
+        return false;
+      }
+
+      result(data['message']);
+      return false;
+    } catch (e) {
+      result('Error: $e');
+      return false;
+    }
+  }
+
 
   Future<bool> checkAuthStatus() async {
     final token = await getAccessToken();
