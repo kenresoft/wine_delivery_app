@@ -32,6 +32,7 @@ enum RequestMethod {
 }
 
 enum ErrorType {
+  route,
   network,
   timeout,
   unknown,

@@ -27,7 +27,6 @@ class NetworkException extends AppException {
   const NetworkException(super.message);
 }
 
-// Other potential exceptions (add as needed)
 class BadRequestException extends AppException {
   const BadRequestException(super.message);
 }
