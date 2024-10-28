@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/product/favorite/favs_bloc.dart';
-import '../../model/product.dart';
-import '../../utils/themes.dart';
-import 'category/products_category_screen.dart';
+import '../../../bloc/product/favorite/favs_bloc.dart';
+import '../../../model/product.dart';
+import '../../../utils/themes.dart';
+import 'products_category_screen.dart';
 
 class ProductSearch extends SearchDelegate<List<({int cartQuantity, Product product})>> {
   final List<Product> products;

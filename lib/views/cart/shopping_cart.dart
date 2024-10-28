@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:wine_delivery_app/utils/helpers.dart';
 
 import '../../../bloc/cart/cart_bloc.dart';
 import '../../../bloc/order/order_bloc.dart';
@@ -10,9 +11,6 @@ import '../../../bloc/promo_code/promo_code_bloc.dart';
 import '../../../model/cart_item.dart';
 import '../../../model/coupon.dart';
 import '../../../repository/coupon_repository.dart';
-import '../../../utils/constants.dart';
-import '../../../utils/extensions.dart';
-import '../../../utils/preferences.dart';
 import '../order/check_out_screen.dart';
 import 'quantity_button.dart';
 
@@ -123,31 +121,13 @@ class CartItemsList extends StatelessWidget {
         key: UniqueKey(),
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.endToStart) {
-            return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Confirm Delete'),
-                  content: const Text('Are you sure you want to remove this item from your cart?'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(false),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(true),
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                );
-              },
-            );
+            return await _buildDeletionDialog(context);
           }
           return null;
         },
         onDismissed: (direction) {
           if (direction == DismissDirection.endToStart) {
-            context.read<CartBloc>().add(RemoveFromCart(itemId: cartItem.product!.id));
+            context.read<CartBloc>().add(RemoveFromCart(itemId: cartItem.product!.id!));
           }
         },
         background: Container(
@@ -162,7 +142,7 @@ class CartItemsList extends StatelessWidget {
         ),
         secondaryBackground: null,
         child: Container(
-          height: 90,
+          height: 95,
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -173,16 +153,26 @@ class CartItemsList extends StatelessWidget {
                 child: Row(
                   children: [
                     // Product Image
-                    ClipOval(
+                    Center(
                       child: Container(
+                        width: 60.h,
+                        height: 60.h,
                         padding: EdgeInsets.all(10),
-                        color: Colors.grey.shade300,
-                        child: Image.asset(
-                          'assets/images/${cartItem.product!.image}',
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(color: Colors.grey),
+                          image: DecorationImage(
+                            image: Utils.networkImage(cartItem.product!.image),
+                            fit: BoxFit.fitHeight,
+                          ),
+                        ),
+                        /*child: Image(
+                          image: Utils.networkImage(cartItem.product!.image),
                           width: 50.h,
                           height: 50.h,
-                          fit: BoxFit.fitHeight,
-                        ),
+                          fit: BoxFit.cover,
+                        ),*/
                       ),
                     ),
 
@@ -196,13 +186,15 @@ class CartItemsList extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              cartItem.product!.name,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
+                            Flexible(
+                              child: Text(
+                                cartItem.product!.name!,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
+                                ),
                               ),
                             ),
 
@@ -210,7 +202,7 @@ class CartItemsList extends StatelessWidget {
                             SizedBox(height: 8.h),
                             Text(
                               overflow: TextOverflow.ellipsis,
-                              '\$${(cartItem.product!.price * cartItem.quantity!).toStringAsFixed(2)}',
+                              '\$${(cartItem.product!.defaultPrice! * cartItem.quantity!).toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -235,7 +227,7 @@ class CartItemsList extends StatelessWidget {
                       Flexible(
                         child: QuantityButton(
                           onPressed: () {
-                            context.read<CartBloc>().add(IncrementCartItem(itemId: cartItem.product!.id));
+                            context.read<CartBloc>().add(IncrementCartItem(itemId: cartItem.product!.id!));
                           },
                           icon: Icons.add,
                         ),
@@ -258,7 +250,7 @@ class CartItemsList extends StatelessWidget {
                       Flexible(
                         child: QuantityButton(
                           onPressed: () {
-                            context.read<CartBloc>().add(DecrementCartItem(itemId: cartItem.product!.id));
+                            context.read<CartBloc>().add(DecrementCartItem(itemId: cartItem.product!.id!));
                           },
                           icon: Icons.remove,
                         ),
@@ -273,6 +265,15 @@ class CartItemsList extends StatelessWidget {
       ),
     );
   }
+
+  Future<bool?> _buildDeletionDialog(BuildContext context) async {
+    return await Utils.dialog(
+      context,
+      title: 'Confirm Remove from Cart',
+      content: 'Are you sure you want to remove this item from your cart?',
+      confirmButtonText: 'Remove',
+    );
+  }
 }
 
 class SubtotalSection extends StatelessWidget {
@@ -281,9 +282,6 @@ class SubtotalSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CartBloc, CartState>(
-      /*buildWhen: (previous, current) {
-        return previous is CartLoaded && current is CartLoaded && previous.totalPrice != current.totalPrice;
-      },*/
       builder: (context, state) {
         if (state is CartLoaded) {
           return Card(

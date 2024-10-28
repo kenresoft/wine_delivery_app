@@ -1,8 +1,9 @@
+/*
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wine_delivery_app/bloc/cart/cart_bloc.dart';
-import 'package:wine_delivery_app/utils/utils.dart';
+import 'package:wine_delivery_app/utils/helpers.dart';
 import 'package:wine_delivery_app/views/product/product_button.dart';
 
 import '../../../bloc/order/order_bloc.dart';
@@ -66,10 +67,12 @@ class _CartPageState extends State<CartPage> {
                               ),
                             ),
                             ListTile(
-                              /*title: const Text(
+                              */
+/*title: const Text(
                                 'Sparkling wine',
                                 style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
-                              ),*/
+                              ),*//*
+
                               minVerticalPadding: 0,
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,3 +300,4 @@ class _CartPageState extends State<CartPage> {
     );
   }
 }
+*/

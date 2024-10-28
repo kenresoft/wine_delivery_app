@@ -41,7 +41,7 @@ class CheckOut extends StatelessWidget {
             const SizedBox(height: 20),
             PaymentInformation(paymentMethod: paymentMethod),
             const SizedBox(height: 20),
-            const OrderStatus(),
+            const OrderStatusView(),
             const SizedBox(height: 20),
             const CallToAction(),
           ],
@@ -171,8 +171,8 @@ class PaymentInformation extends StatelessWidget {
   }
 }
 
-class OrderStatus extends StatelessWidget {
-  const OrderStatus({super.key});
+class OrderStatusView extends StatelessWidget {
+  const OrderStatusView({super.key});
 
   @override
   Widget build(BuildContext context) {

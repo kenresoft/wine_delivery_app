@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,9 +13,7 @@ import '../../../model/order_product_item.dart';
 import '../../../model/product.dart';
 import '../../../repository/order_repository.dart';
 import '../../../repository/product_repository.dart';
-import '../../../utils/extensions.dart';
-import '../../../utils/themes.dart';
-import '../../../utils/utils.dart';
+import '../../../utils/helpers.dart';
 import 'order_confirmation_screen.dart';
 import 'products_stack_view.dart';
 import 'shipping_form_address.dart';
@@ -558,35 +559,55 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
       }).toList(),
     );
 
-    await orderRepository.makePurchase(
-      orderId: order.id,
-      description: "_description",
-      currency: "usd",
-      // currency: "gpb", // currency: "ngn", // currency: "euro"
-      paymentMethod: "_paymentMethod",
-      callback: (bool success, {String? message}) {
-        if (success) {
-          // Show success message and navigate to order confirmation screen
-          snackBar(context, 'Order created successfully!');
+    if (Platform.isIOS || Platform.isAndroid || kIsWeb) {
+      await orderRepository.makePurchase(
+        orderId: order.id,
+        description: "_description",
+        currency: "usd",
+        // currency: "gpb", // currency: "ngn", // currency: "euro"
+        paymentMethod: "_paymentMethod",
+        callback: (bool success, {String? message}) {
+          if (success) {
+            // Show success message and navigate to order confirmation screen
+            snackBar(context, 'Order created successfully!');
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return OrderConfirmationScreen(
-                  order: order,
-                  estimatedDelivery: order.createdAt,
-                  shippingAddress: order.shipmentId,
-                  totalCost: order.totalCost,
-                  orderedItems: items,
-                );
-              },
-            ),
-          );
-        } else {
-          snackBar(context, message ?? 'Failed to create order');
-        }
-      },
-    );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return OrderConfirmationScreen(
+                    order: order,
+                    estimatedDelivery: order.createdAt,
+                    shippingAddress: order.shipmentId,
+                    totalCost: order.totalCost,
+                    orderedItems: items,
+                  );
+                },
+              ),
+            );
+          } else {
+            snackBar(context, message ?? 'Failed to create order');
+          }
+        },
+      );
+    } else {
+      // Show success message and navigate to order confirmation screen
+      snackBar(context, 'Order created successfully!');
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return OrderConfirmationScreen(
+              order: order,
+              estimatedDelivery: order.createdAt,
+              shippingAddress: order.shipmentId,
+              totalCost: order.totalCost,
+              orderedItems: items,
+            );
+          },
+        ),
+      );
+    }
   }
 }

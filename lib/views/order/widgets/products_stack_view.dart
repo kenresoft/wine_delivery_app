@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../bloc/product/product_bloc.dart';
-import '../../../model/order_item.dart';
-import '../../../model/product.dart';
+import '../../bloc/product/product_bloc.dart';
+import '../../model/order_item.dart';
+import '../../model/product.dart';
 
-class OrderStackView extends StatelessWidget {
-  const OrderStackView({
+class ProductsStackView extends StatelessWidget {
+  const ProductsStackView({
     super.key,
     required this.orderItems,
   });
@@ -48,7 +48,7 @@ class OrderStackView extends StatelessWidget {
           left: 0,
           top: 0,
           child: Image.asset(
-            products[0].image,
+            'assets/images/${products[0].image}',
             width: 130,
             height: 130,
             fit: BoxFit.contain,

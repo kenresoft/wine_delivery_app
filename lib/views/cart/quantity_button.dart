@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/themes.dart';
+
 class QuantityButton extends StatelessWidget {
   final Function() onPressed;
   final IconData icon;
@@ -18,8 +20,7 @@ class QuantityButton extends StatelessWidget {
       constraints: BoxConstraints(minWidth: 25, minHeight: 25),
       style: ButtonStyle(
         shape: WidgetStatePropertyAll(CircleBorder()),
-        backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary),
-        // backgroundColor: WidgetStatePropertyAll(Colors.grey.shade300),
+        backgroundColor: WidgetStatePropertyAll(colorScheme(context).tertiary),
         iconSize: WidgetStatePropertyAll(20),
       ),
       icon: Icon(icon),

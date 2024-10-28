@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wine_delivery_app/bloc/product/favorite/favs_bloc.dart';
 
-import '../../bloc/cart/cart_bloc.dart';
-import '../../bloc/product/product_bloc.dart';
-import '../../model/product.dart';
-import '../../model/reviews.dart';
-import '../../utils/helpers.dart';
+import '../../../bloc/cart/cart_bloc.dart';
+import '../../../bloc/product/product_bloc.dart';
+import '../../../model/product.dart';
+import '../../../model/reviews.dart';
+import '../../../utils/helpers.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
