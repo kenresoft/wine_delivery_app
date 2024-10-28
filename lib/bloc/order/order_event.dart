@@ -60,3 +60,18 @@ class ListenToOrderStatusUpdates extends OrderEvent {
   @override
   List<Object> get props => [orderId, status];
 }
+
+// order_event.dart additions
+class SortOrders extends OrderEvent {
+  final String criterion;
+
+  const SortOrders(this.criterion);
+}
+
+class FilterOrdersByStatus extends OrderEvent {
+  final OrderStatus status;
+
+  const FilterOrdersByStatus(this.status);
+}
+
+class LoadMoreOrders extends OrderEvent {}
