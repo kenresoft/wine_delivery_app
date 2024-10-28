@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 
 class Nav {
-  static void push(BuildContext context, String routeName, {Object? arguments}) {
-    Navigator.pushNamed(context, routeName, arguments: arguments);
+  static final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  /// Pushes a new screen onto the stack.
+  static void push(String routeName, {Object? arguments}) {
+    navigatorKey.currentState?.pushNamed(routeName, arguments: arguments);
   }
 
-  static void pushReplace(BuildContext context, String routeName, {Object? arguments}) {
-    Navigator.pushReplacementNamed(context, routeName, arguments: arguments);
+  /// Pushes a new screen and replaces the current screen.
+  static void pushReplace(String routeName, {Object? arguments}) {
+    navigatorKey.currentState?.pushReplacementNamed(routeName, arguments: arguments);
   }
 
-  static void pop(BuildContext context) {
-    Navigator.pop(context);
+  /// Pops the current screen from the stack.
+  static void pop() {
+    navigatorKey.currentState?.pop();
   }
 
-  static void popTo(BuildContext context, String routeName) {
-    Navigator.popUntil(context, ModalRoute.withName(routeName));
+  /// Pops until reaching a specified route.
+  static void popTo(String routeName) {
+    navigatorKey.currentState?.popUntil(ModalRoute.withName(routeName));
   }
 
-  static void popAndPush(BuildContext context, String routeName, {Object? arguments}) {
-    Navigator.popAndPushNamed(context, routeName, arguments: arguments);
+  /// Pops the current screen and pushes a new screen.
+  static void popAndPush(String routeName, {Object? arguments}) {
+    navigatorKey.currentState?.popAndPushNamed(routeName, arguments: arguments);
   }
 
-  static void navigateAndRemoveUntil(BuildContext context, String routeName, {Object? arguments}) {
-    Navigator.pushNamedAndRemoveUntil(context, routeName, (route) => false, arguments: arguments);
+  /// Pushes a new screen and removes all previous screens until the specified one.
+  static void navigateAndRemoveUntil(String routeName, {Object? arguments}) {
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
   }
 
 /*  static void navigateToScreenAIfNavigatedFromB(BuildContext context) {
