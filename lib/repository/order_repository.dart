@@ -120,7 +120,7 @@ class OrderRepository {
   // Get orders by user
 Future<List<Order>> getUserOrders({int page = 1, int pageSize = 10}) async {
     final cacheKey = 'getUserOrders_page_$page';
-    final endpoint = '$_baseUrl/user?page=$page&pageSize=$pageSize';
+    final endpoint = '$_baseUrl/user?page=$page&limit=$pageSize';
 
     return DecisionRepository().decide(
       cacheKey: cacheKey,
