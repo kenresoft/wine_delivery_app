@@ -2,6 +2,7 @@ import 'dart:convert';
 
 Category categoryFromJson(String str) => Category.fromJson(json.decode(str));
 String categoryToJson(Category data) => json.encode(data.toJson());
+
 class Category {
   Category({
       this.id, 
@@ -25,4 +26,8 @@ class Category {
     return map;
   }
 
+  @override
+  String toString() {
+    return 'Category{id: $id, name: $name, v: $v}';
+  }
 }

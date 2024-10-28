@@ -184,4 +184,37 @@ class Product {
     map['images'] = images;
     return map;
   }
+
+  @override
+  String toString() {
+    return 'Product{'
+        'dimensions: $dimensions, '
+        'id: $id, '
+        'name: $name, '
+        'category: $category, '
+        'image: $image, '
+        'defaultPrice: $defaultPrice, '
+        'defaultQuantity: $defaultQuantity, '
+        'defaultDiscount: $defaultDiscount, '
+        'suppliers: $suppliers, '
+        'alcoholContent: $alcoholContent, '
+        'description: $description, '
+        'deleted: $deleted, '
+        'tags: $tags, '
+        'stockStatus: $stockStatus, '
+        'isFeatured: $isFeatured, '
+        'isOnSale: $isOnSale, '
+        'variants: $variants, '
+        'shippingCost: $shippingCost, '
+        'relatedProducts: $relatedProducts, '
+        'reviews: $reviews, '
+        'createdAt: $createdAt, '
+        'updatedAt: $updatedAt, '
+        'version: $version, '
+        'isNewArrival: $isNewArrival, '
+        'brand: $brand, '
+        'weight: $weight, '
+        'images: $images'
+        '}';
+  }
 }

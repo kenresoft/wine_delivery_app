@@ -45,4 +45,16 @@ class Reviews {
     map['updatedAt'] = updatedAt;
     return map;
   }
+
+  @override
+  String toString() {
+    return 'Reviews{'
+        'user: $user, '
+        'rating: $rating, '
+        'comment: $comment, '
+        'id: $id, '
+        'createdAt: $createdAt, '
+        'updatedAt: $updatedAt'
+        '}';
+  }
 }
