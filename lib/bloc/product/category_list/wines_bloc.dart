@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:wine_delivery_app/repository/product_repository.dart';
 
 import '../../../model/product.dart';
+import '../../../repository/product_repository.dart';
+import '../../../utils/helpers.dart';
 
 part 'wines_event.dart';
 part 'wines_state.dart';
@@ -17,10 +17,11 @@ class WinesBloc extends Bloc<WinesEvent, WinesState> {
         //final List<Product> wines = decodedData.map((dynamic item) => Product.fromJson(item)).toList();
 
         final List<Product> products = await productRepository.getAllProducts();
+        // logger.w(products);
 
         emit(WinesState(status: WinesLoadStatus.success, wines: products));
       } catch (e) {
-        debugPrint(e.toString());
+        logger.e(e.toString());
         emit(WinesState(status: WinesLoadStatus.error, errorMessage: e.toString()));
       }
     });
