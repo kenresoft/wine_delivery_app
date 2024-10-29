@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:extensionresoft/extensionresoft.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -8,8 +9,12 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../firebase_options.dart';
+import '../repository/user_repository.dart';
 import 'constants.dart';
 import 'environment_config.dart';
+import 'firebase_util.dart';
+import 'notification_util.dart';
 
 final logger = Logger();
 
@@ -34,17 +39,21 @@ void snackBar(BuildContext context, String message) {
 
 Future<void> loadConfig({void Function(dynamic error)? done}) async {
   try {
+    HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: kIsWeb ? HydratedStorage.webStorageDirectory : await getApplicationDocumentsDirectory(),
+    );
     await SharedPreferencesService.init(
       enableCaching: true,
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
     await EnvironmentConfig.load(ConfigMode.dev);
     Stripe.publishableKey = Constants.stripePublishableKey;
-
-    // initialize hydrated bloc
-    HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: kIsWeb ? HydratedStorage.webStorageDirectory : await getApplicationDocumentsDirectory(),
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
     );
+    await configureFirebaseMessaging();
+    await NotificationUtil().initNotification();
+    await userRepository.initializeDeviceToken();
 
     // await _simulateError();
 
