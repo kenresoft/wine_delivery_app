@@ -21,30 +21,35 @@ class AuthRepository {
 
   static final String _baseUrl = '${Constants.baseUrl}/api/auth';
 
-  Future<bool> register(String username, String email, String password) async {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/register'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'username': username,
-        'email': email,
-        'password': password,
-      }),
-    );
+  Future<bool> register(String username, String email, String password, ValueChanged<String> message) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'username': username,
+          'email': email,
+          'password': password,
+        }),
+      );
 
-    if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final String? accessToken = data['accessToken'];
-      final String? refreshToken = data['refreshToken'];
-
-      if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
-        _saveTokens(accessToken, refreshToken);
-        sessionActive = true;
+      if (response.statusCode == 201) {
+        sessionActive = false;
+        message('User registered successfully');
         return true;
       }
+
+      message('Failed to register user: ${response.statusCode} - ${data['message']}');
       return false;
-    } else {
-      throw Exception('Failed to register user');
+    } catch (e) {
+      logger.e(e.toString());
+      if (e is SocketException) {
+        message('Failed to retrieve user information (error code: 404). \n'
+            'Please check your internet connection and try again. \n'
+            'If the issue persists, contact our support team at kenresoft@gmail.com.');
+      }
+      return false;
     }
   }
 

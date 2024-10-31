@@ -32,6 +32,7 @@ class UserRepository {
     // Retrieve the device token
     String? token = await _firebaseMessaging.getToken();
     logger.w(token);
+
     if (token != null) {
       await sendDeviceTokenToBackend(token);
     }
