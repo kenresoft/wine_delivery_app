@@ -61,6 +61,7 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_local_notifications: ^17.2.4
   share_plus: ^10.1.1
+  os_detect: ^2.0.2
 
   # UI
   circular_image: ^0.0.6
