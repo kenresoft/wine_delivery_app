@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'enums.dart';
-import 'themes.dart';
+import 'helpers.dart';
 
 // Extension to compare DateTime objects by date only
 extension DateTimeComparison on DateTime {
@@ -16,23 +13,26 @@ extension DateTimeComparison on DateTime {
 }
 
 extension ToastExtension<T> on T {
-  T get toasts {
-    if (!Platform.isWindows) {
-      Fluttertoast.showToast(
-        msg: toString(),
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.SNACKBAR,
-        //backgroundColor: colorScheme(context).primary,
-        textColor: Colors.white,
-        fontSize: 18,
-      );
+  T get toast {
+    if (!isWindows) {
+      final context = Nav.navigatorKey.currentContext;
+      if (context != null) {
+        Fluttertoast.showToast(
+          msg: toString(),
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.SNACKBAR,
+          backgroundColor: colorScheme(context).primary,
+          textColor: Colors.white,
+          fontSize: 18,
+        );
+      }
     } else {
       debugPrint('Toasts are not supported on Windows');
     }
     return this;
   }
 
-  void toast(BuildContext context) {
+  void toasts(BuildContext context) {
     FToast().init(context).showToast(
           gravity: ToastGravity.BOTTOM,
           toastDuration: const Duration(seconds: 8),

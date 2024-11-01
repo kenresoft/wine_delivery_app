@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:extensionresoft/extensionresoft.dart';
@@ -6,8 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 
 import '../repository/auth_repository.dart';
-import '../views/auth/login_page.dart';
-import '../views/home/main_screen.dart';
 import '../views/shared/custom_confirmation_dialog.dart';
 import 'helpers.dart';
 
@@ -84,64 +83,28 @@ class Utils {
       final internet = await InternetConnectionChecker().internetResult();
 
       if (sessionActive && seenOnboarding || !internet.hasInternetAccess) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return const MainScreen();
-            },
-          ),
-        );
+        Nav.navigateAndRemoveUntil(Routes.main);
       }
 
       if (response.statusCode == 200) {
         sessionActive = true;
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return const MainScreen();
-            },
-          ),
-        );
+        Nav.navigateAndRemoveUntil(Routes.main);
       } else {
         // Handle error here
         logger.w('${response.statusCode}: ${response.body}');
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return const LoginPage();
-            },
-          ),
-        );
+        Nav.navigateAndRemoveUntil(Routes.login);
       }
     } on NoAccessTokenException catch (e) {
       sessionActive = false;
       logger.e(e.message);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return const LoginPage();
-          },
-        ),
-      );
+      Nav.navigateAndRemoveUntil(Routes.login);
     } on NoRefreshTokenException catch (e) {
       sessionActive = false;
       logger.e(e.message);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return const LoginPage();
-          },
-        ),
-      );
+      Nav.navigateAndRemoveUntil(Routes.login);
     } on SocketException catch (e) {
       logger.d(e);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return const MainScreen();
-          },
-        ),
-      );
+      Nav.navigateAndRemoveUntil(Routes.main);
     } catch (e) {
       // logger.e(e);
       throw Utils.handleError(response: response, error: e);
@@ -153,9 +116,12 @@ class Utils {
   }
 
   // Handle errors based on status code
-  static AppException handleError({http.Response? response, Object? error}) {
-    logger.w(error.runtimeType);
+  static AppException handleError({http.Response? response, Object? error, void Function(String message)? cb}) {
+    // logger.w(error.runtimeType);
     if (response != null) {
+      final message = jsonDecode(response.body)['message'];
+      cb?.call(message);
+      logger.e(message);
       switch (response.statusCode) {
         case 400:
           return const BadRequestException('Bad request, please check your input.');
