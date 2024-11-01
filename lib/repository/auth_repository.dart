@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:wine_delivery_app/repository/storage_repository.dart';
-import 'package:wine_delivery_app/repository/user_repository.dart';
 
 import '../utils/helpers.dart';
 
@@ -110,7 +109,6 @@ class AuthRepository {
         logger.d(userId);
 
         if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
-          await userRepository.initializeDeviceToken();
           await _saveTokens(accessToken, refreshToken);
           sessionActive = true;
           result('OTP verified successfully!');
