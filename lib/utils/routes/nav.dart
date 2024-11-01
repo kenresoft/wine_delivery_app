@@ -5,6 +5,15 @@ class Nav {
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+  static bool? get isCurrent {
+    final context = navigatorKey.currentState?.context;
+    if (context != null) {
+      return ModalRoute.of(context)?.isCurrent;
+    } else {
+      return false;
+    }
+  }
+
   /// Pushes a new screen onto the stack.
   static void push(String routeName, {Object? arguments}) {
     navigatorKey.currentState?.pushNamed(routeName, arguments: arguments);
@@ -34,10 +43,4 @@ class Nav {
   static void navigateAndRemoveUntil(String routeName, {Object? arguments}) {
     navigatorKey.currentState?.pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
   }
-
-/*  static void navigateToScreenAIfNavigatedFromB(BuildContext context) {
-    Navigator.popUntil(context, (route) {
-      return route.settings.name == Routes.screenA || route.settings.name == Routes.screenB;
-    });
-  }*/
 }

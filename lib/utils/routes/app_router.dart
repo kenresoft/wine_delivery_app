@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:wine_delivery_app/views/order/order_confirmation_screen.dart';
 
+import '../../model/order.dart';
+import '../../model/order_product_item.dart';
 import '../../model/product.dart';
 import '../../views/auth/login_page.dart';
 import '../../views/auth/registration_page.dart';
 import '../../views/category/products_category_screen.dart';
-import '../../views/favorite/favorites.dart';
+import '../../views/favorite/favorites_screen.dart';
 import '../../views/home/main_screen.dart';
 import '../../views/onboarding/onboarding_screen.dart';
 import '../../views/onboarding/splash_screen.dart';
@@ -49,6 +52,24 @@ class AppRouter {
             }
             logger.w(product);
             return ProductDetailScreen(product: product);
+          },
+        ),
+      Routes.orderConfirmation => MaterialPageRoute(
+          builder: (_) {
+            final args = settings.arguments;
+            if (args == null || args is! Map || args['order'] is! Order || args['items'] is! List<OrderProductItem>) {
+              return ErrorScreen(
+                actionText: 'Back',
+                message: 'Invalid order or product data',
+                errorType: ErrorType.route,
+                onRetry: () async => Nav.pop(),
+              );
+            }
+
+            final order = args['order'] as Order;
+            final items = args['items'] as List<OrderProductItem>;
+
+            return OrderConfirmationScreen(order: order, orderedItems: items);
           },
         ),
       _ => MaterialPageRoute(

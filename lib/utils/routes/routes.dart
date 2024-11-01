@@ -9,6 +9,7 @@ class Routes {
   static const String favorites = '/favorites';
   static const String products = '/products';
   static const String productDetails = '/productDetails';
+  static const String orderConfirmation = '/orderConfirmation';
 
   static const String orderHistory = '/orderHistory';
   static const String cart = '/cart';
