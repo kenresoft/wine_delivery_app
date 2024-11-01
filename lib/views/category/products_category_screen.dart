@@ -2,16 +2,16 @@ import 'package:badges/badges.dart' as badges;
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/utils/helpers.dart';
-import 'package:wine_delivery_app/views/product/category/product_search.dart';
 
 import '../../../bloc/product/category_filter/category_filter_bloc.dart';
 import '../../../bloc/product/category_list/wines_bloc.dart';
 import '../../../model/product.dart';
 import '../../../model/reviews.dart';
-import '../../home/main_screen.dart';
-import 'product_detail_screen.dart';
-import '../../shared/rate_bar.dart';
+import '../../utils/helpers.dart';
+import '../home/main_screen.dart';
+import '../product/product_detail_screen.dart';
+import '../product/product_search.dart';
+import '../shared/rate_bar.dart';
 
 class CategoryScreen extends StatefulWidget {
   static const double priceMax = 5000.0;
@@ -63,7 +63,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
         filteredWines.sort((a, b) => _isAscending ? a.defaultPrice!.compareTo(b.defaultPrice!) : b.defaultPrice!.compareTo(a.defaultPrice!));
         break;
       case 'Rating':
-        filteredWines.sort((a, b) => _isAscending ? calculateAverageRating(a.reviews).compareTo(calculateAverageRating(b.reviews)) : calculateAverageRating(b.reviews).compareTo(calculateAverageRating(a.reviews)));
+        filteredWines.sort(
+            (a, b) => _isAscending ? calculateAverageRating(a.reviews).compareTo(calculateAverageRating(b.reviews)) : calculateAverageRating(b.reviews).compareTo(calculateAverageRating(a.reviews)));
         break;
       case 'Name (A-Z)':
       case 'Name (Z-A)':
@@ -74,7 +75,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
         break;
       default:
         // Default sorting logic
-        filteredWines.sort((a, b) => _isAscending ? calculateAverageRating(a.reviews).compareTo(calculateAverageRating(b.reviews)) : calculateAverageRating(b.reviews).compareTo(calculateAverageRating(a.reviews)));
+        filteredWines.sort(
+            (a, b) => _isAscending ? calculateAverageRating(a.reviews).compareTo(calculateAverageRating(b.reviews)) : calculateAverageRating(b.reviews).compareTo(calculateAverageRating(a.reviews)));
     }
     //});
   }
