@@ -1,7 +1,9 @@
+import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/repository/product_repository.dart';
 
 import 'bloc/network/network_bloc.dart';
 import 'bloc/theme/theme_cubit.dart';
@@ -19,12 +21,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Object? _currentError;
   bool _networkListeningStarted = false;
+  final _appLinks = AppLinks();
 
   @override
   void initState() {
     super.initState();
     _currentError = widget.initializationError;
     WidgetsBinding.instance.addObserver(this);
+    _initDeepLinkListener();
   }
 
   @override
@@ -78,6 +82,38 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     } catch (error) {
       logger.e("Error during initialization: $error");
       handleError(error);
+    }
+  }
+
+  Future<void> _initDeepLinkListener() async {
+    _appLinks.uriLinkStream.listen((Uri? uri) async {
+      if (uri != null) {
+        await _handleDeepLink(uri.toString());
+      }
+    }, onError: (error) {
+      logger.e('Error in deep link: $error');
+    });
+
+    // To handle the initial link (if the app was opened via a link)
+    Uri? initialUri = await _appLinks.getInitialLink();
+    if (initialUri != null) {
+      await _handleDeepLink(initialUri.toString());
+    }
+  }
+
+  Future<void> _handleDeepLink(String link) async {
+    Uri uri = Uri.parse(link);
+    logger.d('Deep link: $uri');
+
+    if (uri.pathSegments.isNotEmpty) {
+      if (uri.pathSegments[0] == 'product') {
+        final productId = uri.pathSegments[1];
+        final product = await productRepository.getProductById(productId);
+        Nav.push(Routes.productDetails, arguments: product);
+      } else if (uri.pathSegments[0] == 'cart') {
+        logger.i('cart');
+        Nav.push(Routes.cart);
+      }
     }
   }
 

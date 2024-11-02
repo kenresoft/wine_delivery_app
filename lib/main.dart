@@ -34,7 +34,8 @@ Future<void> _initializeApp() async {
   await loadConfig(
     done: (error) {
       if (error != null) {
-        throw error;
+        logger.e('Failed to load app configuration: $error');
+        isWindows || isWeb ? null : throw error;
       }
       logger.d('App initialized successfully with no errors');
       _runApp();
