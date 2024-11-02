@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wine_delivery_app/views/cart/shopping_cart.dart';
 import 'package:wine_delivery_app/views/order/order_confirmation_screen.dart';
 
 import '../../model/order.dart';
@@ -36,6 +37,7 @@ class AppRouter {
       Routes.main => MaterialPageRoute(builder: (_) => MainScreen()),
       Routes.favorites => MaterialPageRoute(builder: (_) => FavoritesScreen()),
       Routes.products => MaterialPageRoute(builder: (_) => CategoryScreen()),
+      Routes.cart => MaterialPageRoute(builder: (_) => ShoppingCartScreen()),
 
       // Handle product details route
       Routes.productDetails => MaterialPageRoute(
@@ -50,7 +52,7 @@ class AppRouter {
                 // onRetry: () async => Nav.navigateAndRemoveUntil(Routes.main),
               );
             }
-            logger.w(product);
+            // logger.w(product);
             return ProductDetailScreen(product: product);
           },
         ),

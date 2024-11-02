@@ -5,14 +5,12 @@ class Nav {
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  static bool? get isCurrent {
+/*  static BuildContext get context {
     final context = navigatorKey.currentState?.context;
     if (context != null) {
-      return ModalRoute.of(context)?.isCurrent;
-    } else {
-      return false;
+      return context;
     }
-  }
+  }*/
 
   /// Pushes a new screen onto the stack.
   static void push(String routeName, {Object? arguments}) {
