@@ -33,6 +33,7 @@ dependencies:
 
   # Core
   cupertino_icons: ^1.0.8
+  font_awesome_flutter: ^10.7.0
   fontresoft: ^0.0.5 # Update needed
   extensionresoft:
     path: ../../packages/extensionresoft # Unreleased pub version.
@@ -62,8 +63,10 @@ dependencies:
   image_picker: ^1.1.2
   permission_handler: ^11.3.1
   flutter_local_notifications: ^17.2.4
+  device_info_plus: ^11.1.0
   share_plus: ^10.1.1
   os_detect: ^2.0.2
+  app_links: ^6.3.2
 
   # UI
   circular_image: ^0.0.6
