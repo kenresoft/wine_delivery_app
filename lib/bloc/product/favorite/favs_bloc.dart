@@ -19,7 +19,11 @@ class FavsBloc extends Bloc<FavsEvent, FavsState> {
     on<LoadFavs>((event, emit) async {
       try {
         final favs = await FavoritesRepository().getFavorites();
-        emit(FavsLoaded(favs, false, ''));
+        if (favs.first.product.id != null) {
+          emit(FavsLoaded(favs, false, ''));
+        } else {
+          emit(FavsError(error: 'No favorite item yet!'));
+        }
       } catch (e) {
         emit(FavsError(error: e.toString()));
       }
