@@ -2,6 +2,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:developer' as dev;
 
+import 'globals.dart';
+
 class NotificationUtil {
   static final FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -38,6 +40,7 @@ class NotificationUtil {
 
   // Function to display notification when app is active
   static Future<void> showNotification(RemoteMessage message) async {
+    logger.i(message.toString());
     final data = message.data;
     final payload = data['navigateTo']; // Custom payload for navigation if specified
 
