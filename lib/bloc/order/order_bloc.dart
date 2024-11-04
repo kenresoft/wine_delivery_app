@@ -15,7 +15,7 @@ part 'order_state.dart';
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   // Pagination parameters
   int _currentPage = 1;
-  final int _pageSize = 6;
+  final int _pageSize = 8;
   bool hasMoreOrders = true;
 
   // Stores all orders across pages
@@ -64,7 +64,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   Future<void> _getOrderById(GetOrderById event, Emitter<OrderState> emit) async {
     try {
       final order = await orderRepository.getOrderById(event.orderId);
-      emit(OrderLoaded(order, _calculateProgress(order.status)));
+      emit(OrderLoaded(order, _calculateProgress(order.status!)));
     } catch (e) {
       emit(OrderError(e.toString()));
     }
@@ -94,7 +94,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   }
 
   void _onOrderUpdated(UpdateOrder event, Emitter<OrderState> emit) {
-    emit(OrderLoaded(event.order, _calculateProgress(event.order.status))); /// I emitted the update state here
+    emit(OrderLoaded(event.order, _calculateProgress(event.order.status!))); /// I emitted the update state here
   }
 
   Future<void> _getUserOrders(GetUserOrders event, Emitter<OrderState> emit) async {
@@ -127,7 +127,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
       _displayedOrders = _applySortAndFilter(_allOrders);
 
-      emit(OrdersLoaded(List.from(_displayedOrders)));
+      if (_displayedOrders.isNotEmpty) {
+        emit(OrdersLoaded(List.from(_displayedOrders)));
+      } else {
+        emit(OrderError('You don\'t have any order yet!'));
+      }
     } catch (e) {
       emit(OrderError(e.toString()));
     }
@@ -169,10 +173,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   List<Order> _sortOrdersByCriterion(List<Order> orders, String criterion) {
     switch (criterion) {
       case 'date':
-        orders.sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Newest first
+        orders.sort((a, b) => b.createdAt!.compareTo(a.createdAt!)); // Newest first
         break;
       case 'price':
-        orders.sort((a, b) => b.subTotal.compareTo(a.subTotal)); // Highest price first
+        orders.sort((a, b) => b.subTotal!.compareTo(a.subTotal!)); // Highest price first
         break;
       // Add more criteria as needed
       default:
