@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
+import 'package:wine_delivery_app/model/cache_entry.dart';
+import 'package:wine_delivery_app/repository/cache_repository.dart';
 
 import '../repository/auth_repository.dart';
 import '../views/shared/custom_confirmation_dialog.dart';
@@ -35,6 +38,45 @@ class Utils {
       () => NetworkImage('${Constants.baseUrl}$imagePath'),
       () => AssetImage(Constants.imagePlaceholder),
     );
+  }
+
+  static Future<void> getDeviceInfo() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo? androidInfo;
+    IosDeviceInfo? iosInfo;
+
+    try {
+      if (!isWeb) {
+        if (isAndroid) {
+          androidInfo = await deviceInfo.androidInfo;
+          cacheRepository.cache(
+            'deviceInfo',
+            CacheEntry.withDefaultExpiration(
+              (name: androidInfo.device, version: androidInfo.version.baseOS),
+            ),
+          );
+        } else if (isIOS) {
+          iosInfo = await deviceInfo.iosInfo;
+          cacheRepository.cache(
+            'deviceInfo',
+            CacheEntry.withDefaultExpiration(
+              (name: iosInfo.name, version: iosInfo.systemVersion),
+            ),
+          );
+        } else {
+          logger.d('$os-$osVersion'); /// just this instead of device_info package
+          cacheRepository.cache(
+            'deviceInfo',
+            CacheEntry.withDefaultExpiration(
+              (name: os, version: osVersion),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error getting device name: $e');
+    }
+    // return (name: null, version: null);
   }
 
   /// API Request Wrapper

@@ -43,6 +43,8 @@ void snackBar(String message) {
 
 Future<void> loadConfig({void Function(dynamic error)? done}) async {
   try {
+
+    // Storage
     HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: kIsWeb ? HydratedStorage.webStorageDirectory : await getApplicationDocumentsDirectory(),
     );
@@ -50,14 +52,19 @@ Future<void> loadConfig({void Function(dynamic error)? done}) async {
       enableCaching: true,
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
+
+    // Environment
     await EnvironmentConfig.load(ConfigMode.dev);
     Stripe.publishableKey = Constants.stripePublishableKey;
+
+    // Messaging
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    await FirebaseUtil.configureFirebaseMessaging();
     await NotificationUtil.initNotification();
+    await FirebaseUtil.configureFirebaseMessaging();
 
+    // Device
     bool isAuthenticated = await authRepository.checkAuthStatus();
     if (isAuthenticated) {
       await userRepository.initializeDeviceToken();
