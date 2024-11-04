@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'globals.dart';
 import 'notification_util.dart';
 
 class FirebaseUtil {
@@ -9,10 +10,13 @@ class FirebaseUtil {
 
   static Future<void> configureFirebaseMessaging() async {
     // Request permission for iOS
-    final settings = await _firebaseMessaging.requestPermission(
+    final NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
       sound: true,
     );
 
@@ -20,6 +24,8 @@ class FirebaseUtil {
 
     // Handle foreground notifications
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      logger.i('-----');
+      logger.i(message.data);
       dev.log("Message received in foreground: ${message.notification?.title}");
       NotificationUtil.showNotification(message); // Show notification
       handleMessage(message); // Additional handling if required
@@ -27,6 +33,7 @@ class FirebaseUtil {
 
     // Handle background notifications
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      logger.i(message.toString());
       dev.log("Message opened from background: ${message.notification?.title}");
       NotificationUtil.showNotification(message); // Show notification
       String? targetPage = message.data['navigateTo'];
@@ -47,15 +54,12 @@ class FirebaseUtil {
       // Implement retry mechanism if needed
     }
 
-    // Subscribe to a topic if needed
-    _firebaseMessaging.subscribeToTopic('news');
+    // Subscribe to the user's specific topic
+    _firebaseMessaging.subscribeToTopic('user_6728cede4cfc0602c012ee14_notifications');
   }
 
   // Handle background message processing
   static Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-    // Handle background messages here.
-    // notification()
-    //     .showNotification(title: '${message.notification?.title}', body: '${message.notification?.body}');
     dev.log("Handling background message: ${message.notification?.title}");
     NotificationUtil.showNotification(message); // Show notification in background
   }
