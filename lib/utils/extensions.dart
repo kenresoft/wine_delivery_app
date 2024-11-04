@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'helpers.dart';
 
@@ -151,4 +152,14 @@ extension StringExtensions on String? {
   bool get isNullOrEmpty {
     return this == null || this!.isEmpty;
   }
+}
+
+extension ContextExtension on BuildContext {
+  bool get current => ModalRoute.of(this)?.isCurrent == true;
+}
+
+extension IconExtension on IconData {
+  Icon get icon => Icon(this, size: 22);
+
+  FaIcon get ic => FaIcon(this, size: 18);
 }
