@@ -9,12 +9,23 @@ import 'category_grid.dart';
 import 'featured_wine.dart';
 import 'top_picks.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     //productManager.getAllProducts();
+
     return Scaffold(
       appBar: _buildAppBar(context),
       body: const SingleChildScrollView(
@@ -36,9 +47,11 @@ class HomeScreen extends StatelessWidget {
   }
 
   AppBar _buildAppBar(BuildContext context) {
-    context.read<CartBloc>().add(GetCartItems());
+    //context.read<CartBloc>().add(const GetCartItems());
+    ///todo: create a bloc for item count
     return AppBar(
-      title: const Text('Wine Delivery'),
+      title: const Text('Home'),
+      automaticallyImplyLeading: false,
       actions: [
         IconButton(
           icon: const Icon(Icons.login),
@@ -59,17 +72,17 @@ class HomeScreen extends StatelessWidget {
         GestureDetector(
           onTap: () => BlocProvider.of<NavigationBloc>(context).add(const PageTapped(2)),
           child: SizedBox(
-            width: 50,
-            height: 50,
+            width: 50.r,
+            height: 50.r,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(Icons.shopping_cart, size: 24.r, color: const Color(0xff383838)),
-                Positioned(
+                Icon(Icons.shopping_cart, size: 24.r),
+                /*Positioned(
                   right: 0,
                   top: 0,
                   child: _buildCartBadge(context),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -84,8 +97,8 @@ class HomeScreen extends StatelessWidget {
         if (state is CartLoaded) {
           return Container(
             alignment: Alignment.center,
-            width: 16.w,
-            height: 16.w,
+            width: 16.r,
+            height: 16.r,
             padding: const EdgeInsets.all(1),
             decoration: BoxDecoration(
               color: const Color(0xffBD7879),
