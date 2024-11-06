@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../bloc/carousel/carousel_bloc.dart';
+import '../../utils/themes.dart';
 
 class FeaturedWinesCarousel extends StatefulWidget {
   const FeaturedWinesCarousel({super.key});
@@ -49,18 +51,18 @@ class _FeaturedWinesCarouselState extends State<FeaturedWinesCarousel> {
     controller.animateTo(itemIndex * itemWidth, duration: animationDuration, curve: Curves.easeInOut);
   }
 
-  void tapCallback(int value) {
+/*  void tapCallback(int value) {
     carouselBloc.add(CarouselTap(value: value + 1));
     _animateCarouselTo(value + 1);
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 200),
+      constraints: BoxConstraints(maxHeight: 200.r),
       child: CarouselView(
         controller: controller,
-        onTap: tapCallback,
+        // onTap: tapCallback,
         itemExtent: itemWidth,
         shrinkExtent: 100,
         shape: RoundedRectangleBorder(
@@ -103,16 +105,16 @@ class WineCard extends StatelessWidget {
                   return Text(
                     '$name ${state.currentItem + 1}',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
+                      color: colorScheme(context).tertiary,
+                      fontSize: 24.r,
                       fontWeight: FontWeight.bold,
-                      shadows: [
+                      /*shadows: [
                         Shadow(
-                          blurRadius: 6.0,
-                          color: Colors.black.withOpacity(0.7),
+                          blurRadius: 0.0,
+                          color: colorScheme(context).primary.withOpacity(0.7),
                           offset: const Offset(2.0, 2.0),
                         ),
-                      ],
+                      ],*/
                     ),
                   );
                 }
