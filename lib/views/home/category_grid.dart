@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/utils/extensions.dart';
 
-import '../../model/enums/wine_category.dart';
-import '../product/category/products_category_screen.dart';
+import '../../utils/enums.dart';
+import '../../utils/themes.dart';
+import '../category/products_category_screen.dart';
 
 class CategoryGrid extends StatefulWidget {
   const CategoryGrid({super.key});
@@ -22,23 +25,23 @@ class _CategoryGridState extends State<CategoryGrid> {
       children: [
         Row(
           children: [
-            const Text(
+            Text(
               'Categories',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20.r, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 5),
-            Icon(Icons.category_rounded, color: Colors.amber[800]),
+            SizedBox(width: 5.w),
+            Icon(Icons.category_rounded, color: colorScheme(context).tertiary),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 3 / 2,
+            mainAxisSpacing: 10.r,
+            crossAxisSpacing: 10.r,
+            childAspectRatio: 3.w / 2.h,
           ),
           itemCount: displayedCategories.length,
           itemBuilder: (context, index) {
@@ -55,15 +58,16 @@ class _CategoryGridState extends State<CategoryGrid> {
               ),
               child: Card(
                 elevation: 4,
+                // color: color(context).surfaceTintColor,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(category.icon, size: 50, color: Colors.amber[800]),
-                    const SizedBox(height: 10),
+                    Icon(category.icon, size: 50.r, color: color(context).onSurfaceTextColor),
+                    SizedBox(height: 10.h),
                     Text(
                       category.displayName,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16.r, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -71,7 +75,7 @@ class _CategoryGridState extends State<CategoryGrid> {
             );
           },
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         TextButton(
           onPressed: () {
             setState(() {
