@@ -12,7 +12,7 @@ class CacheEntry<T> {
   });
 
   /// Factory method to create a CacheEntry with default expiration
-  factory CacheEntry.withDefaultExpiration(T data, {int expirationInSeconds = 60 * 60}) {
+  factory CacheEntry.withDefaultExpiration(T data, {int expirationInSeconds = 60 * 60 * 24 * 3}) {
     // factory CacheEntry.withDefaultExpiration(T data, {int expirationInSeconds = 3600}) {
     final now = DateTime.now();
     return CacheEntry(
