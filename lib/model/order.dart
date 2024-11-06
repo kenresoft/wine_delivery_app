@@ -2,31 +2,32 @@ import 'package:equatable/equatable.dart';
 import 'package:wine_delivery_app/utils/enums.dart';
 
 import '../utils/extensions.dart';
+import '../utils/globals.dart';
 import 'order_item.dart';
 import 'payment_details.dart';
 
 class Order extends Equatable {
-  final String id;
-  final String userId;
-  final List<OrderItem> items;
-  final String shipmentId;
-  final num subTotal;
-  final num totalCost;
-  final OrderStatus status;
-  final String createdAt;
+  final String? id;
+  final String? userId;
+  final List<OrderItem>? items;
+  final String? shipmentId;
+  final double? subTotal;
+  final double? totalCost;
+  final OrderStatus? status;
+  final String? createdAt;
   final PaymentDetails? paymentDetails;
   final String? note;
   final String? trackingNumber;
 
   const Order({
-    required this.id,
-    required this.userId,
-    required this.items,
-    required this.shipmentId,
-    required this.subTotal,
-    required this.totalCost,
-    required this.status,
-    required this.createdAt,
+    this.id,
+    this.userId,
+    this.items,
+    this.shipmentId,
+    this.subTotal,
+    this.totalCost,
+    this.status,
+    this.createdAt,
     this.paymentDetails,
     this.note,
     this.trackingNumber,
@@ -36,13 +37,13 @@ class Order extends Equatable {
     return Order(
       id: json['_id'],
       userId: json['user'],
-      items: (json['items'] as List).map((item) => OrderItem.fromJson(item)).toList(),
+      items: json['items'] != null ? (json['items'] as List).map((item) => OrderItem.fromJson(item)).toList() : null,
       shipmentId: json['shipment'],
-      subTotal: json['subTotal'],
-      totalCost: json['totalCost'],
-      status: OrderStatusExtension.fromString(json['status']),
+      subTotal: toDouble(json['subTotal']),
+      totalCost: toDouble(json['totalCost']),
+      status: json['status'] != null ? OrderStatusExtension.fromString(json['status']) : null,
       createdAt: json['createdAt'],
-      paymentDetails: PaymentDetails.fromJson(json['paymentDetails']),
+      paymentDetails: json['paymentDetails'] != null ? PaymentDetails.fromJson(json['paymentDetails']) : null,
       note: json['note'],
       trackingNumber: json['trackingNumber'],
     );
@@ -52,11 +53,11 @@ class Order extends Equatable {
     return {
       '_id': id,
       'user': userId,
-      'items': items.map((item) => item.toJson()).toList(),
+      'items': items?.map((item) => item.toJson()).toList(),
       'shipment': shipmentId,
       'subTotal': subTotal,
       'totalCost': totalCost,
-      'status': status.toShortString(),
+      'status': status?.toShortString(),
       'createdAt': createdAt,
       'paymentDetails': paymentDetails?.toJson(),
       'note': note,
