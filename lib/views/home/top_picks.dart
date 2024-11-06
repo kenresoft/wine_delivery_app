@@ -1,4 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wine_delivery_app/utils/helpers.dart';
+
+import '../../utils/themes.dart';
 
 class TopPicksSection extends StatefulWidget {
   const TopPicksSection({super.key});
@@ -28,16 +34,17 @@ class _TopPicksSectionState extends State<TopPicksSection> with TickerProviderSt
     }).toList();
 
     _animations = _controllers.map((controller) {
-      return Tween<double>(begin: 0.75, end: 1.15).animate(
+      return Tween<double>(begin: 0, end: 1).animate(
         CurvedAnimation(parent: controller, curve: Curves.easeInOut),
       );
     }).toList();
 
     // Start each animation with a varying delay
     for (int i = 0; i < _controllers.length; i++) {
-      Future.delayed(Duration(seconds: i * 12), () {
-        _controllers[i].repeat(reverse: true);
-        // TODO: Unhandled Exception: Null check operator used on a null value - Error keeps throwing here
+      Future.delayed(Duration(seconds: i * 1), () {
+        if (mounted) {
+          _controllers[i].repeat(reverse: false);
+        }
       });
     }
   }
@@ -57,82 +64,93 @@ class _TopPicksSectionState extends State<TopPicksSection> with TickerProviderSt
       children: [
         Row(
           children: [
-            const Text(
+            Text(
               'Top Picks',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20.r, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 5),
-            Icon(Icons.push_pin_rounded, color: Colors.amber[800]),
+            SizedBox(width: 5.w),
+            Icon(Icons.push_pin_rounded, color: colorScheme(context).tertiary),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: topPicks.length,
           itemBuilder: (context, index) {
             final item = topPicks[index];
+            final controller = _controllers[index];
             final animation = _animations[index];
-            return Container(
-              height: 130,
-              decoration: BoxDecoration(
-                color: Colors.orangeAccent,
-                borderRadius: BorderRadius.circular(70),
+            return Card(
+              elevation: 1,
+              // color: colorScheme(context).surfaceContainerHighest,
+              color: color(context).surfaceTintColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(70.0),
               ),
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      AnimatedBuilder(
-                        animation: animation,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: animation.value,
-                            child: child,
-                          );
-                        },
-                        child: Image.asset(
-                          item['image'],
-                          width: 80,
-                          height: 110,
-                          fit: BoxFit.contain,
+              child: Container(
+                height: 130.h,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AnimatedBuilder(
+                      animation: controller,
+                      builder: (context, child) {
+                        return Container(
+                          height: 130.h,
+                          width: 130.h,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: colorScheme(context).tertiary.withOpacity(0.3),
+                            image: const DecorationImage(
+                              image: AssetImage('assets/images/wine-bg.png'),
+                              fit: BoxFit.cover,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.identity()..rotateY(controller.value * pi * 2),
+                            child: Image.asset(
+                              item['image'],
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Flexible(
+                      flex: 3,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          item['name'],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: const BoxDecoration(
-                          color: Color(0x6669625d),
-                          shape: BoxShape.circle,
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        margin: EdgeInsets.only(right: 20.w),
+                        child: Text(
+                          '\$${item['price'].toStringAsFixed(2)}',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme(context).tertiary),
                         ),
                       ),
-                    ],
-                  ),
-                  Container(
-                    width: 120,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      item['name'],
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
-                  ),
-                  Container(
-                    width: 60,
-                    alignment: Alignment.centerRight,
-                    margin: const EdgeInsets.only(right: 20),
-                    child: Text(
-                      '\$${item['price'].toStringAsFixed(2)}',
-                      style: const TextStyle(fontSize: 18, color: Colors.green),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
