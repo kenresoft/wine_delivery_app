@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,9 +11,8 @@ import '../../../model/product.dart';
 import '../../../repository/order_repository.dart';
 import '../../../repository/product_repository.dart';
 import '../../../utils/helpers.dart';
-import 'order_confirmation_screen.dart';
-import 'products_stack_view.dart';
-import 'shipping_form_address.dart';
+import '../user/shipping_form_address.dart';
+import 'widgets/products_stack_view.dart';
 
 class CheckOutScreen extends StatefulWidget {
   final Order order;
@@ -32,7 +28,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _loadProducts();
   }
 
   @override
@@ -47,19 +42,15 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Check if the navigation triggered a dependency change
-    if (ModalRoute.of(context)?.isCurrent != true) {
-      //
-    } else {
-      // Resume stateful operations here
-      context.read<ShipmentBloc>().add(GetShipmentDetailsById(widget.order.shipmentId));
+    if (context.current == true) {
+      _loadProducts();
     }
   }
 
   void _loadProducts() {
-    final productIds = widget.order.items.map((item) => item.productId).toList();
-    context.read<ProductBloc>().add(GetProductsByIds(productIds));
-    context.read<ShipmentBloc>().add(GetShipmentDetailsById(widget.order.shipmentId));
+    final productIds = widget.order.items?.map((item) => item.productId).toList();
+    context.read<ProductBloc>().add(GetProductsByIds(productIds!));
+    context.read<ShipmentBloc>().add(GetShipmentDetailsById(widget.order.shipmentId!));
   }
 
   @override
@@ -78,9 +69,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
         title: Text('Checkout'),
       ),
       body: SingleChildScrollView(
+        physics: isAndroid || isWindows ? ClampingScrollPhysics() : BouncingScrollPhysics(),
         child: Column(
           children: [
-            _buildHeader(orderItems, order, status.toShortString()),
+            _buildHeader(orderItems!, order, status!.toShortString()),
             _buildOrderSummary(orderItems),
             _buildOrderDetails(context, order),
             _buildDeliveryInformation(context, order),
@@ -217,7 +209,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
 
                     if (product == Product()) {
                       // Handle the case where the product is not found -- We simply Refresh the state
-                      context.read<ShipmentBloc>().add(GetShipmentDetailsById(widget.order.shipmentId));
+                      context.read<ShipmentBloc>().add(GetShipmentDetailsById(widget.order.shipmentId!));
                       return null;
                     }
 
@@ -333,7 +325,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
                           ),
                         ),
                       ),
-                      Flexible(child: Text('\$${order.subTotal.toStringAsFixed(2)}')),
+                      Flexible(child: Text('\$${order.subTotal?.toStringAsFixed(2)}')),
                     ],
                   ),
                   Row(
@@ -375,7 +367,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
                       ),
                       Flexible(
                         child: Text(
-                          '\$${order.totalCost.toStringAsFixed(2)}',
+                          '\$${order.totalCost?.toStringAsFixed(2)}',
                           maxLines: 1,
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -553,15 +545,15 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
   Future<void> _placeOrder(Order order, BuildContext context) async {
     // Fetch all products concurrently using Future.wait
     final items = await Future.wait(
-      order.items.map((item) async {
+      order.items!.map((item) async {
         final product = await productRepository.getProductById(item.productId);
         return OrderProductItem(product: product, quantity: item.quantity);
       }).toList(),
     );
 
-    if (Platform.isIOS || Platform.isAndroid || kIsWeb) {
+    if (isIOS || isAndroid || isWeb) {
       await orderRepository.makePurchase(
-        orderId: order.id,
+        orderId: order.id!,
         description: "_description",
         currency: "usd",
         // currency: "gpb", // currency: "ngn", // currency: "euro"
@@ -569,45 +561,19 @@ class _CheckOutScreenState extends State<CheckOutScreen> with WidgetsBindingObse
         callback: (bool success, {String? message}) {
           if (success) {
             // Show success message and navigate to order confirmation screen
-            snackBar(context, 'Order created successfully!');
+            snackBar('Order created successfully!');
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return OrderConfirmationScreen(
-                    order: order,
-                    estimatedDelivery: order.createdAt,
-                    shippingAddress: order.shipmentId,
-                    totalCost: order.totalCost,
-                    orderedItems: items,
-                  );
-                },
-              ),
-            );
+            Nav.push(Routes.orderConfirmation, arguments: {'order': order, 'items': items});
           } else {
-            snackBar(context, message ?? 'Failed to create order');
+            snackBar(message ?? 'Failed to create order');
           }
         },
       );
     } else {
       // Show success message and navigate to order confirmation screen
-      snackBar(context, 'Order created successfully!');
+      snackBar('Order created successfully!');
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return OrderConfirmationScreen(
-              order: order,
-              estimatedDelivery: order.createdAt,
-              shippingAddress: order.shipmentId,
-              totalCost: order.totalCost,
-              orderedItems: items,
-            );
-          },
-        ),
-      );
+      Nav.push(Routes.orderConfirmation, arguments: {'order': order, 'items': items});
     }
   }
 }
