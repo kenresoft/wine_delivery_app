@@ -40,7 +40,6 @@ class NotificationUtil {
 
   // Function to display notification when app is active
   static Future<void> showNotification(RemoteMessage message) async {
-    logger.i(message.toString());
     final data = message.data;
     final payload = data['navigateTo']; // Custom payload for navigation if specified
 
