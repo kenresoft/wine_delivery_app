@@ -24,7 +24,6 @@ class FirebaseUtil {
 
     // Handle foreground notifications
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      logger.i('-----');
       logger.i(message.data);
       dev.log("Message received in foreground: ${message.notification?.title}");
       NotificationUtil.showNotification(message); // Show notification
