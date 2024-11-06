@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart'; // Import Lottie package
 import 'package:wine_delivery_app/utils/themes.dart';
 
 import '../../utils/preferences.dart';
-import '../../utils/utils.dart';
+import '../../utils/helpers.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -94,9 +94,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppTheme(context).themeData.colorScheme.tertiary,
-              AppTheme(context).themeData.colorScheme.surface,
-              AppTheme(context).themeData.colorScheme.tertiary,
+              colorScheme(context).tertiary,
+              colorScheme(context).surface,
+              colorScheme(context).tertiary,
             ], // Background gradient
           ),
         ),
