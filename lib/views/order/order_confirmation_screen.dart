@@ -1,26 +1,26 @@
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/views/product/order/order_tracking_screens.dart';
 
 import '../../../bloc/shipment/shipment_bloc.dart';
 import '../../../model/order.dart';
 import '../../../model/order_product_item.dart';
 import '../../../utils/themes.dart';
+import 'order_tracking_screens.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
   final Order order;
-  final String estimatedDelivery;
+  /*final String estimatedDelivery;
   final String shippingAddress;
-  final num totalCost;
+  final num totalCost;*/
   final List<OrderProductItem> orderedItems;
 
   const OrderConfirmationScreen({
     super.key,
     required this.order,
-    required this.estimatedDelivery,
+    /*required this.estimatedDelivery,
     required this.shippingAddress,
-    required this.totalCost,
+    required this.totalCost,*/
     required this.orderedItems,
   });
 
@@ -148,7 +148,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '\$${totalCost.toStringAsFixed(2)}',
+                        '\$${order.totalCost?.toStringAsFixed(2)}',
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme(context).tertiary),
                       ),
                     ],
@@ -207,7 +207,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Text('${estimatedDelivery}'),
+                      Text(order.createdAt!),
                     ],
                   ),
                 ),
