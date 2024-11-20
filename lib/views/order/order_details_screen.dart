@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../bloc/order/order_bloc.dart';
-import 'order_details_section.dart';
+import 'widgets/order_details_section.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final String orderId;

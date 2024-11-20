@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/model/order.dart';
-import 'package:wine_delivery_app/repository/socket_repository.dart';
-import 'package:wine_delivery_app/utils/enums.dart';
-import 'package:wine_delivery_app/utils/extensions.dart';
+import 'package:vintiora/model/order.dart';
+import 'package:vintiora/repository/socket_repository.dart';
+import 'package:vintiora/utils/enums.dart';
+import 'package:vintiora/utils/extensions.dart';
 
 import '../../../bloc/order/order_bloc.dart';
 import '../../../utils/themes.dart';
@@ -32,7 +32,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OrderBloc()..add(GetOrderById(widget.order.id)),
+      create: (context) => OrderBloc()..add(GetOrderById(widget.order.id!)),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Order Tracking'),
@@ -44,7 +44,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
               if (state is OrderInitial) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is OrderLoaded) {
-                return _buildTrackingContent(context, state.order.status, state.orderProgress);
+                return _buildTrackingContent(context, state.order.status!, state.orderProgress);
               } else if (state is OrderError) {
                 return _buildErrorState(state.message);
               } else {

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/utils/enums.dart';
+import 'package:vintiora/utils/enums.dart';
+import 'package:vintiora/utils/extensions.dart';
 
 import '../../../bloc/order/order_bloc.dart';
 import '../../../utils/globals.dart';
-import 'order_card.dart';
 import 'order_details_screen.dart';
+import 'widgets/order_card.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   const OrderHistoryScreen({super.key});
@@ -21,7 +22,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_onScroll);
-    BlocProvider.of<OrderBloc>(context).add(GetUserOrders());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (context.current) {
+      BlocProvider.of<OrderBloc>(context).add(GetUserOrders());
+    }
   }
 
   @override
@@ -103,14 +111,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OrderDetailsScreen(orderId: order.id),
+                            builder: (context) => OrderDetailsScreen(orderId: order.id!),
                           ),
                         ),
                       );
                     },
                   );
                 } else if (state is OrderError) {
-                  return Center(child: Text('Error: ${state.message}'));
+                  return Center(child: Text(state.message));
                 }
                 return const Center(child: CircularProgressIndicator());
               },
