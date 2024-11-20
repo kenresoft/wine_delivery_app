@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:wine_delivery_app/model/cart_item.dart';
-import 'package:wine_delivery_app/utils/preferences.dart';
+import 'package:vintiora/model/cart_item.dart';
+import 'package:vintiora/utils/preferences.dart';
 
 import '../../repository/cart_repository.dart';
 
@@ -57,8 +57,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void _throttleIncrement(IncrementCartItem event, Emitter<CartState> emit) async {
     try {
       final cartItems = await cartRepository.incrementCartItem(event.itemId);
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
-      emit(CartLoaded(cartItems: cartItems, totalPrice: totalPrice));
+      // final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
+      emit(CartLoaded(cartItems: cartItems, totalPrice: 0));
     } catch (e) {
       emit(CartError(e.toString()));
     }
@@ -76,12 +76,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void getCartItems(GetCartItems event, Emitter<CartState> emit) async {
     try {
       final cartItems = await cartRepository.getCartItems();
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: event.couponCode);
+      // final totalPrice = await cartRepository.getTotalPrice(couponCode: event.couponCode);
       emit(
         CartLoaded(
           cartItems: cartItems,
-          totalPrice: totalPrice,
-          couponCode: event.couponCode,
+          totalPrice: 0,
         ),
       );
     } catch (e) {
@@ -92,9 +91,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void addToCart(AddToCart event, Emitter<CartState> emit) async {
     try {
       final cartItems = await cartRepository.addToCart(event.productId, event.quantity, event.cb);
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
+      // final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
       promoCode = '';
-      emit(CartLoaded(cartItems: cartItems, totalPrice: totalPrice));
+      emit(CartLoaded(cartItems: cartItems, totalPrice: 0));
     } catch (e) {
       emit(CartError(e.toString()));
     }
@@ -112,11 +111,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void removeFromCart(RemoveFromCart event, Emitter<CartState> emit) async {
     try {
       final cartItems = await cartRepository.removeFromCart(event.itemId);
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
+      // final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
       emit(
         CartLoaded(
           cartItems: cartItems,
-          totalPrice: totalPrice,
+          totalPrice: 0,
         ),
       );
     } catch (e) {
@@ -127,11 +126,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void removeAllFromCart(RemoveAllFromCart event, Emitter<CartState> emit) async {
     try {
       final cartItems = await cartRepository.removeAllFromCart();
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
+      // final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
       emit(
         CartLoaded(
           cartItems: cartItems,
-          totalPrice: totalPrice,
+          totalPrice: 0,
         ),
       );
     } catch (e) {
@@ -139,37 +138,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-/*  void incrementCartItem(IncrementCartItem event, Emitter<CartState> emit) async {
-    try {
-      // Optimistically update the UI before the async call completes
-      final currentState = state;
-      if (currentState is CartLoaded) {
-        final updatedCartItems = currentState.cartItems.map((item) {
-          if (item.product!.id == event.itemId) {
-            return item.copyWith(quantity: item.quantity! + 1);  // Optimistic quantity update
-          }
-          return item;
-        }).toList();
-        emit(CartLoaded(cartItems: updatedCartItems, totalPrice: currentState.totalPrice));
-      }
-
-      // Proceed with the actual repository call
-      final cartItems = await cartRepository.incrementCartItem(event.itemId);
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
-      emit(CartLoaded(cartItems: cartItems, totalPrice: totalPrice));
-    } catch (e) {
-      emit(CartError(e.toString()));
-    }
-  }*/
-
   void incrementCartItem(IncrementCartItem event, Emitter<CartState> emit) async {
     try {
       final cartItems = await cartRepository.incrementCartItem(event.itemId);
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
+      // final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
       emit(
         CartLoaded(
           cartItems: cartItems,
-          totalPrice: totalPrice,
+          totalPrice: 0,
         ),
       );
     } catch (e) {
@@ -180,11 +156,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void decrementCartItem(DecrementCartItem event, Emitter<CartState> emit) async {
     try {
       final cartItems = await cartRepository.decrementCartItem(event.itemId);
-      final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
+      // final totalPrice = await cartRepository.getTotalPrice(couponCode: promoCode);
       emit(
         CartLoaded(
           cartItems: cartItems,
-          totalPrice: totalPrice,
+          totalPrice: 0,
         ),
       );
     } catch (e) {

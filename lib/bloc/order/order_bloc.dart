@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/model/order.dart';
-import 'package:wine_delivery_app/repository/order_repository.dart';
+import 'package:vintiora/model/order.dart';
+import 'package:vintiora/repository/order_repository.dart';
 
 import '../../model/order_product_item.dart';
 import '../../repository/socket_repository.dart';
