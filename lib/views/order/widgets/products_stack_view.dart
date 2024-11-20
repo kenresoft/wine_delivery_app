@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vintiora/utils/helpers.dart';
 
-import '../../bloc/product/product_bloc.dart';
-import '../../model/order_item.dart';
-import '../../model/product.dart';
+import '../../../bloc/product/product_bloc.dart';
+import '../../../model/order_item.dart';
+import '../../../model/product.dart';
 
 class ProductsStackView extends StatelessWidget {
   const ProductsStackView({
@@ -47,8 +48,8 @@ class ProductsStackView extends StatelessWidget {
         Positioned(
           left: 0,
           top: 0,
-          child: Image.asset(
-            'assets/images/${products[0].image}',
+          child: Image(
+            image: Utils.networkImage('${products[0].image}'),
             width: 130,
             height: 130,
             fit: BoxFit.contain,
@@ -91,8 +92,8 @@ class ProductsStackView extends StatelessWidget {
           child: Transform(
             origin: const Offset(65, 130),
             transform: Matrix4.identity()..rotateZ(angle),
-            child: Image.asset(
-              'assets/images/${products[index].image}',
+            child: Image(
+              image: Utils.networkImage('${products[index].image}'),
               width: 130,
               height: 130,
               fit: BoxFit.contain,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../model/order.dart';
+import '../../../../model/order.dart';
 
 class OrderDetailsSection extends StatelessWidget {
   final Order order;
@@ -21,11 +21,11 @@ class OrderDetailsSection extends StatelessWidget {
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: order.items.length,
+          itemCount: order.items?.length,
           itemBuilder: (context, index) {
-            final item = order.items[index];
+            final item = order.items?[index];
             return ListTile(
-              title: Text(item.productId),
+              title: Text(item!.productId),
               subtitle: Text('Qty: ${item.quantity} | Price: \$${item.quantity}'),
               trailing: Text('\$${item.productId}'),
             );

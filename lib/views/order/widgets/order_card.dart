@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../model/order.dart';
+import '../../../../model/order.dart';
+import '../../../utils/extensions.dart';
 
 class OrderCard extends StatelessWidget {
   final Order order;
@@ -17,9 +19,9 @@ class OrderCard extends StatelessWidget {
         child: ListTile(
           title: Text('Order #${order.id}'),
           subtitle: Text(
-            'Date: ${order.createdAt}\nTotal: \$${order.totalCost.toStringAsFixed(2)}',
+            'Date: ${order.createdAt}\nTotal: \$${order.totalCost?.toStringAsFixed(2)}',
           ),
-          trailing: const Icon(Icons.arrow_forward),
+          trailing: FontAwesomeIcons.chevronRight.ic,
         ),
       ),
     );
