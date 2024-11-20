@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:extensionresoft/extensionresoft.dart';
-import 'package:wine_delivery_app/utils/preferences.dart';
+import 'package:vintiora/utils/preferences.dart';
 
 
 part 'network_event.dart';

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:wine_delivery_app/repository/user_repository.dart';
+import 'package:vintiora/repository/user_repository.dart';
 
 import '../../model/profile.dart';
 
