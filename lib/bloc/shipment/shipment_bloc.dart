@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wine_delivery_app/model/shipment.dart';
-import 'package:wine_delivery_app/repository/shipment_repository.dart';
+import 'package:vintiora/model/shipment.dart';
+import 'package:vintiora/repository/shipment_repository.dart';
 
 part 'shipment_event.dart';
 part 'shipment_state.dart';
