@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vintiora/core/config/app_config.dart';
+import 'package:vintiora/core/providers/providers.dart';
+import 'package:vintiora/core/storage/preferences.dart';
 
 import 'app.dart';
-import 'bloc/providers.dart';
-import 'utils/helpers.dart';
+import 'core/utils/helpers.dart';
+import 'di.dart';
 
-void main() async {
+Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     FlutterError.onError = _handleFlutterError;
@@ -31,20 +35,25 @@ void _handleFlutterError(FlutterErrorDetails details) {
 
 /// Initializes the app configuration and runs the app
 Future<void> _initializeApp() async {
-  await loadConfig(
-    done: (error) {
+  await Config.load(
+    done: (error) async {
       if (error != null) {
         logger.e('Failed to load app configuration: $error');
         isWindows || isWeb ? null : throw error;
       }
       logger.d('App initialized successfully with no errors');
-      _runApp();
+      // _runApp();
+      final injector = await DependencyInjector.create(child: const MyApp());
+      logger.w(storage);
+      runApp(injector);
     },
   );
 }
 
 /// Runs the app without initialization errors
 void _runApp() {
+  logger.w(storage);
+
   runApp(
     MultiBlocProvider(
       providers: Providers.blocProviders,

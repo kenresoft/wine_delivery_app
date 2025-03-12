@@ -1,13 +1,19 @@
 import 'package:app_links/app_links.dart';
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wine_delivery_app/repository/product_repository.dart';
-
-import 'bloc/network/network_bloc.dart';
-import 'bloc/theme/theme_cubit.dart';
-import 'utils/helpers.dart';
+import 'package:vintiora/core/config/app_config.dart';
+import 'package:vintiora/core/network/bloc/network_bloc.dart';
+import 'package:vintiora/core/router/app_router.dart';
+import 'package:vintiora/core/router/nav.dart';
+import 'package:vintiora/core/router/routes.dart';
+import 'package:vintiora/core/storage/preferences.dart';
+import 'package:vintiora/core/theme/app_theme.dart';
+import 'package:vintiora/core/theme/bloc/theme_bloc.dart';
+import 'package:vintiora/core/utils/constants.dart';
+import 'package:vintiora/features/product/data/repositories/product_repository.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, this.initializationError});
@@ -40,6 +46,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       context.read<NetworkBloc>().add(StartNetworkListening());
       _networkListeningStarted = true;
     }
+    eventsLoadedBefore = false;
+    Config.loadEvents(context);
   }
 
   @override
@@ -69,7 +77,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<void> retryInitialization() async {
     try {
-      await loadConfig(
+      await Config.load(
         done: (error) {
           if (error == null && mounted) {
             setState(() => _currentError = null);
@@ -124,40 +132,32 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       designSize: const Size(360, 825),
       minTextAdapt: true,
       ensureScreenSize: true,
+      builder: (context, child) {
+        return child!;
+      },
       child: Directionality(
         textDirection: TextDirection.ltr,
-        child: Stack(
-          children: [
-            BlocListener<NetworkBloc, NetworkState>(
-              listener: (context, state) {
-                if (state is BannerVisible) {
-                  // state.message.toast;
-                }
-              },
-              child: BlocBuilder<ThemeCubit, ThemeMode>(
-                builder: (context, state) {
-                  return buildMaterialApp(currentContext, state);
-                },
-              ),
-            ),
-          ],
+        child: GestureDetector(
+          onTap: () => primaryFocus?.unfocus(),
+          child: BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, state) {
+              return buildMaterialApp(currentContext, state);
+            },
+          ),
         ),
       ),
     );
   }
 
-  MaterialApp buildMaterialApp(BuildContext mainContext, ThemeMode themeMode) {
-    final themeData = _currentError == null ? color(mainContext).themeData : ThemeData.light();
-
+  MaterialApp buildMaterialApp(BuildContext mainContext, ThemeState themeState) {
     return MaterialApp(
-      title: 'Vintiora',
-      debugShowCheckedModeBanner: false,
-      theme: themeData,
-      darkTheme: themeData,
-      themeMode: themeMode,
+      title: Constants.appName,
+      theme: lightTheme(context),
+      darkTheme: darkTheme(context),
+      themeMode: themeState.themeMode,
       navigatorKey: Nav.navigatorKey,
-      navigatorObservers: [Nav.routeObserver],
-      initialRoute: _currentError == null ? Routes.splash : Routes.error,
+      navigatorObservers: [Nav.routeObserver, Nav.stateObserver],
+      initialRoute: _currentError == null ? Routes.splash.path : Routes.error.path,
       onGenerateRoute: (settings) {
         return AppRouter().generateRoute(
           settings,
@@ -165,6 +165,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           onRetry: retryInitialization,
         );
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 
