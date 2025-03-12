@@ -1,1 +1,0 @@
-typedef PurchaseCallback = void Function(bool success, {String? message});
