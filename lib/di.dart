@@ -1,7 +1,7 @@
 // di.dart
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vintiora/core/network/dio_client.dart';
 import 'package:vintiora/core/providers/providers.dart';
 
 import 'features/auth/data/datasources/auth_local_data_source.dart';
@@ -46,11 +46,10 @@ class DependencyInjector extends StatelessWidget {
   });
 
   static Future<DependencyInjector> create({required Widget child}) async {
-    final dio = Dio();
-
     // Create Data Sources using Dio
-    final authRemoteDataSource = AuthRemoteDataSourceImpl(dio: dio);
     final authLocalDataSource = AuthLocalDataSourceImpl();
+    final dioClient = DioClient(authLocalDataSource);
+    final authRemoteDataSource = AuthRemoteDataSourceImpl(dioClient: dioClient);
 
     // Create Repository
     final AuthRepository authRepository = AuthRepositoryImpl(
