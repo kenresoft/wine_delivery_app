@@ -43,7 +43,9 @@ Future<void> _initializeApp() async {
       }
       logger.d('App initialized successfully with no errors');
       // _runApp();
-      final injector = await DependencyInjector.create(child: const MyApp());
+      final injector = await DependencyInjector.create(
+        child: const MyApp(),
+      );
       logger.w(storage);
       runApp(injector);
     },
@@ -51,7 +53,7 @@ Future<void> _initializeApp() async {
 }
 
 /// Runs the app without initialization errors
-void _runApp() {
+/*void _runApp() {
   logger.w(storage);
 
   runApp(
@@ -60,7 +62,7 @@ void _runApp() {
       child: const MyApp(),
     ),
   );
-}
+}*/
 
 /// Runs the app with an initialization error state
 void _runAppWithError(Object error) {
