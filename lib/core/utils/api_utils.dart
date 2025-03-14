@@ -1,3 +1,4 @@
+/*
 import 'package:dio/dio.dart';
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:vintiora/core/network/dio_client.dart';
@@ -42,3 +43,4 @@ Future<Response> _getResponse(
     RequestMethod.delete => await _dio.delete(endpoint, options: Options(headers: headers), data: body),
   };
 }
+*/

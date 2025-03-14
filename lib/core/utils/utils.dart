@@ -9,7 +9,6 @@ import 'package:vintiora/core/error/exceptions.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/core/storage/preferences.dart';
-import 'package:vintiora/core/utils/api_utils.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/shared/widgets/custom_confirmation_dialog.dart';
 
@@ -40,7 +39,7 @@ class Utils {
     );
   }
 
-  static Future<void> authCheck(BuildContext context) async {
+  /*static Future<void> authCheck(BuildContext context) async {
     final String endpoint = '${Constants.baseUrl}/api/auth/profile';
     Response response = Response(requestOptions: RequestOptions());
 
@@ -72,7 +71,7 @@ class Utils {
     } on DioException catch (e) {
       throw e.message.toString();
     }
-  }
+  }*/
 
   static Future<bool?> dialog(
     BuildContext context, {
