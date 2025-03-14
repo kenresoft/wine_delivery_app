@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:vintiora/core/network/cache_service.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_interceptor.dart';
-import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
 
 class DioClient {
   final Dio dio;
-  final AuthLocalDataSource localDataSource;
+  final CacheService cacheService;
 
-  DioClient(this.localDataSource)
+  DioClient(this.cacheService)
       : dio = Dio(
           BaseOptions(
             baseUrl: '${Constants.baseUrl}/api',
@@ -20,32 +20,7 @@ class DioClient {
             },
           ),
         ) {
-    dio.interceptors.add(AuthInterceptor(dio));
-    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true)); // Add a log interceptor for debugging
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onResponse: (response, handler) async {
-          // Cache the response
-          await localDataSource.cacheResponse(response.requestOptions.path, response.data);
-          return handler.next(response);
-        },
-        onRequest: (options, handler) async {
-          //Check if the response is cached.
-          final cachedResponse = await localDataSource.getCachedResponse(options.path);
-          cachedResponse.fold(
-            () => handler.next(options), // No cached data, proceed with request
-            (data) => handler.resolve(
-              // Found cached data, resolve immediately
-              Response(
-                requestOptions: options,
-                data: data,
-                statusCode: 200,
-                statusMessage: 'CACHED_RESPONSE',
-              ),
-            ),
-          );
-        },
-      ),
-    );
+    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
+    dio.interceptors.add(AuthInterceptor(dio, cacheService));
   }
 }
