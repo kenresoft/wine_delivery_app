@@ -6,9 +6,8 @@ enum RequestMethod { get, post, put, patch, delete }
 
 class ApiService {
   final DioClient dioClient;
-  final AuthLocalDataSource authLocalDataSource;
 
-  ApiService({required this.dioClient, required this.authLocalDataSource});
+  ApiService({required this.dioClient});
 
   Future<Response> makeRequest(
     String endpoint, {
@@ -16,8 +15,8 @@ class ApiService {
     Map<String, String>? headers,
     dynamic data,
   }) async {
-    final dio = dioClient.dio; // Access Dio instance from DioClient
-    String? accessToken = await authLocalDataSource.getAccessToken();
+    final dio = dioClient.dio;
+    String? accessToken = await dioClient.authLocalDataSource.getAccessToken();
 
     headers ??= {};
     headers['Authorization'] = 'Bearer $accessToken';

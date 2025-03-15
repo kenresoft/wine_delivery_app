@@ -25,8 +25,8 @@ class DependencyInjector extends StatelessWidget {
     // Initialize core dependencies
     final authLocalDataSource = AuthLocalDataSourceImpl();
     final cacheService = CacheServiceImpl();
-    final dioClient = DioClient(cacheService);
-    final apiService = ApiService(dioClient: dioClient, authLocalDataSource: authLocalDataSource);
+    final dioClient = DioClient(cacheService, authLocalDataSource);
+    final apiService = ApiService(dioClient: dioClient);
 
     return DependencyInjector._(
       dioClient: dioClient,
@@ -40,7 +40,7 @@ class DependencyInjector extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         // Core dependencies
-        ...CoreDI.providers(dioClient, apiService),
+        ...CoreDI.providers(/*dioClient, */apiService),
         // Auth
         ...AuthDI.repositories(),
         ...AuthDI.useCases(),

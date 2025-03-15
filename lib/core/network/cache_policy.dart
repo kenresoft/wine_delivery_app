@@ -4,7 +4,7 @@ class CachePolicy {
   // Map endpoints to their cache durations
   static Map<String, Duration> cacheableEndpoints = {
     ApiConstants.profile: Duration(minutes: 10),
-    ApiConstants.checkAuth: Duration(minutes: 5),
+    // ApiConstants.checkAuth: Duration(seconds: 20),
     // '/categories': Duration(hours: 1),
   };
 
