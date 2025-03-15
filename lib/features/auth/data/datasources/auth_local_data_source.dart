@@ -18,10 +18,6 @@ abstract class AuthLocalDataSource {
   Future<String?> getRefreshToken();
 
   Future<void> clearUserData();
-
-/*  Future<void> cacheResponse(String path, data);
-
-  Future<Option<dynamic>> getCachedResponse(String path);*/
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
@@ -77,17 +73,4 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     await LocalStorage.remove(ACCESS_TOKEN_KEY);
     await LocalStorage.remove(REFRESH_TOKEN_KEY);
   }
-
-  /*@override
-  Future<void> cacheResponse(String path, dynamic data) async {
-    await LocalStorage.set<String>(path, jsonEncode(data)); // Serialize data
-  }
-
-  @override
-  Future<Option<dynamic>> getCachedResponse(String path) async {
-    final jsonString = LocalStorage.get<String>(path);
-    return jsonString != null
-        ? some(jsonDecode(jsonString)) // Deserialize and wrap in Some
-        : none(); // Return None if no data
-  }*/
 }

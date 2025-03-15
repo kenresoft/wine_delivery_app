@@ -84,7 +84,7 @@ class AuthRepositoryImpl implements AuthRepository {
       try {
         final refreshToken = await localDataSource.getRefreshToken();
         if (refreshToken != null) {
-          final newAccessToken = await remoteDataSource.refreshToken(refreshToken/* + ' -i'*/);
+          final newAccessToken = await remoteDataSource.refreshToken(refreshToken);
           await localDataSource.cacheTokens(
             AuthTokensModel(
               accessToken: newAccessToken,
@@ -97,6 +97,7 @@ class AuthRepositoryImpl implements AuthRepository {
           await localDataSource.cacheUser(user);
           return Right(user);
         }
+        logger.e('No refresh token available');
         throw Exception('No refresh token available');
       } catch (_) {
         // If even token refresh fails, return cached user if available
