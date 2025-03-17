@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:vintiora/core/error/failures.dart';
 
-import '../../core/failures/failures.dart';
 import '../repositories/auth_repository.dart';
 
 class RegisterUseCase {
