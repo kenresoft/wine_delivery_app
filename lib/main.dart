@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vintiora/core/config/app_config.dart';
 import 'package:vintiora/core/providers/providers.dart';
 import 'package:vintiora/core/storage/preferences.dart';
+import 'package:vintiora/di_setup.dart';
 
 import 'app.dart';
 import 'core/utils/helpers.dart';
@@ -43,9 +44,8 @@ Future<void> _initializeApp() async {
       }
       logger.d('App initialized successfully with no errors');
       // _runApp();
-      final injector = await DependencyInjector.create(
-        child: const MyApp(),
-      );
+      setupDependencies();
+      final injector = await DependencyInjector.create(child: MyApp());
       logger.w(storage);
       runApp(injector);
     },

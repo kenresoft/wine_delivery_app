@@ -38,7 +38,7 @@ class Config {
 
       done?.call(null);
     } catch (e) {
-      logger.e('Error loading config: $e');
+      // logger.e('Error loading config: $e');
       done?.call(e);
     }
   }
