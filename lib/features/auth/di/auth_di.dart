@@ -1,7 +1,6 @@
 // import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vintiora/core/network/api_service.dart';
-import 'package:vintiora/core/providers/providers.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:vintiora/features/auth/domain/usecases/check_auth_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/get_profile_usecase.dart';
@@ -22,12 +21,12 @@ import '../presentation/bloc/auth/auth_bloc.dart';
 
 class AuthDI {
   static List<RepositoryProvider> repositories() => [
-  RepositoryProvider<AuthLocalDataSource>(
-    create: (context) => AuthLocalDataSourceImpl(),
-  ),
+        RepositoryProvider<AuthLocalDataSource>(
+          create: (context) => AuthLocalDataSourceImpl(),
+        ),
         RepositoryProvider<AuthRemoteDataSource>(
           create: (context) => AuthRemoteDataSourceImpl(
-            apiService: context.read<ApiService>(),
+            apiService: context.read<IApiService>(),
           ),
         ),
         RepositoryProvider<AuthRepository>(
