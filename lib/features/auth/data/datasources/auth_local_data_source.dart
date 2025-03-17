@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dartz/dartz.dart';
 import 'package:vintiora/core/storage/local_storage.dart';
 
 import '../models/auth_tokens_model.dart';

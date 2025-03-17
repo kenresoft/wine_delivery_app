@@ -1,9 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:vintiora/core/network/api_service.dart';
-
-import '../../core/utils/constants.dart';
-import '../models/auth_tokens_model.dart';
-import '../models/user_model.dart';
+import 'package:vintiora/core/network/client/network_client.dart';
+import 'package:vintiora/core/utils/constants.dart';
+import 'package:vintiora/features/auth/data/models/auth_tokens_model.dart';
+import 'package:vintiora/features/auth/data/models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<String> register(String username, String email, String password);
@@ -20,146 +19,132 @@ abstract class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final ApiService apiService;
+  final IApiService _apiService;
 
-  AuthRemoteDataSourceImpl({required this.apiService});
+  AuthRemoteDataSourceImpl({required IApiService apiService}) : _apiService = apiService;
 
   @override
   Future<String> register(String username, String email, String password) async {
-    try {
-      final response = await apiService.makeRequest(
-        ApiConstants.register,
-        data: {
-          'username': username,
-          'email': email,
-          'password': password,
-        },
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data['message'];
-      } else {
-        throw Exception(response.data['message'] ?? 'Registration failed');
-      }
-    } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Registration failed');
-    }
+    final result = await _apiService.request<Map<String, dynamic>>(
+      endpoint: ApiConstants.register,
+      method: RequestMethod.post,
+      data: {
+        'username': username,
+        'email': email,
+        'password': password,
+      },
+      parser: (data) => data as Map<String, dynamic>,
+      requiresAuth: false,
+    );
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (data) => data['message'] as String,
+    );
   }
 
   @override
   Future<String> login(String email, String password) async {
-    try {
-      final response = await apiService.makeRequest(
-        ApiConstants.login,
-        data: {
-          'email': email,
-          'password': password,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return response.data['message'];
-      } else {
-        throw Exception(response.data['message'] ?? 'Login failed');
-      }
-    } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Login failed');
-    }
+    final result = await _apiService.request<Map<String, dynamic>>(
+      endpoint: ApiConstants.login,
+      method: RequestMethod.post,
+      data: {
+        'email': email,
+        'password': password,
+      },
+      parser: (data) => data as Map<String, dynamic>,
+      requiresAuth: false,
+    );
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (data) => data['message'] as String,
+    );
   }
 
   @override
   Future<Map<String, dynamic>> verifyOtp(String email, String otp) async {
-    try {
-      final response = await apiService.makeRequest(
-        ApiConstants.verifyOtp,
-        data: {
-          'email': email,
-          'otp': otp,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        if (response.data['success'] == true) {
-          final userModel = UserModel.fromJson(response.data['user']);
+    final result = await _apiService.request<Map<String, dynamic>>(
+      endpoint: ApiConstants.verifyOtp,
+      method: RequestMethod.post,
+      data: {
+        'email': email,
+        'otp': otp,
+      },
+      parser: (data) => data as Map<String, dynamic>,
+      requiresAuth: false,
+    );
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (data) {
+        if (data['success'] == true) {
+          final userModel = UserModel.fromJson(data['user']);
           final tokensModel = AuthTokensModel(
-            accessToken: response.data['accessToken'],
-            refreshToken: response.data['refreshToken'],
+            accessToken: data['accessToken'],
+            refreshToken: data['refreshToken'],
           );
           return {'user': userModel, 'tokens': tokensModel};
         } else {
           throw Exception('OTP verification failed');
         }
-      } else {
-        throw Exception(response.data['message'] ?? 'OTP verification failed');
-      }
-    } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'OTP verification failed');
-    }
+      },
+    );
   }
 
   @override
   Future<UserModel> getProfile() async {
-    try {
-      final response = await apiService.makeRequest(
-        ApiConstants.profile,
-      );
-
-      if (response.statusCode == 200) {
-        if (response.data['success'] == true) {
-          return UserModel.fromJson(response.data['user']);
+    final result = await _apiService.request<Map<String, dynamic>>(
+      endpoint: ApiConstants.profile,
+      parser: (data) => data as Map<String, dynamic>,
+    );
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (data) {
+        if (data['success'] == true) {
+          return UserModel.fromJson(data['user']);
         } else {
           throw Exception('Failed to get profile');
         }
-      } else {
-        throw Exception(response.data['message'] ?? 'Failed to get profile');
-      }
-    } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to get profile');
-    }
+      },
+    );
   }
 
   @override
   Future<UserModel> checkAuth() async {
-    try {
-      final response = await apiService.makeRequest(
-        ApiConstants.checkAuth,
-      );
-
-      if (response.statusCode == 200) {
-        if (response.data['success'] == true) {
-          return UserModel.fromJson(response.data['user']);
+    final result = await _apiService.request<Map<String, dynamic>>(
+      endpoint: ApiConstants.checkAuth,
+      parser: (data) => data as Map<String, dynamic>,
+    );
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (data) {
+        if (data['success'] == true) {
+          return UserModel.fromJson(data['user']);
         } else {
           throw Exception('Authentication check failed');
         }
-      } else {
-        throw Exception(response.data['message'] ?? 'Authentication check failed');
-      }
-    } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Authentication check failed');
-    }
+      },
+    );
   }
 
   @override
   Future<String> refreshToken(String refreshToken) async {
-    try {
-      final response = await apiService.makeRequest(
-        ApiConstants.refreshToken,
-        data: {
-          'refreshToken': refreshToken,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        if (response.data['success'] == true) {
-          return response.data['accessToken'];
+    final result = await _apiService.request<Map<String, dynamic>>(
+      endpoint: ApiConstants.refreshToken,
+      method: RequestMethod.post,
+      data: {
+        'refreshToken': refreshToken,
+      },
+      parser: (data) => data as Map<String, dynamic>,
+      requiresAuth: false,
+    );
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (data) {
+        if (data['success'] == true && data.containsKey('accessToken')) {
+          return data['accessToken'] as String;
         } else {
-          throw Exception('Token refresh failed');
+          throw Exception('Failed to refresh token');
         }
-      } else {
-        throw Exception(response.data['message'] ?? 'Token refresh failed');
-      }
-    } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Token refresh failed');
-    }
+      },
+    );
   }
 }
