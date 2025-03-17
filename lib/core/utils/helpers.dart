@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:os_detect/os_detect.dart' as os_detect;
-import 'package:vintiora/core/utils/constants.dart';
 
 import '../router/nav.dart';
 
@@ -35,15 +34,3 @@ var isWindows = os_detect.isWindows;
 var isLinux = os_detect.isLinux;
 var osVersion = os_detect.operatingSystemVersion;
 var os = os_detect.operatingSystem;
-
-bool get isMobile {
-  return navContext != null && MediaQuery.sizeOf(navContext!).width < Constants.mobileBreakPoint;
-}
-
-bool get isTablet {
-  return navContext != null && MediaQuery.sizeOf(navContext!).width >= Constants.mobileBreakPoint && MediaQuery.of(navContext!).size.width < Constants.desktopBreakPoint;
-}
-
-bool get isDesktop {
-  return navContext != null && MediaQuery.sizeOf(navContext!).width >= Constants.desktopBreakPoint;
-}

@@ -17,9 +17,17 @@ class NotificationUtil {
       requestSoundPermission: true,
     );
 
+    final WindowsInitializationSettings initializationSettingsWindows = WindowsInitializationSettings(
+      appName: 'Vintiora',
+      appUserModelId: 'com.kenresoft.vintiora',
+      // Search online for GUID generators to make your own
+      guid: 'd49b0314-ee7a-4626-bf79-97cdb8a991bb',
+    );
+
     final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
+      windows: initializationSettingsWindows,
     );
 
     await notificationsPlugin.initialize(
@@ -71,12 +79,12 @@ class NotificationUtil {
     );
 
     await notificationsPlugin.show(
-        0,
+      0,
       message.notification?.title ?? 'Default Title',
       message.notification?.body ?? 'Default Body',
-        notificationDetails,
+      notificationDetails,
       payload: payload, // Attach payload for navigation
-      );
+    );
   }
 
   // Function to navigate to a specific page based on payload
