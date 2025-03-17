@@ -1,55 +1,34 @@
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:vintiora/core/network/dio_client.dart';
-import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
+import 'package:vintiora/core/error/failures.dart';
+import 'package:vintiora/core/network/client/network_client.dart';
 
-enum RequestMethod { get, post, put, patch, delete }
-
-class ApiService {
-  final DioClient dioClient;
-
-  ApiService({required this.dioClient});
-
-  Future<Response> makeRequest(
-    String endpoint, {
+/// Abstract API service definition using Either for error handling
+abstract class IApiService {
+  /// Generic request method with parser function
+  Future<Either<Failure, T>> request<T>({
+    required String endpoint,
+    required T Function(dynamic data) parser,
     RequestMethod method = RequestMethod.get,
     Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     dynamic data,
-  }) async {
-    final dio = dioClient.dio;
-    String? accessToken = await dioClient.authLocalDataSource.getAccessToken();
+    bool requiresAuth = true,
+    CancelToken? cancelToken,
+  });
 
-    headers ??= {};
-    headers['Authorization'] = 'Bearer $accessToken';
+  /// Simplified method for common API requests
+  Future<Either<Failure, Response>> makeRequest(
+    String endpoint, {
+    RequestMethod method = RequestMethod.get,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, String>? headers,
+    bool requiresAuth = true,
+    CancelToken? cancelToken,
+  });
 
-    // If a body is provided and the method is GET, default to POST.
-    final RequestMethod finalMethod = (data != null && method == RequestMethod.get) ? RequestMethod.post : method;
+  CancelToken createCancelToken();
 
-    try {
-      final Response response = await _getResponse(finalMethod, endpoint, headers, data, dio);
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> _getResponse(
-    RequestMethod method,
-    String endpoint,
-    Map<String, String> headers,
-    dynamic data,
-    Dio dio,
-  ) async {
-    switch (method) {
-      case RequestMethod.get:
-        return await dio.get(endpoint, options: Options(headers: headers));
-      case RequestMethod.post:
-        return await dio.post(endpoint, options: Options(headers: headers), data: data);
-      case RequestMethod.put:
-        return await dio.put(endpoint, options: Options(headers: headers), data: data);
-      case RequestMethod.patch:
-        return await dio.patch(endpoint, options: Options(headers: headers), data: data);
-      case RequestMethod.delete:
-        return await dio.delete(endpoint, options: Options(headers: headers), data: data);
-    }
-  }
+  void cancelRequest(CancelToken token);
 }

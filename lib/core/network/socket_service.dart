@@ -3,12 +3,12 @@ import 'package:socket_io_client/socket_io_client.dart' as sio;
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
 
-class SocketRepository {
-  SocketRepository._();
+class SocketService {
+  SocketService._();
 
-  static final SocketRepository _instance = SocketRepository._();
+  static final SocketService _instance = SocketService._();
 
-  static SocketRepository getInstance() => _instance;
+  static SocketService getInstance() => _instance;
 
   sio.Socket? socket;
   bool _isReconnecting = false;
@@ -76,4 +76,4 @@ class SocketRepository {
   }
 }
 
-SocketRepository socketRepository = SocketRepository.getInstance();
+SocketService socketRepository = SocketService.getInstance();
