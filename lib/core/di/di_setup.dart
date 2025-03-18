@@ -7,6 +7,7 @@ import 'package:vintiora/core/network/client/dio_network_client.dart';
 import 'package:vintiora/core/network/client/network_client.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:vintiora/features/auth/data/datasources/token_refresher.dart';
 import 'package:vintiora/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:vintiora/features/auth/domain/repositories/auth_repository.dart';
 import 'package:vintiora/features/auth/domain/usecases/check_auth_usecase.dart';
@@ -27,9 +28,15 @@ void setupDependencies() {
         authDataSource: getIt<AuthLocalDataSource>(),
         cacheService: getIt<CacheService>(),
       ));
+  getIt.registerLazySingleton<TokenRefresher>(() => TokenRefresher(
+        networkClient: getIt<INetworkClient>(),
+        localDataSource: getIt<AuthLocalDataSource>(),
+      ));
+
   getIt.registerLazySingleton<IApiService>(() => ApiService(
         networkClient: getIt<INetworkClient>(),
         localDataSource: getIt<AuthLocalDataSource>(),
+        tokenRefresher: getIt<TokenRefresher>(),
       ));
 
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(
