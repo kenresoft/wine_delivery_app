@@ -1,5 +1,6 @@
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
+import 'package:os_detect/os_detect.dart' as os_detect;
 import 'package:share_plus/share_plus.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/shared/widgets/custom_confirmation_dialog.dart';
@@ -26,8 +27,8 @@ class Utils {
   static ImageProvider<Object> networkImage(String? imagePath) {
     return conditionFunction(
       imagePath != null,
-      () => NetworkImage('${Constants.baseUrl}$imagePath'),
-      () => AssetImage(Constants.imagePlaceholder),
+          () => NetworkImage('${Constants.baseUrl}$imagePath'),
+          () => AssetImage(Constants.imagePlaceholder),
     );
   }
 
@@ -65,8 +66,7 @@ class Utils {
     }
   }*/
 
-  static Future<bool?> dialog(
-    BuildContext context, {
+  static Future<bool?> dialog(BuildContext context, {
     required String title,
     required String content,
     required String confirmButtonText,
@@ -92,4 +92,22 @@ class Utils {
     final String shareContent = 'Check out this product:\n\n$name\n\n$description\n\nImage: $imageUrl\n\nMore details: $productUrl';
     Share.share(shareContent);
   }
+}
+
+var isWeb = os_detect.isBrowser;
+var isAndroid = os_detect.isAndroid;
+var isFuchsia = os_detect.isFuchsia;
+var isIOS = os_detect.isIOS;
+var isMacOS = os_detect.isMacOS;
+var isWindows = os_detect.isWindows;
+var isLinux = os_detect.isLinux;
+var osVersion = os_detect.operatingSystemVersion;
+var os = os_detect.operatingSystem;
+
+double? toDouble(dynamic value) {
+  // logger.i(value.runtimeType);
+  if (value == null) return null;
+  if (value is int) return value.toDouble();
+  if (value is double) return value;
+  return null; // Handle other unexpected types or nulls
 }

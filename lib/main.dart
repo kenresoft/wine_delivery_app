@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:vintiora/core/config/app_config.dart';
 import 'package:vintiora/core/di/di.dart';
 import 'package:vintiora/core/storage/preferences.dart';
-import 'package:vintiora/core/utils/helpers.dart';
+import 'package:vintiora/core/utils/utils.dart';
 
 import 'app.dart';
 

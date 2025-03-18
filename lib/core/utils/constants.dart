@@ -4,30 +4,20 @@ class Constants {
   Constants._();
 
   static const String appName = 'Vintiora';
-
   static const String packageName = 'com.kenresoft.vintiora';
-
   static const String empty = '';
-
   static const String unknownDevice = 'Unknown device';
-
   static const String dbName = 'VintioraDb';
-
   static final String baseUrl = EnvironmentConfig.baseUrl;
-
   static final String wsBaseUrl = EnvironmentConfig.wsBaseUrl;
-
   static final String stripePublishableKey = EnvironmentConfig.stripeKey;
-
   static final String imagePlaceholder = 'assets/images/${EnvironmentConfig.imagePlaceholder}';
-
   static const String wineImage = 'assets/images/wine-11.png';
-
+  static const int socketErrorCode = 888;
   static const int tokenRefreshThreshold = 60;
 
   // Request timeouts
   static const Duration connectionTimeout = Duration(seconds: 5);
-
   static const Duration receiveTimeout = Duration(seconds: 3);
 }
 

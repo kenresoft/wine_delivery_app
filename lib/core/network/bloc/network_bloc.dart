@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vintiora/core/utils/helpers.dart';
+import 'package:vintiora/core/utils/utils.dart';
 
 import '../../config/app_config.dart';
 import '../../router/nav.dart';

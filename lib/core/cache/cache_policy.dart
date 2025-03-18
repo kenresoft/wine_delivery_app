@@ -4,6 +4,7 @@ import 'package:vintiora/core/utils/constants.dart';
 class CachePolicy {
   // Map endpoints to their cache durations
   static final Map<String, Duration> cacheableEndpoints = {
+    ApiConstants.checkAuth: const Duration(minutes: 1), // I used access token expiration time.
     ApiConstants.profile: const Duration(minutes: 10),
     ApiConstants.categories: Duration(seconds: 20),
     ApiConstants.orders: Duration(hours: 1),

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
-import 'package:vintiora/core/utils/helpers.dart';
+import 'package:vintiora/core/utils/utils.dart';
 
 enum AllowedFileType {
   image,

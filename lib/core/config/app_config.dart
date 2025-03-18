@@ -10,13 +10,13 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vintiora/core/config/environment_config.dart';
+import 'package:vintiora/core/di/di_setup.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/storage/local_storage.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/firebase_util.dart';
-import 'package:vintiora/core/utils/helpers.dart';
 import 'package:vintiora/core/utils/notification_util.dart';
-import 'package:vintiora/core/di/di_setup.dart';
+import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/firebase_options.dart';
 
 class Config {
