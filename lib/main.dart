@@ -2,15 +2,12 @@ import 'dart:async';
 
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vintiora/core/config/app_config.dart';
-import 'package:vintiora/core/providers/providers.dart';
+import 'package:vintiora/core/di/di.dart';
 import 'package:vintiora/core/storage/preferences.dart';
-import 'package:vintiora/di_setup.dart';
+import 'package:vintiora/core/utils/helpers.dart';
 
 import 'app.dart';
-import 'core/utils/helpers.dart';
-import 'di.dart';
 
 Future<void> main() async {
   runZonedGuarded(() async {
@@ -21,7 +18,7 @@ Future<void> main() async {
       await _initializeApp();
     } catch (error, stackTrace) {
       logger.e("Initialization Error: $error", stackTrace: stackTrace);
-      _runAppWithError(error);
+      await _runAppWithError(error);
     }
   }, (error, stackTrace) {
     logger.e("Unhandled asynchronous error: $error", stackTrace: stackTrace);
@@ -43,33 +40,22 @@ Future<void> _initializeApp() async {
         isWindows || isWeb ? null : throw error;
       }
       logger.d('App initialized successfully with no errors');
-      // _runApp();
-      setupDependencies();
-      final injector = await DependencyInjector.create(child: MyApp());
-      logger.w(storage);
-      runApp(injector);
+      await _runApp();
     },
   );
 }
 
 /// Runs the app without initialization errors
-/*void _runApp() {
+Future<void> _runApp() async {
+  final injector = await DependencyInjector.create(child: MyApp());
   logger.w(storage);
-
-  runApp(
-    MultiBlocProvider(
-      providers: Providers.blocProviders,
-      child: const MyApp(),
-    ),
-  );
-}*/
+  runApp(injector);
+}
 
 /// Runs the app with an initialization error state
-void _runAppWithError(Object error) {
-  runApp(
-    MultiBlocProvider(
-      providers: Providers.blocProviders,
-      child: MyApp(initializationError: error),
-    ),
+Future<void> _runAppWithError(Object error) async {
+  final injector = await DependencyInjector.create(
+    child: MyApp(initializationError: error),
   );
+  runApp(injector);
 }

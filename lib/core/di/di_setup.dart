@@ -1,4 +1,3 @@
-// di_setup.dart
 import 'package:get_it/get_it.dart';
 import 'package:vintiora/core/cache/cache_service.dart';
 import 'package:vintiora/core/network/api_service.dart';
@@ -39,6 +38,7 @@ void setupDependencies() {
         tokenRefresher: getIt<TokenRefresher>(),
       ));
 
+  // Feature: Auth DataSource
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(
         apiService: getIt<IApiService>(),
       ));
@@ -58,5 +58,5 @@ void setupDependencies() {
   getIt.registerLazySingleton<RefreshTokenUseCase>(() => RefreshTokenUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(getIt<AuthRepository>()));
 
-  // Register other feature dependencies here...
+  // Feature:
 }
