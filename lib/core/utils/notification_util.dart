@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:vintiora/core/utils/constants.dart';
 
 class NotificationUtil {
   static final FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -18,9 +19,9 @@ class NotificationUtil {
     );
 
     final WindowsInitializationSettings initializationSettingsWindows = WindowsInitializationSettings(
-      appName: 'Vintiora',
-      appUserModelId: 'com.kenresoft.vintiora',
-      // Search online for GUID generators to make your own
+      appName: Constants.appName,
+      appUserModelId: Constants.packageName,
+      // Search online for your own unique GUID generators
       guid: 'd49b0314-ee7a-4626-bf79-97cdb8a991bb',
     );
 

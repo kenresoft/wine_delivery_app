@@ -1,14 +1,6 @@
-import 'dart:io';
-
-// import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:vintiora/core/error/exceptions.dart';
-import 'package:vintiora/core/router/nav.dart';
-import 'package:vintiora/core/router/routes.dart';
-import 'package:vintiora/core/storage/preferences.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/shared/widgets/custom_confirmation_dialog.dart';
 

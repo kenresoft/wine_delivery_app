@@ -3,35 +3,38 @@ import 'package:vintiora/core/config/environment_config.dart';
 class Constants {
   Constants._();
 
-  static const appName = 'Vintiora';
+  static const String appName = 'Vintiora';
 
-  static const empty = '';
+  static const String packageName = 'com.kenresoft.vintiora';
 
-  static const unknownDevice = 'Unknown device';
+  static const String empty = '';
+
+  static const String unknownDevice = 'Unknown device';
 
   static const String dbName = 'VintioraDb';
 
-  static String baseUrl = '${EnvironmentConfig.baseUrl}/api';
+  static final String baseUrl = EnvironmentConfig.baseUrl;
 
-  static String wsBaseUrl = EnvironmentConfig.wsBaseUrl;
+  static final String wsBaseUrl = EnvironmentConfig.wsBaseUrl;
 
-  static String stripePublishableKey = EnvironmentConfig.stripeKey;
+  static final String stripePublishableKey = EnvironmentConfig.stripeKey;
 
-  static String imagePlaceholder = 'assets/images/${EnvironmentConfig.imagePlaceholder}';
+  static final String imagePlaceholder = 'assets/images/${EnvironmentConfig.imagePlaceholder}';
 
   static const String wineImage = 'assets/images/wine-11.png';
 
   static const int tokenRefreshThreshold = 60;
 
   // Request timeouts
-  static const int connectionTimeout = 5000; // 5 seconds
+  static const Duration connectionTimeout = Duration(seconds: 5);
 
-  static const int receiveTimeout = 3000; // 3 seconds
+  static const Duration receiveTimeout = Duration(seconds: 3);
 }
 
 class ApiConstants {
   // Auth endpoints
-  static String baseUrl = Constants.baseUrl;
+  static final String baseUrl = '${Constants.baseUrl}/api';
+
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String verifyOtp = '/auth/verify-otp';
@@ -39,7 +42,7 @@ class ApiConstants {
   static const String checkAuth = '/auth/check';
   static const String refreshToken = '/auth/refresh';
 
-  //
+  // Other endpoints
   static const String products = '/products';
   static const String categories = '/categories';
   static const String orders = '/orders';
