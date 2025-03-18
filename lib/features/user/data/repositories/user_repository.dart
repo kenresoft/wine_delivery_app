@@ -22,9 +22,9 @@ class UserRepository {
 
   static UserRepository getInstance() => _instance;
 
-  static final String _url = '${Constants.baseUrl}/api/auth/profile';
+  static final String _url = '${ApiConstants.baseUrl}/auth/profile';
 
-  static final String _updateUrl = '${Constants.baseUrl}/api/users';
+  static final String _updateUrl = '${ApiConstants.baseUrl}/users';
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 

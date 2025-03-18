@@ -22,7 +22,7 @@ class FavoritesRepository {
     return _instance;
   }*/
 
-  static final String _url = '${Constants.baseUrl}/api/favorites';
+  static final String _url = '${ApiConstants.baseUrl}/api/favorites';
 
   Future<List<({Product product, int cartQuantity})>> getFavorites() async {
     final apiService = GetIt.I<IApiService>();

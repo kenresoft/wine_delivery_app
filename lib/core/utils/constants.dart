@@ -32,9 +32,9 @@ class Constants {
 }
 
 class ApiConstants {
-  // Auth endpoints
   static final String baseUrl = '${Constants.baseUrl}/api';
 
+  // Auth endpoints
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String verifyOtp = '/auth/verify-otp';
