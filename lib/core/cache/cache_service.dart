@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:vintiora/core/storage/local_storage.dart';
 
-/// Abstract cache service interface.
 abstract class CacheService {
   Future<dynamic> get(String key);
 
@@ -13,15 +12,13 @@ abstract class CacheService {
   Future<void> removeAll();
 }
 
-/// Implementation of [CacheService] that uses [LocalStorage] for caching.
 class CacheServiceImpl implements CacheService {
-  static const String _cachePrefix = 'app_cache';
+  static const String _cachePrefix = 'APP_CACHE';
 
   String _getCacheKey(String key) => '$_cachePrefix:$key';
 
   @override
   Future<dynamic> get(String key) async {
-    // Retrieve the JSON string from local storage using the prefixed key.
     final cachedData = LocalStorage.get<String>(_getCacheKey(key));
 
     if (cachedData != null) {
