@@ -5,8 +5,8 @@ class CachePolicy {
   // Map endpoints to their cache durations
   static final Map<String, Duration> cacheableEndpoints = {
     ApiConstants.profile: const Duration(minutes: 10),
-    // ApiConstants.checkAuth: Duration(seconds: 20),
-    // '/categories': Duration(hours: 1),
+    ApiConstants.categories: Duration(seconds: 20),
+    ApiConstants.orders: Duration(hours: 1),
   };
 
   /// Determines if an endpoint should be cached

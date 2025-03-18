@@ -15,10 +15,8 @@ abstract class CacheService {
 
 /// Implementation of [CacheService] that uses [LocalStorage] for caching.
 class CacheServiceImpl implements CacheService {
-  /// A prefix to isolate cache keys from other keys in the app.
   static const String _cachePrefix = 'app_cache';
 
-  /// Formats the data key with the cache prefix.
   String _getCacheKey(String key) => '$_cachePrefix:$key';
 
   @override

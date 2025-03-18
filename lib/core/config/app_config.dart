@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:extensionresoft/extensionresoft.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +16,7 @@ import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/firebase_util.dart';
 import 'package:vintiora/core/utils/helpers.dart';
 import 'package:vintiora/core/utils/notification_util.dart';
+import 'package:vintiora/core/di/di_setup.dart';
 import 'package:vintiora/firebase_options.dart';
 
 class Config {
@@ -33,6 +33,7 @@ class Config {
       ]);
 
       Stripe.publishableKey = Constants.stripePublishableKey;
+      setupDependencies();
 
       // await simulateError();
 
