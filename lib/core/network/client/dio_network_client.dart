@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:extensionresoft/extensionresoft.dart';
 import 'package:vintiora/core/cache/cache_service.dart';
 import 'package:vintiora/core/network/client/network_client.dart';
 import 'package:vintiora/core/network/interceptors/auth_interceptor.dart';
@@ -14,9 +13,9 @@ class DioNetworkClient implements INetworkClient {
     required AuthLocalDataSource authDataSource,
     required CacheService cacheService,
   }) : _dio = Dio(BaseOptions(
-          baseUrl: Constants.baseUrl,
-          connectTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 3),
+          baseUrl: ApiConstants.baseUrl,
+          connectTimeout: Constants.connectionTimeout,
+          receiveTimeout: Constants.receiveTimeout,
           receiveDataWhenStatusError: true,
           followRedirects: true,
           headers: {

@@ -42,9 +42,11 @@ class AuthInterceptor extends Interceptor {
             data: {'refreshToken': refreshToken},
           );
 
+          logger.d(response);
+
           if (response.statusCode == 200) {
             final newAccessToken = response.data['accessToken'];
-            final newRefreshToken = response.data['refreshToken'];
+            final newRefreshToken = response.data['refreshToken'] ?? refreshToken;
 
             // Update tokens via the auth local data source
             await authLocalDataSource.cacheTokens(
@@ -76,7 +78,7 @@ class AuthInterceptor extends Interceptor {
           }
         } catch (e) {
           logger.e('Error refreshing token: $e');
-          await authLocalDataSource.clearUserData();
+          // await authLocalDataSource.clearUserData();
           return handler.reject(err);
         }
       }
