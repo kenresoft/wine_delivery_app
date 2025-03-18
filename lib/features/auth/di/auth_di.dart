@@ -1,23 +1,21 @@
-// import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vintiora/core/network/api_service.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
+import 'package:vintiora/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:vintiora/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:vintiora/features/auth/domain/repositories/auth_repository.dart';
 import 'package:vintiora/features/auth/domain/usecases/check_auth_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/get_profile_usecase.dart';
+import 'package:vintiora/features/auth/domain/usecases/login_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/refresh_token_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/register_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:vintiora/features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:vintiora/features/auth/presentation/bloc/login/login_bloc.dart';
 import 'package:vintiora/features/auth/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/features/auth/presentation/bloc/register/register_bloc.dart';
 import 'package:vintiora/features/auth/presentation/bloc/verify_otp/verify_otp_bloc.dart';
-
-import '../data/datasources/auth_remote_data_source.dart';
-import '../data/repositories/auth_repository_impl.dart';
-import '../domain/repositories/auth_repository.dart';
-import '../domain/usecases/login_usecase.dart';
-import '../presentation/bloc/auth/auth_bloc.dart';
 
 class AuthDI {
   static List<RepositoryProvider> repositories() => [

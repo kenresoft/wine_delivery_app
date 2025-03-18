@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/features/auth/domain/entities/user.dart';
 import 'package:vintiora/features/auth/domain/usecases/check_auth_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/logout_usecase.dart';
@@ -28,7 +29,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await checkAuthUseCase();
 
     result.fold(
-      (failure) => emit(Unauthenticated()),
+      (failure) {
+        Nav.showSnackBar(failure.message);
+        emit(Unauthenticated());
+      },
       (user) => emit(Authenticated(user)),
     );
   }
