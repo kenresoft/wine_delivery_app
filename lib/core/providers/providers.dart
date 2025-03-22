@@ -1,5 +1,6 @@
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:vintiora/core/network/bloc/network_bloc.dart';
 import 'package:vintiora/core/theme/bloc/theme_bloc.dart';
 import 'package:vintiora/features/cart/presentation/bloc/cart/cart_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:vintiora/features/product/presentation/bloc/category_filter/cate
 import 'package:vintiora/features/product/presentation/bloc/category_list/wines_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
+import 'package:vintiora/features/user/data/repositories/user_repository.dart';
 import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 
 class Providers {
@@ -23,16 +25,16 @@ class Providers {
       BlocProvider<ThemeBloc>(create: (context) => ThemeBloc()),
       BlocProvider<NetworkBloc>(create: (context) => NetworkBloc(internetConnectionChecker)),
       BlocProvider<NavigationBloc>(create: (context) => NavigationBloc()),
-      BlocProvider<ProductBloc>(create: (context) => ProductBloc()),
+      BlocProvider<ProductBloc>(create: (context) => GetIt.I()),
       BlocProvider<CartBloc>(create: (context) => CartBloc()),
       BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
       BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc()),
       BlocProvider<ShipmentBloc>(create: (context) => ShipmentBloc()),
       BlocProvider<CarouselBloc>(create: (context) => CarouselBloc()),
       BlocProvider<CategoryFilterBloc>(create: (context) => CategoryFilterBloc()),
-      BlocProvider<WinesBloc>(create: (context) => WinesBloc()),
+      BlocProvider<WinesBloc>(create: (context) => WinesBloc(GetIt.I())),
       // BlocProvider<LikeBloc>(create: (context) => LikeBloc()),
-      BlocProvider<ProfileBloc>(create: (context) => ProfileBloc()),
+      BlocProvider<ProfileBloc>(create: (context) => ProfileBloc(userRepository: userRepository)),
       BlocProvider<FavsBloc>(create: (context) => FavsBloc()),
       BlocProvider<PromoCodeBloc>(create: (context) => PromoCodeBloc()),
     ];

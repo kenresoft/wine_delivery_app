@@ -16,11 +16,18 @@ import 'package:vintiora/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/refresh_token_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/register_usecase.dart';
 import 'package:vintiora/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:vintiora/features/product/data/datasources/product_remote_data_source.dart';
+import 'package:vintiora/features/product/data/repositories/product_repository_impl.dart';
+import 'package:vintiora/features/product/domain/repositories/product_repository.dart';
+import 'package:vintiora/features/product/domain/usecases/get_all_products.dart';
+import 'package:vintiora/features/product/domain/usecases/get_product_by_id.dart';
+import 'package:vintiora/features/product/domain/usecases/get_products_by_ids.dart';
+import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
 
 final getIt = GetIt.instance;
 
 void setupDependencies() {
-  // Core Dependencies
+  /// Core Dependencies
   getIt.registerLazySingleton<CacheService>(() => CacheServiceImpl());
   getIt.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl());
   getIt.registerLazySingleton<INetworkClient>(() => DioNetworkClient(
@@ -38,18 +45,19 @@ void setupDependencies() {
         tokenRefresher: getIt<TokenRefresher>(),
       ));
 
-  // Feature: Auth DataSource
+  // Feature: Auth
+  // DataSource
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(
         apiService: getIt<IApiService>(),
       ));
 
-  // Feature: Auth Repository
+  // Auth Repository
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(
         remoteDataSource: getIt<AuthRemoteDataSource>(),
         localDataSource: getIt<AuthLocalDataSource>(),
       ));
 
-  // Feature: Auth Use Cases
+  // Auth Use Cases
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<VerifyOtpUseCase>(() => VerifyOtpUseCase(getIt<AuthRepository>()));
@@ -58,5 +66,22 @@ void setupDependencies() {
   getIt.registerLazySingleton<RefreshTokenUseCase>(() => RefreshTokenUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(getIt<AuthRepository>()));
 
-  // Feature:
+  // Feature: Product
+  
+  getIt.registerLazySingleton<ProductRemoteDataSource>(() => ProductRemoteDataSourceImpl(apiService: getIt()));
+  getIt.registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(remoteDataSource: getIt()));
+
+  // Bloc
+  getIt.registerFactory(
+    () => ProductBloc(
+      getAllProducts: getIt(),
+      getProductById: getIt(),
+      getProductsByIds: getIt(),
+    ),
+  );
+
+  // Use cases
+  getIt.registerLazySingleton(() => GetAllProducts(getIt()));
+  getIt.registerLazySingleton(() => GetProductById(getIt()));
+  getIt.registerLazySingleton(() => GetProductsByIds(getIt()));
 }
