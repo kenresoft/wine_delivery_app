@@ -120,7 +120,7 @@ class _AppWrapperState extends State<AppWrapper> {
 
           if (widget.includeMaterial) {
             content = Scaffold(
-              key: widget.key,
+              // key: widget.key,
               resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
               backgroundColor: widget.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
               appBar: widget.appBar,

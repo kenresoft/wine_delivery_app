@@ -48,6 +48,7 @@ class CustomTextField<T> extends StatefulWidget {
   final List<DropdownMenuItem<T>>? items;
   final T? dropdownValue;
   final Function(T?)? onDropdownChanged;
+  final bool showDropdownIcon;
 
   const CustomTextField({
     super.key,
@@ -93,6 +94,7 @@ class CustomTextField<T> extends StatefulWidget {
     this.items,
     this.dropdownValue,
     this.onDropdownChanged,
+    this.showDropdownIcon = true,
   });
 
   @override
@@ -138,14 +140,16 @@ class _CustomTextFieldState<T> extends State<CustomTextField<T>> {
           labelText: widget.labelText,
           hintText: widget.hintText,
           helperText: widget.helperText,
-          labelStyle: widget.labelStyle ??
-              theme.textTheme.titleMedium!.copyWith(
-                color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
-              ),
-          hintStyle: widget.hintStyle ??
-              theme.textTheme.titleMedium!.copyWith(
-                color: isDark ? AppColors.grey5 : AppColors.white4,
-              ),
+          labelStyle: widget.labelStyle != null
+              ? theme.textTheme.titleMedium?.merge(widget.labelStyle)
+              : theme.textTheme.titleMedium?.copyWith(
+                  color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
+                ),
+          hintStyle: widget.hintStyle != null
+              ? theme.textTheme.titleMedium?.merge(widget.hintStyle)
+              : theme.textTheme.titleMedium?.copyWith(
+                  color: isDark ? AppColors.grey5 : AppColors.white5,
+                ),
           helperMaxLines: widget.helperMaxLines,
           filled: true,
           fillColor: widget.fillColor ?? (isDark ? AppColors.darkOutlinedBg : AppColors.lightOutlinedBg),
@@ -229,18 +233,21 @@ class _CustomTextFieldState<T> extends State<CustomTextField<T>> {
                 dropdownColor: theme.scaffoldBackgroundColor,
                 onChanged: widget.onDropdownChanged,
                 decoration: _buildDecoration(context),
-                style: widget.textStyle ??
-                    theme.textTheme.displayMedium?.copyWith(
-                      color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
-                    ),
+                icon: widget.showDropdownIcon ? null : SizedBox(),
+                style: widget.textStyle != null
+                    ? theme.textTheme.displayMedium?.merge(widget.textStyle)
+                    : theme.textTheme.displayMedium?.copyWith(
+                        color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
+                      ),
                 isExpanded: true,
                 hint: Text(
                   widget.hintText ?? '',
-                  style: widget.hintStyle ??
-                      theme.textTheme.titleMedium!.copyWith(
-                        color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
-                        // color: isDark ? AppColors.grey5 : AppColors.white4,
-                      ),
+                  style: widget.hintStyle != null
+                      ? theme.textTheme.titleMedium?.merge(widget.hintStyle)
+                      : theme.textTheme.titleMedium?.copyWith(
+                          color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
+                          // color: isDark ? AppColors.grey5 : AppColors.white4,
+                        ),
                 ),
                 validator: (value) {
                   if (widget.isRequired && (value == null)) {
@@ -266,10 +273,11 @@ class _CustomTextFieldState<T> extends State<CustomTextField<T>> {
                         maxLength: widget.maxLength,
                         keyboardType: widget.keyboardType,
                         inputFormatters: widget.inputFormatters,
-                        style: widget.textStyle ??
-                            theme.textTheme.displayMedium?.copyWith(
-                              color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
-                            ),
+                        style: widget.textStyle != null
+                            ? theme.textTheme.displayMedium?.merge(widget.textStyle)
+                            : theme.textTheme.displayMedium?.copyWith(
+                                color: isDark ? AppColors.darkInputText : AppColors.lightInputText,
+                              ),
                         onChanged: widget.onChanged,
                         onFieldSubmitted: widget.onSubmitted,
                         validator: widget.validator,

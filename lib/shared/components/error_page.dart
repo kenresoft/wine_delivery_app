@@ -145,8 +145,7 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
       case ErrorType.initialization:
         return 'Error during initialization. \n$errorMessage';
       case ErrorType.unknown:
-      default:
-        return widget.message.isNotEmpty ? widget.message : 'An unknown error occurred. Please try again later.';
+      return widget.message.isNotEmpty ? widget.message : 'An unknown error occurred. Please try again later.';
     }
   }
 
