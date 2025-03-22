@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:vintiora/core/config/app_config.dart';
 import 'package:vintiora/core/network/bloc/network_bloc.dart';
 import 'package:vintiora/core/router/app_router.dart';
@@ -13,7 +14,8 @@ import 'package:vintiora/core/storage/preferences.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/theme/bloc/theme_bloc.dart';
 import 'package:vintiora/core/utils/constants.dart';
-import 'package:vintiora/features/product/data/repositories/product_repository.dart';
+import 'package:vintiora/features/product/domain/entities/product_entity.dart';
+import 'package:vintiora/features/product/domain/repositories/product_repository.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, this.initializationError});
@@ -116,7 +118,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (uri.pathSegments.isNotEmpty) {
       if (uri.pathSegments[0] == 'product') {
         final productId = uri.pathSegments[1];
-        final product = await productRepository.getProductById(productId);
+        final result = await GetIt.I<ProductRepository>().getProductById(productId);
+        final product = result.fold(
+          (failure) => Product.empty(), // throw
+          (product) => product,
+        );
+        // final product = await productRepository.getProductById(productId);
         Nav.push(Routes.productDetails, arguments: product);
       } else if (uri.pathSegments[0] == 'cart') {
         logger.i('cart');
@@ -129,7 +136,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final BuildContext currentContext = context;
     return ScreenUtilInit(
-      designSize: const Size(360, 825),
+      designSize: const Size(375, 812), // Old Size(360, 825),
       minTextAdapt: true,
       ensureScreenSize: true,
       builder: (context, child) {

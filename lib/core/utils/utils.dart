@@ -1,8 +1,6 @@
-import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:os_detect/os_detect.dart' as os_detect;
 import 'package:share_plus/share_plus.dart';
-import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/shared/widgets/custom_confirmation_dialog.dart';
 
 class Utils {
@@ -24,16 +22,16 @@ class Utils {
     }
   }
 
-  static ImageProvider<Object> networkImage(String? imagePath) {
+/*  static ImageProvider<Object> networkImage(String? imagePath) {
     return conditionFunction(
       imagePath != null,
           () => NetworkImage('${Constants.baseUrl}$imagePath'),
           () => AssetImage(Constants.imagePlaceholder),
     );
-  }
+  }*/
 
   /*static Future<void> authCheck(BuildContext context) async {
-    final String endpoint = '${Constants.baseUrl}/api/auth/profile';
+    final String endpoint = '${Constants.baseUrl}/auth/profile';
     Response response = Response(requestOptions: RequestOptions());
 
     try {
@@ -66,7 +64,8 @@ class Utils {
     }
   }*/
 
-  static Future<bool?> dialog(BuildContext context, {
+  static Future<bool?> dialog(
+    BuildContext context, {
     required String title,
     required String content,
     required String confirmButtonText,

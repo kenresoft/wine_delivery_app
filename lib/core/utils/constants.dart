@@ -18,7 +18,7 @@ class Constants {
 
   // Request timeouts
   static const Duration connectionTimeout = Duration(seconds: 5);
-  static const Duration receiveTimeout = Duration(seconds: 3);
+  static const Duration receiveTimeout = Duration(seconds: 5); // 3
 }
 
 class ApiConstants {
@@ -35,5 +35,9 @@ class ApiConstants {
   // Other endpoints
   static const String products = '/products';
   static const String categories = '/categories';
+  static const String favorites = '/favorites';
+  static const String cart = '/cart';
   static const String orders = '/orders';
+  static const String shipment = '/shipment';
+  static const String coupon = '/coupon';
 }
