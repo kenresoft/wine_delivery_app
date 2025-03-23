@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/theme/themes.dart';
-import 'package:vintiora/features/product/data/models/responses/product.dart';
+import 'package:vintiora/features/product/domain/entities/product_entity.dart';
+// import 'package:vintiora/features/product/data/models/responses/product.dart';
 import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 
 import 'favorites_screen.dart';
@@ -85,7 +86,7 @@ class FavoritesSearch extends SearchDelegate<List<({int cartQuantity, Product pr
     } else {
       suggestionList = favorites.where(
         (favorite) {
-          return favorite.product.name!.toLowerCase().contains(query.toLowerCase()) || favorite.product.tags!.contains(query);
+          return favorite.product.name.toLowerCase().contains(query.toLowerCase()) || favorite.product.tags.contains(query);
         },
       ).toList();
     }

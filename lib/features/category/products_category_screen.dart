@@ -6,15 +6,16 @@ import 'package:vintiora/core/theme/themes.dart';
 import 'package:vintiora/core/utils/extensions.dart';
 import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/features/category/domain/enums/wine_category.dart';
-import 'package:vintiora/features/home/presentation/pages/main_screen.dart';
-import 'package:vintiora/features/product/data/models/responses/product.dart';
-import 'package:vintiora/features/product/data/models/responses/reviews.dart';
+import 'package:vintiora/features/main/presentation/pages/main_screen.dart';
+// import 'package:vintiora/features/product/data/models/responses/product.dart';
+// import 'package:vintiora/features/product/data/models/responses/reviews.dart';
+import 'package:vintiora/features/product/domain/entities/product_entity.dart';
 import 'package:vintiora/features/product/presentation/bloc/category_filter/category_filter_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/category_list/wines_bloc.dart';
 import 'package:vintiora/shared/widgets/rate_bar.dart';
 
-import '../product/product_detail_screen.dart';
-import '../product/product_search.dart';
+import '../product/presentation/pages/product_detail_screen.dart';
+import '../product/presentation/pages/product_search.dart';
 
 class CategoryScreen extends StatefulWidget {
   static const double priceMax = 5000.0;
@@ -63,7 +64,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     //setState(() {
     switch (_selectedSort) {
       case 'Price':
-        filteredWines.sort((a, b) => _isAscending ? a.defaultPrice!.compareTo(b.defaultPrice!) : b.defaultPrice!.compareTo(a.defaultPrice!));
+        filteredWines.sort((a, b) => _isAscending ? a.defaultPrice.compareTo(b.defaultPrice) : b.defaultPrice.compareTo(a.defaultPrice));
         break;
       case 'Rating':
         filteredWines.sort(
@@ -71,10 +72,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
         break;
       case 'Name (A-Z)':
       case 'Name (Z-A)':
-        filteredWines.sort((a, b) => _isAscending ? a.name!.compareTo(b.name!) : b.name!.compareTo(a.name!));
+        filteredWines.sort((a, b) => _isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
         break;
       case 'Reviews':
-        filteredWines.sort((a, b) => _isAscending ? a.reviews!.length.compareTo(b.reviews!.length) : b.reviews!.length.compareTo(a.reviews!.length));
+        filteredWines.sort((a, b) => _isAscending ? a.reviews.length.compareTo(b.reviews.length) : b.reviews.length.compareTo(a.reviews.length));
         break;
       default:
         // Default sorting logic
@@ -89,14 +90,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return BlocBuilder<WinesBloc, WinesState>(
       builder: (context, state) {
         List<Product> filteredWines = state.wines.where((wine) {
-          return wine.name!.toLowerCase().contains(_searchQuery.toLowerCase()) &&
-              wine.category?.name! == _selectedCategory.displayName &&
-              wine.defaultPrice! >= _minPrice &&
-              wine.defaultPrice! <= _maxPrice &&
+          return wine.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
+              wine.category.name == _selectedCategory.displayName &&
+              wine.defaultPrice >= _minPrice &&
+              wine.defaultPrice <= _maxPrice &&
               calculateAverageRating(wine.reviews) >= _minRating &&
               calculateAverageRating(wine.reviews) <= _maxRating &&
-              wine.alcoholContent! >= _minAlcoholContent &&
-              wine.alcoholContent! <= _maxAlcoholContent;
+              wine.alcoholContent >= _minAlcoholContent &&
+              wine.alcoholContent <= _maxAlcoholContent;
         }).toList();
 
         _applySorting(filteredWines);
@@ -477,7 +478,7 @@ Widget buildWineCard(BuildContext context, Product wine) {
               ],
             ),
             // New Product Badge
-            if (wine.isNewArrival!) // Assuming 'isNewArrival' is a property of the Product model
+            if (wine.isNewArrival) // Assuming 'isNewArrival' is a property of the Product model
               Positioned(
                 top: 8,
                 left: 8,
@@ -501,12 +502,12 @@ Widget buildWineCard(BuildContext context, Product wine) {
               child: badges.Badge(
                 badgeAnimation: badges.BadgeAnimation.fade(toAnimate: false),
                 badgeStyle: badges.BadgeStyle(
-                  badgeColor: Utils.getStockStatusColor(wine.stockStatus!), // Get color based on stock status
+                  badgeColor: Utils.getStockStatusColor(wine.stockStatus), // Get color based on stock status
                   shape: badges.BadgeShape.square,
                   borderRadius: BorderRadius.only(topRight: Radius.circular(8)),
                 ),
                 badgeContent: Text(
-                  wine.stockStatus!, // Display the stock status text
+                  wine.stockStatus, // Display the stock status text
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -539,10 +540,10 @@ Widget buildWineImage(BuildContext context, Product wine) {
               minHeight: 100,
             ),
             child: Hero(
-              tag: wine.id!,
+              tag: wine.id,
               transitionOnUserGestures: true,
-              child: Image(
-                image: Utils.networkImage(wine.image),
+              child: AppImage(
+                wine.image,
                 fit: BoxFit.fitHeight,
               ),
             ),
@@ -564,7 +565,7 @@ Widget buildWineDetails(BuildContext context, Product wine) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              wine.name!,
+              wine.name,
               maxLines: 2,
               style: const TextStyle(
                 fontSize: 20,
@@ -573,7 +574,7 @@ Widget buildWineDetails(BuildContext context, Product wine) {
             ),
             Flexible(child: const SizedBox(height: 8)),
             Text(
-              '\$${wine.defaultPrice!.toStringAsFixed(2)}',
+              '\$${wine.defaultPrice.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.amber[800],
@@ -599,7 +600,7 @@ Widget buildWineDetails(BuildContext context, Product wine) {
           children: [
             Flexible(
               child: Text(
-                wine.description!,
+                wine.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -617,8 +618,8 @@ Widget buildWineDetails(BuildContext context, Product wine) {
   );
 }
 
-double calculateAverageRating(List<Reviews>? reviews) {
+double calculateAverageRating(List<Review>? reviews) {
   if (reviews!.isEmpty) return 0.0;
-  final totalRating = reviews.fold<double>(0, (sum, review) => sum + review.rating!);
+  final totalRating = reviews.fold<double>(0, (sum, review) => sum + review.rating);
   return totalRating / reviews.length;
 }

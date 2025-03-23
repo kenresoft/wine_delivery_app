@@ -5,10 +5,10 @@ import 'package:vintiora/core/network/client/network_client.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/features/cart/data/repositories/cart_repository.dart';
-import 'package:vintiora/features/product/data/models/responses/product.dart';
+import 'package:vintiora/features/product/domain/entities/product_entity.dart';
+// import 'package:vintiora/features/product/data/models/responses/product.dart';
+import 'package:vintiora/features/product/domain/repositories/product_repository.dart';
 
-// import 'package:vintiora/model/product.dart';
-import '../../../product/data/repositories/product_repository.dart';
 import '../models/responses/favorite.dart';
 
 class FavoritesRepository {
@@ -22,7 +22,7 @@ class FavoritesRepository {
     return _instance;
   }*/
 
-  static final String _url = '${ApiConstants.baseUrl}/api/favorites';
+  static final String _url = ApiConstants.favorites;
 
   Future<List<({Product product, int cartQuantity})>> getFavorites() async {
     final apiService = GetIt.I<IApiService>();
@@ -38,12 +38,16 @@ class FavoritesRepository {
             data.map((favoriteJson) async {
               try {
                 final favorite = Favorite.fromJson(favoriteJson['favorite']);
-                final product = await productRepository.getProductById(favorite.product);
+                final product = await GetIt.I<ProductRepository>().getProductById(favorite.product);
                 final cartItemQuantity = await cartRepository.getItemQuantity(favorite.product);
-                return (product: product, cartQuantity: cartItemQuantity);
+                final p = product.fold(
+                  (l) => Product.empty(),
+                  (r) => r,
+                );
+                return (product: p, cartQuantity: cartItemQuantity);
               } catch (e) {
                 logger.e('Error fetching data for product: $e');
-                return (product: Product(), cartQuantity: 0);
+                return (product: Product.empty(), cartQuantity: 0);
               }
             }).toList(),
           );

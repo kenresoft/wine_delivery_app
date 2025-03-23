@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart' as badges;
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vintiora/core/router/nav.dart';
@@ -6,7 +7,8 @@ import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/core/theme/themes.dart';
 import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/features/cart/presentation/bloc/cart/cart_bloc.dart';
-import 'package:vintiora/features/product/data/models/responses/product.dart';
+import 'package:vintiora/features/product/domain/entities/product_entity.dart';
+// import 'package:vintiora/features/product/data/models/responses/product.dart';
 import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 
 import 'favorite_search.dart';
@@ -133,20 +135,20 @@ Widget buildProductTile(
                     Flexible(
                       flex: 3,
                       child: Text(
-                        product.name!,
+                        product.name,
                         maxLines: 2,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                     Flexible(child: SizedBox(width: 16)),
                     Text(
-                      '\$${product.defaultPrice!}',
+                      '\$${product.defaultPrice}',
                       maxLines: 1,
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
-                Text(product.description!, maxLines: 2)
+                Text(product.description, maxLines: 2)
               ],
             ),
           ),
@@ -232,10 +234,10 @@ Widget buildImage(Product product) {
           width: 80,
           height: 85,
           child: Hero(
-            tag: product.id ?? 'product',
+            tag: product.id,
             transitionOnUserGestures: true,
-            child: Image(
-              image: Utils.networkImage(product.image),
+            child: AppImage(
+              product.image,
               fit: BoxFit.fitHeight,
             ),
           ),
@@ -255,7 +257,7 @@ void search(
 void addToCart(BuildContext context, Product product) {
   context.read<CartBloc>().add(
         AddToCart(
-          productId: product.id!,
+          productId: product.id,
           quantity: 1,
           cb: () => BlocProvider.of<FavsBloc>(context).add(LoadFavs()),
         ),
@@ -294,7 +296,7 @@ void showProductActions(BuildContext context, Product product) {
               confirmButtonText: 'Remove',
               onCancel: () => Navigator.pop(context),
               onConfirm: () async {
-                BlocProvider.of<FavsBloc>(context).add(ToggleLike(product.id!, true));
+                BlocProvider.of<FavsBloc>(context).add(ToggleLike(product.id, true));
                 Navigator.pop(context);
               },
             );
@@ -307,9 +309,9 @@ void showProductActions(BuildContext context, Product product) {
 
 void shareProduct(Product product) {
   Utils.shareProduct(
-    product.name!,
-    product.description!,
+    product.name,
+    product.description,
     product.image!,
-    product.id!,
+    product.id,
   );
 }
