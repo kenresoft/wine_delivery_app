@@ -28,47 +28,44 @@ class ApiService implements IApiService {
     required Map<String, String> headers,
     CancelToken? cancelToken,
   }) async {
-    switch (method) {
-      case RequestMethod.get:
-        return await _networkClient.get(
+    final RequestMethod finalMethod = (data != null && method == RequestMethod.get) ? RequestMethod.post : method;
+
+    return switch (finalMethod) {
+      RequestMethod.get => await _networkClient.get(
           endpoint,
           queryParameters: queryParameters,
           headers: headers,
           cancelToken: cancelToken,
-        );
-      case RequestMethod.post:
-        return await _networkClient.post(
-          endpoint,
-          data: data,
-          queryParameters: queryParameters,
-          headers: headers,
-          cancelToken: cancelToken,
-        );
-      case RequestMethod.put:
-        return await _networkClient.put(
+        ),
+      RequestMethod.post => await _networkClient.post(
           endpoint,
           data: data,
           queryParameters: queryParameters,
           headers: headers,
           cancelToken: cancelToken,
-        );
-      case RequestMethod.patch:
-        return await _networkClient.patch(
+        ),
+      RequestMethod.put => await _networkClient.put(
           endpoint,
           data: data,
           queryParameters: queryParameters,
           headers: headers,
           cancelToken: cancelToken,
-        );
-      case RequestMethod.delete:
-        return await _networkClient.delete(
+        ),
+      RequestMethod.patch => await _networkClient.patch(
           endpoint,
           data: data,
           queryParameters: queryParameters,
           headers: headers,
           cancelToken: cancelToken,
-        );
-    }
+        ),
+      RequestMethod.delete => await _networkClient.delete(
+          endpoint,
+          data: data,
+          queryParameters: queryParameters,
+          headers: headers,
+          cancelToken: cancelToken,
+        ),
+    };
   }
 
   @override

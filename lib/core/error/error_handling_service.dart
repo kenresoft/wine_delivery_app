@@ -68,7 +68,6 @@ class ErrorHandlingService {
         break;
     }
 
-    // Log detailed error information for debugging
     if (kDebugMode) {
       logger.d('Network Error: ${error.type} - ${error.message}');
       print('Response Data: ${error.response?.data}');

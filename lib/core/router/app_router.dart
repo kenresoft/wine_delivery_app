@@ -11,7 +11,7 @@ import 'package:vintiora/features/onboarding/onboarding_screen.dart';
 import 'package:vintiora/features/order/data/models/responses/order.dart';
 import 'package:vintiora/features/order/data/models/responses/order_product_item.dart';
 import 'package:vintiora/features/order/presentation/pages/order_confirmation_screen.dart';
-import 'package:vintiora/features/product/domain/entities/product_entity.dart';
+import 'package:vintiora/features/product/domain/entities/product.dart';
 // import 'package:vintiora/features/product/data/models/responses/product.dart';
 import 'package:vintiora/features/product/presentation/pages/product_detail_screen.dart';
 import 'package:vintiora/shared/components/error_page.dart';

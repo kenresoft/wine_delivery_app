@@ -34,6 +34,7 @@ class ApiConstants {
 
   // Other endpoints
   static const String products = '/products';
+  static const String flashSales = '/flash-sales';
   static const String categories = '/categories';
   static const String favorites = '/favorites';
   static const String cart = '/cart';
