@@ -18,16 +18,12 @@ class DependencyInjector extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         ...CoreDI.providers(),
-        // Feature: Auth
         ...AuthDI.repositories(),
         ...AuthDI.useCases(),
-        // Feature:
       ],
       child: MultiBlocProvider(
         providers: [
-          // Feature-specific blocs
           ...AuthDI.blocs(),
-          // Additional bloc providers
           ...Providers.blocProviders,
         ],
         child: child,

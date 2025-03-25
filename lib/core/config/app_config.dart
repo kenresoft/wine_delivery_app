@@ -17,6 +17,7 @@ import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/firebase_util.dart';
 import 'package:vintiora/core/utils/notification_util.dart';
 import 'package:vintiora/core/utils/utils.dart';
+import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import 'package:vintiora/firebase_options.dart';
 
 class Config {
@@ -73,6 +74,11 @@ class Config {
     BuildContext context = buildContext ?? navContext!;
 
     final List<Future<void>> blocOperations = [
+      _waitForBlocCompletion<ActiveFlashSalesBloc, ActiveFlashSalesState>(
+        context: context,
+        action: (bloc) => bloc.add(LoadActiveFlashSales()),
+        condition: (state) => state.status != ActiveFlashSalesStatus.loading,
+      ),
       /*_waitForBlocCompletion<DashboardBloc, DashboardState>(
         context: context,
         action: (bloc) => bloc.add(LoadDashboardData()),
