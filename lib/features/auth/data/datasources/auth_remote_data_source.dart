@@ -117,7 +117,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Either<Failure, String>> refreshToken(String refreshToken) async {
     return await _apiService.request<String>(
-      endpoint: ApiConstants.refreshToken,
+      endpoint: '',
+      // endpoint: ApiConstants.refreshToken,
       method: RequestMethod.post,
       data: {
         'refreshToken': refreshToken,

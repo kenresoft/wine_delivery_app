@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:vintiora/core/storage/local_storage.dart';
-
-import '../models/auth_tokens_model.dart';
-import '../models/user_model.dart';
+import 'package:vintiora/core/storage/secure_storage.dart';
+import 'package:vintiora/features/auth/data/models/auth_tokens_model.dart';
+import 'package:vintiora/features/auth/data/models/user_model.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> cacheUser(UserModel user);
@@ -20,36 +20,38 @@ abstract class AuthLocalDataSource {
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  static const String USER_KEY = 'CACHED_USER';
-  static const String ACCESS_TOKEN_KEY = 'CACHED_ACCESS_TOKEN';
-  static const String REFRESH_TOKEN_KEY = 'CACHED_REFRESH_TOKEN';
+  static const String userKey = 'CACHED_USER';
+  static const String accessTokenKey = 'CACHED_ACCESS_TOKEN';
+  static const String refreshTokenKey = 'CACHED_REFRESH_TOKEN';
 
   AuthLocalDataSourceImpl();
 
   @override
   Future<void> cacheUser(UserModel user) {
     return LocalStorage.set<String>(
-      USER_KEY,
+      userKey,
       jsonEncode(user.toJson()),
     );
   }
 
   @override
   Future<void> cacheTokens(AuthTokensModel tokens) async {
+    // Store access token in regular local storage
     await LocalStorage.set<String>(
-      ACCESS_TOKEN_KEY,
+      accessTokenKey,
       tokens.accessToken,
     );
 
-    await LocalStorage.set<String>(
-      REFRESH_TOKEN_KEY,
+    // Store refresh token in secure storage
+    await SecureStorage.set<String>(
+      refreshTokenKey,
       tokens.refreshToken,
     );
   }
 
   @override
   Future<UserModel?> getLastUser() async {
-    final jsonString = LocalStorage.get<String>(USER_KEY);
+    final jsonString = LocalStorage.get<String>(userKey);
     if (jsonString != null) {
       return UserModel.fromJson(jsonDecode(jsonString));
     }
@@ -58,18 +60,18 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<String?> getAccessToken() async {
-    return LocalStorage.get<String>(ACCESS_TOKEN_KEY);
+    return LocalStorage.get<String>(accessTokenKey);
   }
 
   @override
   Future<String?> getRefreshToken() async {
-    return LocalStorage.get<String>(REFRESH_TOKEN_KEY);
+    return await SecureStorage.get<String>(refreshTokenKey);
   }
 
   @override
   Future<void> clearUserData() async {
-    await LocalStorage.remove(USER_KEY);
-    await LocalStorage.remove(ACCESS_TOKEN_KEY);
-    await LocalStorage.remove(REFRESH_TOKEN_KEY);
+    await LocalStorage.remove(userKey);
+    await LocalStorage.remove(accessTokenKey);
+    await SecureStorage.remove(refreshTokenKey);
   }
 }

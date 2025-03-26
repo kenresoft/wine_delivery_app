@@ -1,3 +1,4 @@
+/*
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:synchronized/synchronized.dart';
@@ -11,6 +12,7 @@ class TokenRefresher {
   final INetworkClient _networkClient;
   final AuthLocalDataSource _localDataSource;
   final Lock _refreshLock = Lock();
+  bool _isRefreshing = false;
 
   TokenRefresher({
     required INetworkClient networkClient,
@@ -21,9 +23,16 @@ class TokenRefresher {
   Future<Either<Failure, String>> refreshToken() async {
     // Only one refresh operation at a time
     return _refreshLock.synchronized(() async {
+      if (_isRefreshing) {
+        return Left(AuthFailure("Refresh already in progress"));
+      }
+
+      _isRefreshing = true;
+
       final refreshToken = await _localDataSource.getRefreshToken();
       if (refreshToken == null) {
-        return Left(ServerFailure("No refresh token available"));
+        _isRefreshing = false;
+        return Left(AuthFailure("No refresh token available"));
       }
 
       try {
@@ -44,15 +53,23 @@ class TokenRefresher {
               refreshToken: refreshToken,
             ),
           );
+
+          _isRefreshing = false;
           return Right(newAccessToken);
         } else {
-          return Left(ServerFailure("Failed to refresh token"));
+          _isRefreshing = false;
+          await _localDataSource.clearUserData();
+          return Left(AuthFailure("Invalid refresh response"));
         }
       } on DioException catch (e) {
+        _isRefreshing = false;
+        await _localDataSource.clearUserData();
         return Left(ServerFailure(e.toString()));
       } catch (e) {
+        _isRefreshing = false;
         return Left(ServerFailure(e.toString()));
       }
     });
   }
 }
+*/
