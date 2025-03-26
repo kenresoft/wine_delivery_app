@@ -22,6 +22,7 @@ import 'package:vintiora/features/flash_sale/domain/repositories/flash_sale_repo
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/flash_sale_details/flash_sale_details_bloc.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/flash_sale_products/flash_sale_products_bloc.dart';
+import 'package:vintiora/features/main/presentation/bloc/navigation/bottom_navigation_bloc.dart';
 import 'package:vintiora/features/product/data/datasources/product_remote_data_source.dart';
 import 'package:vintiora/features/product/data/repositories/product_repository_impl.dart';
 import 'package:vintiora/features/product/domain/repositories/product_repository.dart';
@@ -40,16 +41,19 @@ void setupDependencies() {
         authDataSource: getIt<AuthLocalDataSource>(),
         cacheService: getIt<CacheService>(),
       ));
-  getIt.registerLazySingleton<TokenRefresher>(() => TokenRefresher(
+  /*getIt.registerLazySingleton<TokenRefresher>(() => TokenRefresher(
         networkClient: getIt<INetworkClient>(),
         localDataSource: getIt<AuthLocalDataSource>(),
-      ));
+      ));*/
 
   getIt.registerLazySingleton<IApiService>(() => ApiService(
         networkClient: getIt<INetworkClient>(),
         localDataSource: getIt<AuthLocalDataSource>(),
-        tokenRefresher: getIt<TokenRefresher>(),
+        // tokenRefresher: getIt<TokenRefresher>(),
       ));
+
+  // Nav
+  getIt.registerLazySingleton(() => NavigationBloc());
 
   // Feature: Auth
   // DataSource

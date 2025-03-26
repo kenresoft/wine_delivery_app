@@ -8,11 +8,15 @@ import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.d
 
 class DioNetworkClient implements INetworkClient {
   final Dio _dio;
+  final AuthLocalDataSource _authDataSource;
+  final CacheService _cacheService;
 
   DioNetworkClient({
     required AuthLocalDataSource authDataSource,
     required CacheService cacheService,
-  }) : _dio = Dio(BaseOptions(
+  })  : _authDataSource = authDataSource,
+        _cacheService = cacheService,
+        _dio = Dio(BaseOptions(
           baseUrl: ApiConstants.baseUrl,
           connectTimeout: Constants.connectionTimeout,
           receiveTimeout: Constants.receiveTimeout,
@@ -22,13 +26,18 @@ class DioNetworkClient implements INetworkClient {
             'Content-Type': 'application/json',
           },
         )) {
+    _addInterceptors();
+  }
+
+  void _addInterceptors() {
+    _dio.interceptors.clear(); // Clear any existing interceptors
     _dio.interceptors.addAll([
       AuthInterceptor(
         dio: _dio,
-        authLocalDataSource: authDataSource,
+        authLocalDataSource: _authDataSource,
       ),
       CacheInterceptor(
-        cacheService: cacheService,
+        cacheService: _cacheService,
       ),
       LogInterceptor(
         requestBody: true,

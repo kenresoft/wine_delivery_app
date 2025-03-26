@@ -5,20 +5,16 @@ import 'package:vintiora/core/error/failures.dart';
 import 'package:vintiora/core/network/api_service.dart';
 import 'package:vintiora/core/network/client/network_client.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
-import 'package:vintiora/features/auth/data/datasources/token_refresher.dart';
 
 class ApiService implements IApiService {
   final INetworkClient _networkClient;
   final AuthLocalDataSource _localDataSource;
-  final TokenRefresher _tokenRefresher;
 
   ApiService({
     required INetworkClient networkClient,
     required AuthLocalDataSource localDataSource,
-    required TokenRefresher tokenRefresher,
   })  : _networkClient = networkClient,
-        _localDataSource = localDataSource,
-        _tokenRefresher = tokenRefresher;
+        _localDataSource = localDataSource;
 
   Future<Response> _executeRequest({
     required String endpoint,
@@ -93,19 +89,6 @@ class ApiService implements IApiService {
       return Right(parser(response.data));
     } on DioException catch (e) {
       if (e.response?.statusCode == 401 && requiresAuth) {
-        final refreshResult = await _handleTokenRefresh();
-        if (refreshResult) {
-          return request(
-            endpoint: endpoint,
-            parser: parser,
-            method: method,
-            headers: headers,
-            queryParameters: queryParameters,
-            data: data,
-            requiresAuth: requiresAuth,
-            cancelToken: cancelToken,
-          );
-        }
         return Left(AuthFailure.sessionExpired());
       }
       final failureMessage = ErrorHandlingService.getNetworkErrorMessage(e);
@@ -138,18 +121,6 @@ class ApiService implements IApiService {
       return Right(response);
     } on DioException catch (e) {
       if (e.response?.statusCode == 401 && requiresAuth) {
-        final refreshResult = await _handleTokenRefresh();
-        if (refreshResult) {
-          return makeRequest(
-            endpoint,
-            method: method,
-            data: data,
-            queryParameters: queryParameters,
-            headers: headers,
-            requiresAuth: requiresAuth,
-            cancelToken: cancelToken,
-          );
-        }
         return Left(AuthFailure.sessionExpired());
       }
       final failureMessage = ErrorHandlingService.getNetworkErrorMessage(e);
@@ -159,7 +130,10 @@ class ApiService implements IApiService {
     }
   }
 
-  Future<Map<String, String>> _prepareHeaders(Map<String, String>? headers, bool requiresAuth) async {
+  Future<Map<String, String>> _prepareHeaders(
+    Map<String, String>? headers,
+    bool requiresAuth,
+  ) async {
     final requestHeaders = headers != null ? Map<String, String>.from(headers) : <String, String>{};
     if (requiresAuth) {
       final token = await _localDataSource.getAccessToken();
@@ -168,17 +142,6 @@ class ApiService implements IApiService {
       }
     }
     return requestHeaders;
-  }
-
-  Future<bool> _handleTokenRefresh() async {
-    final result = await _tokenRefresher.refreshToken();
-    return result.fold(
-      (failure) async {
-        await _localDataSource.clearUserData();
-        return false;
-      },
-      (newToken) => true,
-    );
   }
 
   @override

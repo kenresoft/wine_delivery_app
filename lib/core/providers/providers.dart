@@ -1,6 +1,7 @@
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:vintiora/core/di/di_setup.dart';
 import 'package:vintiora/core/network/bloc/network_bloc.dart';
 import 'package:vintiora/core/theme/bloc/theme_bloc.dart';
 import 'package:vintiora/features/cart/presentation/bloc/cart/cart_bloc.dart';
@@ -27,11 +28,11 @@ class Providers {
     return [
       BlocProvider<ThemeBloc>(create: (context) => ThemeBloc()),
       BlocProvider<NetworkBloc>(create: (context) => NetworkBloc(internetConnectionChecker)),
-      BlocProvider<NavigationBloc>(create: (context) => NavigationBloc()),
-      BlocProvider<ProductBloc>(create: (context) => GetIt.I()),
-      BlocProvider<ActiveFlashSalesBloc>(create: (context) => GetIt.I()),
-      BlocProvider<FlashSaleDetailsBloc>(create: (context) => GetIt.I()),
-      BlocProvider<FlashSaleProductsBloc>(create: (context) => GetIt.I()),
+      BlocProvider<NavigationBloc>(create: (context) => getIt()),
+      BlocProvider<ProductBloc>(create: (context) => getIt()),
+      BlocProvider<ActiveFlashSalesBloc>(create: (context) => getIt()),
+      BlocProvider<FlashSaleDetailsBloc>(create: (context) => getIt()),
+      BlocProvider<FlashSaleProductsBloc>(create: (context) => getIt()),
       BlocProvider<CartBloc>(create: (context) => CartBloc()),
       BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
       BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc()),
