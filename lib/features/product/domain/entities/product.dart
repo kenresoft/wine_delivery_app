@@ -6,7 +6,7 @@ class Product extends Equatable {
   final String id;
   final String name;
   final String brand;
-  final String? description;
+  final String description;
   final ProductCategory category;
   final double defaultPrice;
   final int defaultQuantity;
@@ -36,7 +36,7 @@ class Product extends Equatable {
     required this.id,
     required this.name,
     this.brand = 'Generic Brand',
-    this.description,
+    this.description = 'No description',
     required this.category,
     this.defaultPrice = 0.0,
     this.defaultQuantity = 0,
@@ -62,6 +62,16 @@ class Product extends Equatable {
     required this.updatedAt,
     this.version = 0,
   });
+
+  factory Product.empty() {
+    return Product(
+      id: '',
+      name: '',
+      category: const ProductCategory(id: '', name: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
 
   Product copyWith({
     String? id,
