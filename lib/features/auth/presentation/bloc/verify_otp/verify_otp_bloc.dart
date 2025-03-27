@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:vintiora/features/auth/domain/entities/auth_tokens.dart';
 import 'package:vintiora/features/auth/domain/entities/user.dart';
