@@ -2,64 +2,35 @@ import 'package:vintiora/features/product/domain/entities/product.dart';
 
 class ProductModel extends Product {
   const ProductModel({
-    required String id,
-    required String name,
-    required CategoryModel category,
-    required double defaultPrice,
-    required int defaultQuantity,
-    required double defaultDiscount,
-    required List<SupplierModel> suppliers,
-    required double alcoholContent,
-    required String description,
-    required bool deleted,
-    required List<String> tags,
-    required String stockStatus,
-    required bool isFeatured,
-    required bool isOnSale,
-    required List<VariantModel> variants,
-    required double shippingCost,
-    required List<RelatedProductModel> relatedProducts,
-    required List<ReviewModel> reviews,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    required int version,
-    required bool isNewArrival,
-    required String brand,
-    required double weight,
-    required List<String> images,
-    String? image,
-    required DimensionsModel dimensions,
-    CurrentFlashSaleModel? currentFlashSale,
-  }) : super(
-          id: id,
-          name: name,
-          category: category,
-          defaultPrice: defaultPrice,
-          defaultQuantity: defaultQuantity,
-          defaultDiscount: defaultDiscount,
-          suppliers: suppliers,
-          alcoholContent: alcoholContent,
-          description: description,
-          deleted: deleted,
-          tags: tags,
-          stockStatus: stockStatus,
-          isFeatured: isFeatured,
-          isOnSale: isOnSale,
-          variants: variants,
-          shippingCost: shippingCost,
-          relatedProducts: relatedProducts,
-          reviews: reviews,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          version: version,
-          isNewArrival: isNewArrival,
-          brand: brand,
-          weight: weight,
-          images: images,
-          image: image,
-          dimensions: dimensions,
-          currentFlashSale: currentFlashSale,
-        );
+    required super.id,
+    required super.name,
+    required CategoryModel super.category,
+    required super.defaultPrice,
+    required super.defaultQuantity,
+    required super.defaultDiscount,
+    required List<SupplierModel> super.suppliers,
+    required super.alcoholContent,
+    required super.description,
+    required super.deleted,
+    required super.tags,
+    required super.stockStatus,
+    required super.isFeatured,
+    required super.isOnSale,
+    required List<VariantModel> super.variants,
+    required super.shippingCost,
+    required List<RelatedProductModel> super.relatedProducts,
+    required List<ReviewModel> super.reviews,
+    required super.createdAt,
+    required super.updatedAt,
+    required super.version,
+    required super.isNewArrival,
+    required super.brand,
+    required super.weight,
+    required super.images,
+    super.image,
+    required DimensionsModel super.dimensions,
+    super.currentFlashSale,
+  });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     CurrentFlashSaleModel? currentFlashSale;
@@ -99,6 +70,81 @@ class ProductModel extends Product {
     );
   }
 
+  factory ProductModel.empty() {
+    return ProductModel(
+      id: '',
+      name: '',
+      category: const CategoryModel(id: '', name: ''),
+      defaultPrice: 0.0,
+      defaultQuantity: 0,
+      defaultDiscount: 0.0,
+      suppliers: const [],
+      alcoholContent: 0.0,
+      description: '',
+      deleted: false,
+      tags: const [],
+      stockStatus: 'Out of Stock',
+      isFeatured: false,
+      isOnSale: false,
+      variants: const [],
+      shippingCost: 0.0,
+      relatedProducts: const [],
+      reviews: const [],
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      version: 0,
+      isNewArrival: false,
+      brand: 'Generic Brand',
+      weight: 0.0,
+      images: const [],
+      dimensions: const DimensionsModel(),
+    );
+  }
+
+  /// The [flashSaleSpecialPrice] parameter is used to set the flash sale price.
+  factory ProductModel.fromFlashSaleJson(Map<String, dynamic> json, double? flashSaleSpecialPrice) {
+    return ProductModel(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      brand: json['brand'] ?? 'Generic Brand',
+      description: json['description'] ?? 'No description',
+      // If the category is provided as a Map, use it; otherwise, create a default category.
+      category: json['category'] is Map<String, dynamic> ? CategoryModel.fromJson(json['category']) : CategoryModel(id: json['category'] ?? '', name: 'Unknown Category'),
+      defaultPrice: (json['defaultPrice'] ?? 0.0).toDouble(),
+      // Assuming flash sale data might not include these fields.
+      defaultQuantity: json['defaultQuantity'] ?? 0,
+      defaultDiscount: (json['defaultDiscount'] ?? 0.0).toDouble(),
+      suppliers: [],
+      alcoholContent: (json['alcoholContent'] ?? 0.0).toDouble(),
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
+      images: json['images'] != null ? List<String>.from(json['images']) : [],
+      image: json['image'],
+      dimensions: json['dimensions'] is Map<String, dynamic> ? DimensionsModel.fromJson(json['dimensions']) : const DimensionsModel(),
+      // If a flash sale special price is provided, create a minimal current flash sale.
+      currentFlashSale: flashSaleSpecialPrice != null
+          ? CurrentFlashSaleModel(
+              flashSaleId: null,
+              specialPrice: flashSaleSpecialPrice,
+              startDate: DateTime.now(),
+              endDate: DateTime.now(),
+            )
+          : null,
+      reviews: [],
+      relatedProducts: [],
+      isNewArrival: json['isNewArrival'] ?? false,
+      isFeatured: json['isFeatured'] ?? false,
+      isOnSale: json['isOnSale'] ?? false,
+      stockStatus: json['stockStatus'] ?? 'Out of Stock',
+      shippingCost: (json['shippingCost'] ?? 0.0).toDouble(),
+      weight: (json['weight'] ?? 0.0).toDouble(),
+      deleted: json['deleted'] ?? false,
+      variants: [],
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : DateTime.now(),
+      version: json['version'] ?? 0,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -115,7 +161,7 @@ class ProductModel extends Product {
       'images': images,
       'image': image,
       'dimensions': (dimensions as DimensionsModel).toJson(),
-      'currentFlashSale': (currentFlashSale as CurrentFlashSaleModel).toJson(),
+      'currentFlashSale': currentFlashSale != null ? (currentFlashSale as CurrentFlashSaleModel).toJson() : null,
       'reviews': reviews.map((r) => (r as ReviewModel).toJson()).toList(),
       'relatedProducts': relatedProducts.map((rp) => (rp as RelatedProductModel).toJson()).toList(),
       'isNewArrival': isNewArrival,
@@ -131,8 +177,6 @@ class ProductModel extends Product {
       'version': version,
     };
   }
-
-// ... Rest of the model code remains the same ...
 }
 
 // Supporting model classes with serialization
@@ -156,24 +200,14 @@ class CategoryModel extends ProductCategory {
   }
 }
 
-// Implement similar serialization for other model classes
-// (SupplierModel, DimensionsModel, CurrentFlashSaleModel, etc.)
-// following the same pattern as CategoryModel
-
 class SupplierModel extends ProductSupplier {
   const SupplierModel({
-    required String id,
-    required Map<String, dynamic> supplier,
-    double price = 0.0,
-    int quantity = 0,
-    double discount = 0.0,
-  }) : super(
-          id: id,
-          supplier: supplier,
-          price: price,
-          quantity: quantity,
-          discount: discount,
-        );
+    required super.id,
+    required super.supplier,
+    super.price,
+    super.quantity,
+    super.discount,
+  });
 
   factory SupplierModel.fromJson(Map<String, dynamic> json) {
     return SupplierModel(
@@ -185,7 +219,6 @@ class SupplierModel extends ProductSupplier {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -199,10 +232,10 @@ class SupplierModel extends ProductSupplier {
 
 class DimensionsModel extends Dimensions {
   const DimensionsModel({
-    double length = 0.0,
-    double width = 0.0,
-    double height = 0.0,
-  }) : super(length: length, width: width, height: height);
+    super.length = 0.0,
+    super.width = 0.0,
+    super.height = 0.0,
+  });
 
   factory DimensionsModel.fromJson(Map<String, dynamic> json) {
     return DimensionsModel(
@@ -212,7 +245,6 @@ class DimensionsModel extends Dimensions {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'length': length,
@@ -224,16 +256,11 @@ class DimensionsModel extends Dimensions {
 
 class CurrentFlashSaleModel extends CurrentFlashSale {
   const CurrentFlashSaleModel({
-    String? flashSaleId,
-    required double specialPrice,
-    required DateTime startDate,
-    required DateTime endDate,
-  }) : super(
-          flashSaleId: flashSaleId,
-          specialPrice: specialPrice,
-          startDate: startDate,
-          endDate: endDate,
-        );
+    super.flashSaleId,
+    required super.specialPrice,
+    required super.startDate,
+    required super.endDate,
+  });
 
   factory CurrentFlashSaleModel.fromJson(Map<String, dynamic> json) {
     return CurrentFlashSaleModel(
@@ -244,7 +271,6 @@ class CurrentFlashSaleModel extends CurrentFlashSale {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'flashSale': flashSaleId,
@@ -257,18 +283,12 @@ class CurrentFlashSaleModel extends CurrentFlashSale {
 
 class ReviewModel extends ProductReview {
   const ReviewModel({
-    String? userId,
-    required int rating,
-    String? comment,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-  }) : super(
-          userId: userId,
-          rating: rating,
-          comment: comment,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+    super.userId,
+    required super.rating,
+    super.comment,
+    required super.createdAt,
+    required super.updatedAt,
+  });
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
     return ReviewModel(
@@ -280,7 +300,6 @@ class ReviewModel extends ProductReview {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'user': userId,
@@ -294,16 +313,11 @@ class ReviewModel extends ProductReview {
 
 class RelatedProductModel extends RelatedProduct {
   const RelatedProductModel({
-    required String productId,
-    List<String> matchedFields = const [],
-    String relationshipType = 'related',
-    int priority = 1,
-  }) : super(
-          productId: productId,
-          matchedFields: matchedFields,
-          relationshipType: relationshipType,
-          priority: priority,
-        );
+    required super.productId,
+    super.matchedFields,
+    super.relationshipType,
+    super.priority,
+  });
 
   factory RelatedProductModel.fromJson(Map<String, dynamic> json) {
     return RelatedProductModel(
@@ -314,7 +328,6 @@ class RelatedProductModel extends RelatedProduct {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'product': productId,
@@ -327,14 +340,10 @@ class RelatedProductModel extends RelatedProduct {
 
 class VariantModel extends ProductVariant {
   const VariantModel({
-    required String type,
-    required String value,
-    String? id,
-  }) : super(
-          type: type,
-          value: value,
-          id: id,
-        );
+    required super.type,
+    required super.value,
+    super.id,
+  });
 
   factory VariantModel.fromJson(Map<String, dynamic> json) {
     return VariantModel(
@@ -344,7 +353,6 @@ class VariantModel extends ProductVariant {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'type': type,
