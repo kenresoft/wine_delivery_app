@@ -30,7 +30,7 @@ class DioNetworkClient implements INetworkClient {
   }
 
   void _addInterceptors() {
-    _dio.interceptors.clear(); // Clear any existing interceptors
+    _dio.interceptors.clear();
     _dio.interceptors.addAll([
       AuthInterceptor(
         dio: _dio,

@@ -45,7 +45,6 @@ class AuthInterceptor extends Interceptor {
 
       return _refreshLock.synchronized(() async {
         if (_isRefreshing) {
-          // If another request is already refreshing, wait and retry with new token
           try {
             await Future.delayed(const Duration(milliseconds: 100));
             final newToken = await authLocalDataSource.getAccessToken();
@@ -61,7 +60,6 @@ class AuthInterceptor extends Interceptor {
         _isRefreshing = true;
 
         try {
-          // Create a new Dio instance without interceptors for the refresh request
           final refreshDio = Dio(BaseOptions(
             baseUrl: ApiConstants.baseUrl,
             headers: {
