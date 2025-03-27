@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vintiora/core/network/api_service.dart';
-import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
+import 'package:vintiora/core/di/di_setup.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:vintiora/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:vintiora/features/auth/domain/repositories/auth_repository.dart';
@@ -18,65 +17,43 @@ import 'package:vintiora/features/auth/presentation/bloc/register/register_bloc.
 import 'package:vintiora/features/auth/presentation/bloc/verify_otp/verify_otp_bloc.dart';
 
 class AuthDI {
-  static List<RepositoryProvider> repositories() => [
-        RepositoryProvider<AuthLocalDataSource>(
-          create: (context) => AuthLocalDataSourceImpl(),
-        ),
-        RepositoryProvider<AuthRemoteDataSource>(
-          create: (context) => AuthRemoteDataSourceImpl(
-            apiService: context.read<IApiService>(),
-          ),
-        ),
-        RepositoryProvider<AuthRepository>(
-          create: (context) => AuthRepositoryImpl(
-            remoteDataSource: context.read<AuthRemoteDataSource>(),
-            localDataSource: context.read<AuthLocalDataSource>(),
-          ),
-        ),
-      ];
+  static dependencies() {
+    // DataSource
+    getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(
+          apiService: getIt(),
+        ));
 
-  static List<RepositoryProvider> useCases() => [
-        RepositoryProvider<LoginUseCase>(
-          create: (context) => LoginUseCase(context.read<AuthRepository>()),
-        ),
-        RepositoryProvider<RegisterUseCase>(
-          create: (context) => RegisterUseCase(context.read<AuthRepository>()),
-        ),
-        RepositoryProvider<VerifyOtpUseCase>(
-          create: (context) => VerifyOtpUseCase(context.read<AuthRepository>()),
-        ),
-        RepositoryProvider<GetProfileUseCase>(
-          create: (context) => GetProfileUseCase(context.read<AuthRepository>()),
-        ),
-        RepositoryProvider<CheckAuthUseCase>(
-          create: (context) => CheckAuthUseCase(context.read<AuthRepository>()),
-        ),
-        RepositoryProvider<RefreshTokenUseCase>(
-          create: (context) => RefreshTokenUseCase(context.read<AuthRepository>()),
-        ),
-        RepositoryProvider<LogoutUseCase>(
-          create: (context) => LogoutUseCase(context.read<AuthRepository>()),
-        ),
-      ];
+    // Repository
+    getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(
+          remoteDataSource: getIt(),
+          localDataSource: getIt(),
+        ));
 
-  static List<BlocProvider> blocs() => [
-        BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc(
-            checkAuthUseCase: context.read<CheckAuthUseCase>(),
-            logoutUseCase: context.read<LogoutUseCase>(),
-          ),
-        ),
-        BlocProvider<RegisterBloc>(
-          create: (context) => RegisterBloc(registerUseCase: context.read<RegisterUseCase>()),
-        ),
-        BlocProvider<LoginBloc>(
-          create: (context) => LoginBloc(loginUseCase: context.read<LoginUseCase>()),
-        ),
-        BlocProvider<VerifyOtpBloc>(
-          create: (context) => VerifyOtpBloc(verifyOtpUseCase: context.read<VerifyOtpUseCase>()),
-        ),
-        BlocProvider<ProfileBloc>(
-          create: (context) => ProfileBloc(getProfileUseCase: context.read<GetProfileUseCase>()),
-        ),
-      ];
+    // Use Cases
+    getIt.registerLazySingleton(() => LoginUseCase(getIt()));
+    getIt.registerLazySingleton(() => RegisterUseCase(getIt()));
+    getIt.registerLazySingleton(() => VerifyOtpUseCase(getIt()));
+    getIt.registerLazySingleton(() => GetProfileUseCase(getIt()));
+    getIt.registerLazySingleton(() => CheckAuthUseCase(getIt()));
+    getIt.registerLazySingleton(() => RefreshTokenUseCase(getIt()));
+    getIt.registerLazySingleton(() => LogoutUseCase(getIt()));
+
+    // Blocs
+    getIt.registerFactory(() => AuthBloc(checkAuthUseCase: getIt(), logoutUseCase: getIt()));
+    getIt.registerFactory(() => RegisterBloc(registerUseCase: getIt()));
+    getIt.registerFactory(() => LoginBloc(loginUseCase: getIt()));
+    getIt.registerFactory(() => VerifyOtpBloc(verifyOtpUseCase: getIt()));
+    getIt.registerFactory(() => ProfileBloc(getProfileUseCase: getIt()));
+  }
+
+  // Providers
+  static List<BlocProvider> providers() {
+    return [
+      BlocProvider<AuthBloc>(create: (context) => getIt()),
+      BlocProvider<RegisterBloc>(create: (context) => getIt()),
+      BlocProvider<LoginBloc>(create: (context) => getIt()),
+      BlocProvider<VerifyOtpBloc>(create: (context) => getIt()),
+      BlocProvider<ProfileBloc>(create: (context) => getIt()),
+    ];
+  }
 }

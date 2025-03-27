@@ -14,7 +14,7 @@ import 'package:vintiora/core/storage/preferences.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/theme/bloc/theme_bloc.dart';
 import 'package:vintiora/core/utils/constants.dart';
-import 'package:vintiora/features/product/domain/entities/product_entity.dart';
+import 'package:vintiora/features/product/domain/entities/product.dart';
 import 'package:vintiora/features/product/domain/repositories/product_repository.dart';
 
 class MyApp extends StatefulWidget {
