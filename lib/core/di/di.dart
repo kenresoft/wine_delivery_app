@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vintiora/core/di/core_di.dart';
 import 'package:vintiora/core/providers/providers.dart';
 import 'package:vintiora/features/auth/di/auth_di.dart';
 
@@ -15,19 +14,12 @@ class DependencyInjector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
-        ...CoreDI.providers(),
-        ...AuthDI.repositories(),
-        ...AuthDI.useCases(),
+        ...AuthDI.providers(),
+        ...Providers.blocProviders,
       ],
-      child: MultiBlocProvider(
-        providers: [
-          ...AuthDI.blocs(),
-          ...Providers.blocProviders,
-        ],
-        child: child,
-      ),
+      child: child,
     );
   }
 }
