@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:vintiora/core/cache/cache_policy.dart';
 import 'package:vintiora/core/storage/local_storage.dart';
 
 abstract class CacheService {
@@ -19,13 +20,14 @@ class CacheServiceImpl implements CacheService {
 
   @override
   Future<dynamic> get(String key) async {
+    // remove("/flash-sales/active");
     final cachedData = LocalStorage.get<String>(_getCacheKey(key));
 
     if (cachedData != null) {
       final decodedData = jsonDecode(cachedData);
-      final expiryTime = decodedData['expiry'] as int;
+      final expiryTime = decodedData['expiry'] as int; // CachePolicy.getExpiry(key).inMilliseconds
 
-      if (DateTime.now().millisecondsSinceEpoch < expiryTime) {
+      if (DateTime.now().millisecondsSinceEpoch < expiryTime ) {
         return decodedData['data'];
       } else {
         await remove(key);
