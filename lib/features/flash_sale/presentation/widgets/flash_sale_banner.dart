@@ -48,7 +48,7 @@ class FlashSaleBanner extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -70,13 +70,17 @@ class FlashSaleBanner extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            flashSale.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white70,
+                          SizedBox(
+                            height: 14 * 1.4 * 2, // fontSize * lineHeight * number of lines
+                            child: Text(
+                              flashSale.description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70,
+                                height: 1.4,
+                              ),
                             ),
                           ),
                         ],

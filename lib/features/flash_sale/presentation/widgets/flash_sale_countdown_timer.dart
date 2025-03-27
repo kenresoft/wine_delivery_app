@@ -17,7 +17,7 @@ class FlashSaleCountdownTimer extends StatefulWidget {
     required this.hours,
     required this.minutes,
     required this.seconds,
-    this.textColor,
+    this.textColor = AppColors.white,
     this.fontSize = 14,
     this.showLabels = true,
     this.onTimerComplete,
@@ -119,7 +119,7 @@ class _FlashSaleCountdownTimerState extends State<FlashSaleCountdownTimer> {
           Text(
             value,
             style: TextStyle(
-              color: widget.textColor ?? Colors.white,
+              color: widget.textColor,
               fontWeight: FontWeight.bold,
               fontSize: widget.fontSize,
             ),
