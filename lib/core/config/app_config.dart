@@ -18,6 +18,7 @@ import 'package:vintiora/core/utils/firebase_util.dart';
 import 'package:vintiora/core/utils/notification_util.dart';
 import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
+import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
 import 'package:vintiora/firebase_options.dart';
 
 class Config {
@@ -74,31 +75,26 @@ class Config {
     BuildContext context = buildContext ?? navContext!;
 
     final List<Future<void>> blocOperations = [
+      _waitForBlocCompletion<ProductBloc, ProductState>(
+        context: context,
+        action: (bloc) => bloc.add(LoadAllProducts()),
+        condition: (state) => state.status != ProductsStatus.loading,
+      ),
+      _waitForBlocCompletion<ProductBloc, ProductState>(
+        context: context,
+        action: (bloc) => bloc.add(LoadNewArrivals()),
+        condition: (state) => state.status != ProductsStatus.loading,
+      ),
+      _waitForBlocCompletion<ProductBloc, ProductState>(
+        context: context,
+        action: (bloc) => bloc.add(LoadPopularProducts(days: 90, limit: 50)),
+        condition: (state) => state.status != ProductsStatus.loading,
+      ),
       _waitForBlocCompletion<ActiveFlashSalesBloc, ActiveFlashSalesState>(
         context: context,
         action: (bloc) => bloc.add(LoadActiveFlashSales()),
         condition: (state) => state.status != ActiveFlashSalesStatus.loading,
       ),
-      /*_waitForBlocCompletion<DashboardBloc, DashboardState>(
-        context: context,
-        action: (bloc) => bloc.add(LoadDashboardData()),
-        condition: (state) => state.status != DashboardStatus.loading,
-      ),
-      _waitForBlocCompletion<UserBloc, UserState>(
-        context: context,
-        action: (bloc) => bloc.add(LoadUsers()),
-        condition: (state) => state.status != UserStatus.loading,
-      ),
-      _waitForBlocCompletion<VendorBloc, VendorState>(
-        context: context,
-        action: (bloc) => bloc.add(LoadVendors()),
-        condition: (state) => state.status != VendorStatus.loading,
-      ),
-      _waitForBlocCompletion<ActivityBloc, ActivityState>(
-        context: context,
-        action: (bloc) => bloc.add(LoadActivities()),
-        condition: (state) => state.status != ActivityStatus.loading,
-      ),*/
     ];
 
     blocOperations.addAll([]);

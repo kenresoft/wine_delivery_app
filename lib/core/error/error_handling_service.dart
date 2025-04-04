@@ -106,6 +106,10 @@ class ErrorHandlingService {
       return getNetworkErrorMessage(error);
     }
 
+    if (kDebugMode) {
+      logger.e(error);
+    }
+
     // Fallback for unexpected errors
     return 'Something went wrong. Please try again later.';
   }

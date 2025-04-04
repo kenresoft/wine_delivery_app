@@ -1,7 +1,7 @@
 enum Routes {
   // Intro
   splash('/splash'),
-  onBoarding('onBoarding'),
+  onBoarding('/onBoarding'),
   error('/error'),
 
   // Auth
@@ -10,17 +10,17 @@ enum Routes {
 
   // Main Navigation
   main('/main'),
-  favorites('favorites'),
-  products('products'),
-  productDetails('productDetails'),
-  orderConfirmation('orderConfirmation'),
-  orderHistory('orderHistory'),
-  cart('cart'),
-  checkout('checkout'),
-  address('address'),
-  profile('profile'),
-  settings('settings'),
-  notifications('notifications');
+  favorites('/favorites'),
+  products('/products'),
+  productDetails('/productDetails'),
+  orderConfirmation('/orderConfirmation'),
+  orderHistory('/orderHistory'),
+  cart('/cart'),
+  checkout('/checkout'),
+  address('/address'),
+  profile('/profile'),
+  settings('/settings'),
+  notifications('/notifications');
 
   //
 
