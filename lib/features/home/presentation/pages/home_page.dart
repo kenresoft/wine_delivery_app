@@ -1,6 +1,7 @@
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/utils/asset_handler.dart';
 import 'package:vintiora/core/utils/extensions.dart';
@@ -20,11 +21,49 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final categories = WineCategory.values.take(4).toList();
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  bool _showAllCategories = false;
+  final allCategories = WineCategory.values;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _toggleCategories() {
+    setState(() {
+      _showAllCategories = !_showAllCategories;
+      if (_showAllCategories) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // final screenWidth = MediaQuery.of(context).size.width;
+    final padding = 24.0 * 2;
+    final spacing = 16.0;
+    final itemWidth = (1.sw - padding - (3 * spacing)) / 4;
+
     return AppWrapper(
       useSafeArea: true,
       child: CustomScrollView(
@@ -237,10 +276,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'See All',
-                      style: TextStyle(
+                    onPressed: _toggleCategories,
+                    child: Text(
+                      _showAllCategories ? 'See Few' : 'See All',
+                      style: const TextStyle(
                         color: Colors.black54,
                       ),
                     ),
@@ -250,26 +289,22 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Category Icons
+          // Animated Category Layout
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: SizedBox(
-                height: 95,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(categories.length, (index) {
-                    final category = categories[index];
-                    return CategoryItem(
-                      icon: category.icon,
-                      label: category.name,
-                    );
-                  }),
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return _showAllCategories ? _buildCategoryGrid(itemWidth, spacing) : _buildCategoryRow(itemWidth, spacing);
+                  },
                 ),
               ),
             ),
           ),
-
           // Flash Sale Section
           SliverToBoxAdapter(
             child: Padding(
@@ -333,85 +368,62 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-// Category Item Widget
-class CategoryItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
+  Widget _buildCategoryRow(double itemWidth, double spacing) {
+    final displayedCategories = allCategories.take(4).toList();
+    return SizedBox(
+      height: itemWidth + 8, // Item height + label space
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: displayedCategories.length,
+        separatorBuilder: (_, __) => SizedBox(width: spacing),
+        itemBuilder: (_, index) => _buildCategoryItem(displayedCategories[index], itemWidth),
+      ),
+    );
+  }
 
-  const CategoryItem({
-    super.key,
-    required this.icon,
-    required this.label,
-  });
+  Widget _buildCategoryGrid(double itemWidth, double spacing) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 4,
+      childAspectRatio: 0.9,
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      padding: EdgeInsets.zero,
+      children: allCategories.map((cat) => _buildCategoryItem(cat, itemWidth)).toList(),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
+  Widget _buildCategoryItem(WineCategory category, double width) {
+    return SizedBox(
+      width: width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 64,
-            height: 64,
+            width: width - 18,
+            height: width - 18,
             decoration: BoxDecoration(
               color: AppColors.white,
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.grey1),
             ),
             child: Icon(
-              icon,
+              category.icon,
               color: const Color(0xFFCDA752),
               size: 28,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            label,
+            category.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Bottom Navigation Bar Item
-class NavBarItem extends StatelessWidget {
-  final IconData icon;
-  final bool isSelected;
-  final String label;
-
-  const NavBarItem({
-    super.key,
-    required this.icon,
-    required this.isSelected,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFFCDA752) : Colors.transparent,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: isSelected ? Colors.white : Colors.grey,
-              size: 24,
             ),
           ),
         ],
