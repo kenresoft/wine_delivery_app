@@ -11,6 +11,7 @@ import 'package:vintiora/core/network/api_service.dart';
 import 'package:vintiora/core/network/client/network_client.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/extensions.dart';
+import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/features/auth/data/datasources/auth_local_data_source.dart';
 
 import '../models/responses/profile.dart';
@@ -26,27 +27,29 @@ class UserRepository {
 
   static final String _updateUrl = '${ApiConstants.baseUrl}/users';
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging? _firebaseMessaging = isWindows ? null : FirebaseMessaging.instance;
 
   /// Initialize device token and listen for token changes
   Future<void> initializeDeviceToken() async {
-    // Request permission on iOS
-    await _firebaseMessaging.requestPermission();
+    if (_firebaseMessaging != null) {
+      // Request permission on iOS
+      await _firebaseMessaging.requestPermission();
 
-    // Retrieve the device token
-    String? token = await _firebaseMessaging.getToken();
-    logger.w(token);
+      // Retrieve the device token
+      String? token = await _firebaseMessaging.getToken();
+      logger.w(token);
 
-    if (token != null) {
-      await sendDeviceTokenToBackend(token);
-    }
-
-    // Listen for token refresh events
-    _firebaseMessaging.onTokenRefresh.listen((newToken) async {
-      if (!newToken.isNullOrEmpty) {
-        await sendDeviceTokenToBackend(newToken);
+      if (token != null) {
+        await sendDeviceTokenToBackend(token);
       }
-    });
+
+      // Listen for token refresh events
+      _firebaseMessaging.onTokenRefresh.listen((newToken) async {
+        if (!newToken.isNullOrEmpty) {
+          await sendDeviceTokenToBackend(newToken);
+        }
+      });
+    }
   }
 
   /// Send device token to backend for storage in the user profile

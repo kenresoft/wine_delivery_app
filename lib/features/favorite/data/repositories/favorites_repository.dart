@@ -5,22 +5,14 @@ import 'package:vintiora/core/network/client/network_client.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/features/cart/data/repositories/cart_repository.dart';
-import 'package:vintiora/features/product/domain/entities/product_entity.dart';
-// import 'package:vintiora/features/product/data/models/responses/product.dart';
+import 'package:vintiora/features/favorite/data/models/responses/favorite.dart';
+import 'package:vintiora/features/product/domain/entities/product.dart';
 import 'package:vintiora/features/product/domain/repositories/product_repository.dart';
-
-import '../models/responses/favorite.dart';
 
 class FavoritesRepository {
   FavoritesRepository();
 
-  // FavoritesRepository._();
-
-  // static final FavoritesRepository _instance = FavoritesRepository._();
-
-  /*static FavoritesRepository getInstance() {
-    return _instance;
-  }*/
+  // final CartRepository cartRepository = GetIt.I<CartRepository>();
 
   static final String _url = ApiConstants.favorites;
 
@@ -28,31 +20,34 @@ class FavoritesRepository {
     final apiService = GetIt.I<IApiService>();
     final result = await apiService.request(
       endpoint: _url,
-      parser: (data) => data as List<dynamic>,
+      parser: (data) => data as Map<String, dynamic>,
     );
     return result.fold(
       (failure) => throw Exception(failure.message),
       (data) async {
         try {
-          final products = await Future.wait(
-            data.map((favoriteJson) async {
-              try {
-                final favorite = Favorite.fromJson(favoriteJson['favorite']);
-                final product = await GetIt.I<ProductRepository>().getProductById(favorite.product);
-                final cartItemQuantity = await cartRepository.getItemQuantity(favorite.product);
-                final p = product.fold(
-                  (l) => Product.empty(),
-                  (r) => r,
-                );
-                return (product: p, cartQuantity: cartItemQuantity);
-              } catch (e) {
-                logger.e('Error fetching data for product: $e');
-                return (product: Product.empty(), cartQuantity: 0);
-              }
-            }).toList(),
-          );
-          return products;
+          final List<dynamic> favoriteJson = data['favorite'];
+          final favoriteFutures = favoriteJson.map((e) async {
+            final favorite = Favorite.fromJson(e);
+
+            final productFuture = GetIt.I<ProductRepository>().getProductById(favorite.product);
+            final cartItemQuantityFuture = cartRepository.getItemQuantity(favorite.product);
+
+            final (product, cartItemQuantity) = await (
+              productFuture,
+              cartItemQuantityFuture,
+            ).wait;
+
+            final p = product.fold(
+              (l) => Product.empty(),
+              (r) => r,
+            );
+            return (product: p, cartQuantity: cartItemQuantity);
+          });
+
+          return await Future.wait(favoriteFutures);
         } catch (e) {
+          logger.e('Error fetching favorite products: $e');
           throw Exception('Error parsing favorite products from the server.');
         }
       },
@@ -69,13 +64,13 @@ class FavoritesRepository {
       (failure) => throw Exception(failure.message),
       (data) {
         try {
-          final favorites = data /*['users'][0]*/ ['favorite'] as List<dynamic>?;
+          final favorites = data['favorite'] as List<dynamic>?;
           if (favorites != null) {
             return favorites.any((favorite) => favorite['product']['_id'] == productId);
           } else {
             Nav.showToast('Not currently logged in!');
+            return false;
           }
-          return false;
         } catch (e) {
           throw Exception('Error parsing favorite data from the server.');
         }
@@ -93,9 +88,9 @@ class FavoritesRepository {
       parser: (data) => data as Map<String, dynamic>,
     );
 
-    result.fold(
+    return result.fold(
       (failure) => throw Exception(failure.message),
-      (_) => {},
+      (_) => null,
     );
   }
 
@@ -109,11 +104,9 @@ class FavoritesRepository {
       parser: (data) => data as Map<String, dynamic>,
     );
 
-    result.fold(
+    return result.fold(
       (failure) => throw Exception(failure.message),
-      (_) => {},
+      (_) => null,
     );
   }
 }
-
-// final FavoritesRepository favoritesRepository = FavoritesRepository.getInstance();
