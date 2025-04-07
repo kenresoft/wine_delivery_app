@@ -18,7 +18,10 @@ import 'package:vintiora/core/utils/firebase_util.dart';
 import 'package:vintiora/core/utils/notification_util.dart';
 import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
+import 'package:vintiora/features/order/presentation/bloc/shipment/shipment_bloc.dart';
+import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
+import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/firebase_options.dart';
 
 class Config {
@@ -94,6 +97,22 @@ class Config {
         context: context,
         action: (bloc) => bloc.add(LoadActiveFlashSales()),
         condition: (state) => state.status != ActiveFlashSalesStatus.loading,
+      ),
+
+      //
+      _waitForBlocCompletion<ProfileBloc, ProfileState>(
+        context: context,
+        action: (bloc) => bloc.add(const ProfileFetch()),
+        condition: (state) => state.status != ProfileStatus.loading,
+      ),
+      _waitForBlocCompletion<FavsBloc, FavsState>(
+        context: context,
+        action: (bloc) => bloc.add(LoadFavs()),
+        condition: (state) => state != null,
+      ),_waitForBlocCompletion<ShipmentBloc, ShipmentState>(
+        context: context,
+        action: (bloc) => bloc.add(GetShipmentDetails()),
+        condition: (state) => state != null,
       ),
     ];
 

@@ -4,12 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/utils/asset_handler.dart';
+import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/extensions.dart';
 import 'package:vintiora/features/category/domain/enums/wine_category.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import 'package:vintiora/features/flash_sale/presentation/pages/flash_sale_details_page.dart';
 import 'package:vintiora/features/flash_sale/presentation/widgets/flash_sale_banner.dart';
 import 'package:vintiora/features/home/presentation/widgets/product_filter_section.dart';
+import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/shared/components/app_wrapper.dart';
 import 'package:vintiora/shared/components/svg_wrapper.dart';
 import 'package:vintiora/shared/widgets/custom_text_field.dart';
@@ -22,6 +24,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  final double _categoryItemHeight = 85.0;
+  final double _categoryIconSize = 60.0;
+
   bool _showAllCategories = false;
   final allCategories = WineCategory.values;
   late AnimationController _animationController;
@@ -59,7 +64,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
     final padding = 24.0 * 2;
     final spacing = 16.0;
     final itemWidth = (1.sw - padding - (3 * spacing)) / 4;
@@ -125,16 +129,21 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   // Profile
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      shape: BoxShape.circle,
-                    ),
-                    child: const AppCircleImage(
-                      Assets.profilePicture,
-                    ),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                    builder: (context, state) {
+                      final profileImage = state.profile?.profileImage ?? Assets.profilePicture;
+                      return Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          shape: BoxShape.circle,
+                        ),
+                        child: AppCircleImage(
+                          Constants.baseUrl + profileImage,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -369,7 +378,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _buildCategoryRow(double itemWidth, double spacing) {
+  /*Widget _buildCategoryRow(double itemWidth, double spacing) {
     final displayedCategories = allCategories.take(4).toList();
     return SizedBox(
       height: itemWidth + 8, // Item height + label space
@@ -405,6 +414,69 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           Container(
             width: width - 18,
             height: width - 18,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.grey1),
+            ),
+            child: Icon(
+              category.icon,
+              color: const Color(0xFFCDA752),
+              size: 28,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            category.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }*/
+
+  Widget _buildCategoryRow(double itemWidth, double spacing) {
+    final displayedCategories = allCategories.take(4).toList();
+    return SizedBox(
+      height: _categoryItemHeight,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: displayedCategories.length,
+        separatorBuilder: (_, __) => SizedBox(width: spacing),
+        itemBuilder: (_, index) => _buildCategoryItem(displayedCategories[index], itemWidth),
+      ),
+    );
+  }
+
+  Widget _buildCategoryGrid(double itemWidth, double spacing) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 4,
+      childAspectRatio: itemWidth / _categoryItemHeight,
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      padding: EdgeInsets.zero,
+      children: allCategories.map((cat) => _buildCategoryItem(cat, itemWidth)).toList(),
+    );
+  }
+
+  Widget _buildCategoryItem(WineCategory category, double width) {
+    return SizedBox(
+      width: width,
+      height: _categoryItemHeight,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: _categoryIconSize,
+            height: _categoryIconSize,
             decoration: BoxDecoration(
               color: AppColors.white,
               shape: BoxShape.circle,
