@@ -17,6 +17,7 @@ import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/firebase_util.dart';
 import 'package:vintiora/core/utils/notification_util.dart';
 import 'package:vintiora/core/utils/utils.dart';
+import 'package:vintiora/features/cart/presentation/bloc/cart/cart_bloc.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import 'package:vintiora/features/order/presentation/bloc/shipment/shipment_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
@@ -109,10 +110,16 @@ class Config {
         context: context,
         action: (bloc) => bloc.add(LoadFavs()),
         condition: (state) => state != null,
-      ),_waitForBlocCompletion<ShipmentBloc, ShipmentState>(
+      ),
+      _waitForBlocCompletion<ShipmentBloc, ShipmentState>(
         context: context,
         action: (bloc) => bloc.add(GetShipmentDetails()),
         condition: (state) => state != null,
+      ),
+      _waitForBlocCompletion<CartBloc, CartState>(
+        context: context,
+        action: (bloc) => bloc.add(GetCartItems()),
+        condition: (state) => state.status != CartStatus.loading,
       ),
     ];
 
