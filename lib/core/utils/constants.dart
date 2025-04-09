@@ -17,11 +17,13 @@ class Constants {
   static const int tokenRefreshThreshold = 60;
 
   // Request timeouts
-  static const Duration connectionTimeout = Duration(seconds: 5);
+  static const Duration connectionTimeout = Duration(seconds: 10); // 5
   static const Duration receiveTimeout = Duration(seconds: 5); // 3
 }
 
 class ApiConstants {
+  ApiConstants._();
+
   static final String baseUrl = '${Constants.baseUrl}/api';
 
   // Auth endpoints
