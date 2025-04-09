@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
+import 'package:vintiora/core/theme/app_theme.dart';
 
 class FlashSaleCountdownTimer extends StatefulWidget {
   final int hours;
@@ -118,22 +119,20 @@ class _FlashSaleCountdownTimerState extends State<FlashSaleCountdownTimer> {
         children: [
           Text(
             value,
-            style: TextStyle(
-              color: widget.textColor,
-              fontWeight: FontWeight.bold,
-              fontSize: widget.fontSize,
-            ),
+            style: theme(context).textTheme.labelLarge?.copyWith(
+                  color: widget.textColor,
+                  fontSize: widget.fontSize,
+                ),
           ),
           if (widget.showLabels)
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(
                 label,
-                style: TextStyle(
-                  color: widget.textColor?.withOpacity(0.8),
-                  fontSize: widget.fontSize != null ? widget.fontSize! * 0.6 : 10,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: theme(context).textTheme.labelSmall?.copyWith(
+                      color: widget.textColor?.withValues(alpha: 0.8),
+                      fontSize: widget.fontSize != null ? widget.fontSize! * 0.6 : 10,
+                    ),
               ),
             ),
         ],
@@ -146,11 +145,10 @@ class _FlashSaleCountdownTimerState extends State<FlashSaleCountdownTimer> {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Text(
         ':',
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: widget.fontSize,
-        ),
+        style: theme(context).textTheme.titleSmall?.copyWith(
+              color: Colors.black,
+              fontSize: widget.fontSize,
+            ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
+import 'package:vintiora/core/theme/app_theme.dart';
 
 import '../../domain/entities/flash_sale.dart';
 import 'flash_sale_countdown_timer.dart';
@@ -36,7 +37,7 @@ class FlashSaleBanner extends StatelessWidget {
             top: -20,
             child: CircleAvatar(
               radius: 60,
-              backgroundColor: Colors.white.withOpacity(0.1),
+              backgroundColor: Colors.white.withValues(alpha: 0.1),
             ),
           ),
           Positioned(
@@ -44,11 +45,11 @@ class FlashSaleBanner extends StatelessWidget {
             bottom: -30,
             child: CircleAvatar(
               radius: 40,
-              backgroundColor: Colors.white.withOpacity(0.1),
+              backgroundColor: Colors.white.withValues(alpha: 0.1),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -63,11 +64,10 @@ class FlashSaleBanner extends StatelessWidget {
                             flashSale.title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            style: theme(context).textTheme.displayMedium?.copyWith(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           SizedBox(
@@ -76,11 +76,10 @@ class FlashSaleBanner extends StatelessWidget {
                               flashSale.description,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.white70,
-                                height: 1.4,
-                              ),
+                              style: theme(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.white70,
+                                    // height: 1.4,
+                                  ),
                             ),
                           ),
                         ],
@@ -134,21 +133,19 @@ class FlashSaleBanner extends StatelessWidget {
                             'Up to ${flashSale.discountPercentage}% OFF',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            style: theme(context).textTheme.headlineMedium?.copyWith(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${flashSale.stockRemaining}/${flashSale.totalStock} items left',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white70,
-                            ),
+                            style: theme(context).textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white70,
+                                ),
                           ),
                         ],
                       ),
