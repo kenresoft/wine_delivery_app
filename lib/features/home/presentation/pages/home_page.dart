@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
+import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/asset_handler.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/extensions.dart';
@@ -92,33 +93,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Location',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 12,
-                                ),
+                                style: theme(context).textTheme.bodySmall?.copyWith(
+                                      color: AppColors.black1,
+                                      fontSize: 12,
+                                    ),
                               ),
                               Row(
                                 children: [
                                   Flexible(
-                                    child: const Text(
+                                    child: Text(
                                       'New York, USA',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
+                                      style: theme(context).textTheme.headlineMedium?.copyWith(
+                                            fontSize: 14,
+                                          ),
                                     ),
                                   ),
                                   const SizedBox(width: 4),
                                   Icon(
                                     Icons.keyboard_arrow_down,
                                     size: 16,
-                                    color: Colors.black.withValues(alpha: 0.7),
+                                    color: AppColors.black1,
                                   ),
                                 ],
                               ),
@@ -209,24 +209,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               'New Collection',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: theme(context).textTheme.displayMedium?.copyWith(
+                                    fontSize: 18,
+                                  ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
+                            Text(
                               'Discount 50% for the first transaction',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black54,
-                              ),
+                              style: theme(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(height: 16),
                             Flexible(
@@ -277,20 +273,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Category',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme(context).textTheme.displayLarge?.copyWith(
+                          fontSize: 18,
+                        ),
                   ),
                   TextButton(
                     onPressed: _toggleCategories,
                     child: Text(
                       _showAllCategories ? 'See Few' : 'See All',
-                      style: const TextStyle(
-                        color: Colors.black54,
-                      ),
+                      style: theme(context).textTheme.titleSmall,
                     ),
                   ),
                 ],
@@ -378,68 +371,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  /*Widget _buildCategoryRow(double itemWidth, double spacing) {
-    final displayedCategories = allCategories.take(4).toList();
-    return SizedBox(
-      height: itemWidth + 8, // Item height + label space
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: displayedCategories.length,
-        separatorBuilder: (_, __) => SizedBox(width: spacing),
-        itemBuilder: (_, index) => _buildCategoryItem(displayedCategories[index], itemWidth),
-      ),
-    );
-  }
-
-  Widget _buildCategoryGrid(double itemWidth, double spacing) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 4,
-      childAspectRatio: 0.9,
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      padding: EdgeInsets.zero,
-      children: allCategories.map((cat) => _buildCategoryItem(cat, itemWidth)).toList(),
-    );
-  }
-
-  Widget _buildCategoryItem(WineCategory category, double width) {
-    return SizedBox(
-      width: width,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: width - 18,
-            height: width - 18,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.grey1),
-            ),
-            child: Icon(
-              category.icon,
-              color: const Color(0xFFCDA752),
-              size: 28,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            category.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }*/
-
   Widget _buildCategoryRow(double itemWidth, double spacing) {
     final displayedCategories = allCategories.take(4).toList();
     return SizedBox(
@@ -493,10 +424,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             category.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+            style: theme(context).textTheme.labelMedium?.copyWith(
+                  fontSize: 12,
+                ),
           ),
         ],
       ),
