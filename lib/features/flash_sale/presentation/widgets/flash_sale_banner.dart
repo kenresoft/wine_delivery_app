@@ -24,7 +24,7 @@ class FlashSaleBanner extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.primary, AppColors.greenStep],
+          colors: [AppColors.primary, AppColors.green],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
