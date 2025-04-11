@@ -4,14 +4,38 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:vintiora/core/config/app_config.dart';
 import 'package:vintiora/core/di/di.dart';
+import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/storage/preferences.dart';
+import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/utils.dart';
+import 'package:vintiora/shared/components/error_page.dart';
 
 import 'app.dart';
 
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      return MaterialApp(
+        title: Constants.appName,
+        navigatorKey: Nav.navigatorKey,
+        navigatorObservers: [Nav.routeObserver, Nav.stateObserver],
+        debugShowCheckedModeBanner: false,
+        home: ErrorPage(
+          errorType: ErrorType.initialization,
+          message: details.toStringShort(),
+          error: details.exception,
+          stackTrace: details.stack,
+          onRetry: () async {
+            // Retry full app initialization by restarting
+            await _runAppWithError(details.exception);
+          },
+        ),
+      );
+    };
+
+    // Log framework errors
     FlutterError.onError = _handleFlutterError;
 
     try {
