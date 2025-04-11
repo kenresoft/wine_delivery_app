@@ -41,6 +41,27 @@ class Nav {
     }
   }
 
+  // Handle Failed Routes
+  static RouteSettings? _lastFailedRoute;
+
+  static void rememberFailedRoute(RouteSettings settings) {
+    _lastFailedRoute = settings;
+  }
+
+  static Future<void> retryLastFailedRoute() async {
+    if (_lastFailedRoute != null) {
+      navigatorKey.currentState?.pushReplacementNamed(
+        _lastFailedRoute!.name!,
+        arguments: _lastFailedRoute!.arguments,
+      );
+    }
+  }
+
+  static void clearFailedRoute() {
+    _lastFailedRoute = null;
+  }
+
+  // Navigation methods
   static void push(Routes route, {Object? arguments}) {
     try {
       log('Navigating to ${route.path} with arguments: $arguments', name: 'Nav');
@@ -80,7 +101,12 @@ class Nav {
         throw NavigatorError('Navigator state is null');
       }
 
-      navigator.pop();
+      // Check if we're not at the root before popping
+      if (navigator.canPop()) {
+        navigator.pop();
+      } else {
+        log('Cannot pop the root route', name: 'Nav');
+      }
     } catch (e) {
       _handleNavigationError('Failed to pop route', error: e);
       rethrow;
@@ -95,6 +121,18 @@ class Nav {
       if (navigator == null) {
         throw NavigatorError('Navigator state is null');
       }
+
+    // Check if we're already at the target route
+    if (ModalRoute.of(navigator.context)?.settings.name == route.path) {
+      log('Already at target route: ${route.path}', name: 'Nav');
+      return;
+    }
+
+    // Check if we're trying to pop to root when we're already at root
+    if (route == Routes.main && !navigator.canPop()) {
+      log('Cannot pop to root when already at root', name: 'Nav');
+      return;
+    }
 
       navigator.popUntil(ModalRoute.withName(route.path));
     } catch (e) {
@@ -112,7 +150,12 @@ class Nav {
         throw NavigatorError('Navigator state is null');
       }
 
-      navigator.popAndPushNamed(route.path, arguments: arguments);
+      if (navigator.canPop()) {
+        navigator.popAndPushNamed(route.path, arguments: arguments);
+      } else {
+        // If we can't pop, just push the new route
+        navigator.pushNamed(route.path, arguments: arguments);
+      }
     } catch (e) {
       _handleNavigationError('Failed to pop and push route: ${route.path}', error: e);
       rethrow;

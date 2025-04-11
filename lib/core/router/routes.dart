@@ -5,8 +5,8 @@ enum Routes {
   error('/error'),
 
   // Auth
-  register('register'),
-  login('login'),
+  register('/register'),
+  login('/login'),
 
   // Main Navigation
   main('/main'),
@@ -15,6 +15,7 @@ enum Routes {
   productDetails('/productDetails'),
   orderConfirmation('/orderConfirmation'),
   orderHistory('/orderHistory'),
+  orderTracking('/orderTracking'),
   cart('/cart'),
   checkout('/checkout'),
   address('/address'),

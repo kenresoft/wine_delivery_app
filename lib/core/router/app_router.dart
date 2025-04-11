@@ -11,6 +11,7 @@ import 'package:vintiora/features/onboarding/onboarding_screen.dart';
 import 'package:vintiora/features/order/data/models/responses/order.dart';
 import 'package:vintiora/features/order/data/models/responses/order_product_item.dart';
 import 'package:vintiora/features/order/presentation/pages/order_confirmation_screen.dart';
+import 'package:vintiora/features/order/presentation/pages/order_tracking_screens.dart';
 import 'package:vintiora/features/product/domain/entities/product.dart';
 // import 'package:vintiora/features/product/data/models/responses/product.dart';
 import 'package:vintiora/features/product/presentation/pages/product_detail_screen.dart';
@@ -56,14 +57,33 @@ class AppRouter {
           onRetry: onRetry,
         ),
       );
-    } else if (routes.containsKey(route)) {
+    }
+    try {
+      // Basic predefined routes
+      if (routes.containsKey(route)) {
+        return MaterialPageRoute(
+          builder: routes[route]!,
+          settings: settings,
+        );
+      }
+
+      // Custom routes (with arguments)
+      return _handleCustomRoutes(settings);
+    } catch (e, st) {
+      // Store failed route so we can retry it
+      Nav.rememberFailedRoute(settings);
+
       return MaterialPageRoute(
-        builder: routes[route]!,
-        settings: settings,
+        builder: (_) => ErrorPage(
+          message: "Failed to load page: ${settings.name}",
+          errorType: ErrorType.route,
+          onRetry: () async {
+            Nav.clearFailedRoute(); // Avoid loops
+            await Nav.retryLastFailedRoute();
+          },
+        ),
       );
     }
-
-    return _handleCustomRoutes(settings);
   }
 
   /// Handles non-standard routes with additional arguments or validation.
@@ -78,13 +98,18 @@ class AppRouter {
           return ProductDetailScreen(product: _getArgOrDefault<Product>(settings.arguments));
         }, settings),
       Routes.orderConfirmation => _buildRoute((context) {
-          final args = _getArgOrDefault<Map<String, dynamic>>(settings.arguments);
-          final order = args['order'] as Order?;
-          final orderedItems = args['items'] as List<OrderProductItem>?;
-          if (order != null && orderedItems != null) {
-            return OrderConfirmationScreen(order: order, orderedItems: orderedItems);
-          }
+          try {
+            final args = _getArgOrDefault<Map<String, dynamic>>(settings.arguments);
+            final order = args['order'] as Order?;
+            final orderedItems = args['items'] as List<OrderProductItem>?;
+            if (order != null && orderedItems != null) {
+              return OrderConfirmationScreen(order: order, orderedItems: orderedItems);
+            }
+          } catch (_) {}
           return errorScreen;
+        }, settings),
+      Routes.orderTracking => _buildRoute((context) {
+          return OrderTrackingScreen(order: _getArgOrDefault<Order>(settings.arguments));
         }, settings),
 
       // Undefined routes
@@ -98,7 +123,9 @@ class AppRouter {
       builder: (_) => ErrorPage(
         message: 'No route defined for $routeName',
         errorType: ErrorType.route,
-        onRetry: () async => Nav.navigateAndRemoveUntil(Routes.main),
+        actionText: 'Back',
+        onRetry: () async => Nav.pop(),
+        // onRetry: () async => Nav.navigateAndRemoveUntil(Routes.main),
       ),
     );
   }
