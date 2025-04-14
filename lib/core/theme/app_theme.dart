@@ -55,7 +55,7 @@ class AppTheme {
         surfaceTintColor: AppColors.grey1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: AppColors.grey1, width: 1.5),
+          side: BorderSide(color: AppColors.grey1, width: 0.7),
         ),
         elevation: 0,
       ),
@@ -73,7 +73,7 @@ class AppTheme {
         leadingAndTrailingTextStyle: const AppTextTheme().lightTextTheme.bodySmall,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: AppColors.grey1, width: 1.5),
+          side: BorderSide(color: AppColors.grey1, width: 0.7),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         horizontalTitleGap: 16,
@@ -132,7 +132,7 @@ class AppTheme {
         surfaceTintColor: AppColors.grey7,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: AppColors.grey7, width: 0.5),
+          // side: BorderSide(color: AppColors.grey7, width: 0.5),
         ),
         elevation: 0,
       ),

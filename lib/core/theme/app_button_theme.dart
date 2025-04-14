@@ -49,10 +49,23 @@ class AppButtonTheme {
     );
   }
 
-  static ButtonStyle get elevatedButton {
+  /// __Note:__ Input [height] is responsive
+  static ButtonStyle elevatedButton(double height) {
+    return ElevatedButton.styleFrom(
+      minimumSize: Size(double.infinity, height.h.clamp(height, 63)),
+      padding: EdgeInsets.symmetric(vertical: 16),
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w800,
+        fontFamily: 'SFProDisplay',
+      ),
+    );
+  }
+
+  static ButtonStyle get defaultElevatedButton {
     return ElevatedButton.styleFrom(
       minimumSize: Size(double.infinity, 51.h.clamp(56, 63)),
-      padding: EdgeInsets.symmetric(vertical: 16.h),
+      padding: EdgeInsets.symmetric(vertical: 16),
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w800,
@@ -113,7 +126,7 @@ class AppButtonTheme {
   static ButtonStyle get outlinedButton {
     return OutlinedButton.styleFrom(
       minimumSize: Size(double.infinity, 51.h.clamp(56, 63)),
-      padding: EdgeInsets.symmetric(vertical: 16.h),
+      padding: EdgeInsets.symmetric(vertical: 16),
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w800,
@@ -125,7 +138,7 @@ class AppButtonTheme {
   static ButtonStyle get activeSelectableButton {
     return OutlinedButton.styleFrom(
       minimumSize: Size(120.w, 40.h.clamp(40, 50)),
-      padding: EdgeInsets.all(8.h),
+      padding: EdgeInsets.all(8),
       side: const BorderSide(color: AppColors.primary, width: 1.5),
       textStyle: const TextStyle(
         fontSize: 14,
@@ -138,7 +151,7 @@ class AppButtonTheme {
   static ButtonStyle get inActiveSelectableButton {
     return OutlinedButton.styleFrom(
       minimumSize: Size(120.w, 40.h.clamp(40, 50)),
-      padding: EdgeInsets.all(8.h),
+      padding: EdgeInsets.all(8),
       side: const BorderSide(color: AppColors.lightOutlinedBorder, width: 0.5),
       textStyle: const TextStyle(
         fontSize: 14,
@@ -151,7 +164,7 @@ class AppButtonTheme {
   static ButtonStyle get counterButton {
     return OutlinedButton.styleFrom(
       minimumSize: Size(51.w, 51.h.clamp(51, 61)),
-      padding: EdgeInsets.all(8.h),
+      padding: EdgeInsets.all(8),
       side: const BorderSide(color: AppColors.lightOutlinedBorder, width: 0.6),
       textStyle: const TextStyle(
         fontSize: 14,
@@ -164,7 +177,7 @@ class AppButtonTheme {
   static ButtonStyle get outlinedErrorButton {
     return OutlinedButton.styleFrom(
       minimumSize: Size(double.infinity, 51.h.clamp(56, 63)),
-      padding: EdgeInsets.symmetric(vertical: 16.h),
+      padding: EdgeInsets.symmetric(vertical: 16),
       foregroundColor: AppColors.error,
       side: const BorderSide(color: AppColors.error, width: 1),
       textStyle: const TextStyle(
