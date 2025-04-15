@@ -103,10 +103,10 @@ var isLinux = os_detect.isLinux;
 var osVersion = os_detect.operatingSystemVersion;
 var os = os_detect.operatingSystem;
 
-double? toDouble(dynamic value) {
+double toDouble(dynamic value) {
   // logger.i(value.runtimeType);
-  if (value == null) return null;
+  if (value == null) return 0.0;
   if (value is int) return value.toDouble();
   if (value is double) return value;
-  return null; // Handle other unexpected types or nulls
+  return 0.0; // Handle other unexpected types or nulls
 }
