@@ -1,3 +1,4 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:vintiora/core/cache/cache_service.dart';
 import 'package:vintiora/core/di/di_setup.dart';
 import 'package:vintiora/core/network/api_service.dart';
@@ -9,6 +10,8 @@ import 'package:vintiora/features/main/presentation/bloc/navigation/bottom_navig
 
 class CoreDI {
   static dependencies() {
+    getIt.registerLazySingleton(() => InternetConnectionChecker());
+
     getIt.registerLazySingleton<CacheService>(() => CacheServiceImpl());
     getIt.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl());
 
