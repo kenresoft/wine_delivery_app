@@ -94,7 +94,7 @@ class Nav {
     }
   }
 
-  static void pop() {
+  static void pop({Routes fallbackRoute = Routes.main, Object? arguments}) {
     try {
       final navigator = navigatorKey.currentState;
       if (navigator == null) {
@@ -105,10 +105,18 @@ class Nav {
       if (navigator.canPop()) {
         navigator.pop();
       } else {
-        log('Cannot pop the root route', name: 'Nav');
+        log('Cannot pop — already at root. Redirecting to ${fallbackRoute.path}', name: 'Nav');
+
+        // Optionally prevent redundant redirection
+        final currentRoute = ModalRoute.of(navigator.context)?.settings.name;
+        if (currentRoute != fallbackRoute.path) {
+          navigator.pushReplacementNamed(fallbackRoute.path, arguments: arguments);
+        } else {
+          log('Already at fallback/root route: ${fallbackRoute.path}', name: 'Nav');
+        }
       }
     } catch (e) {
-      _handleNavigationError('Failed to pop route', error: e);
+      _handleNavigationError('Failed to pop or redirect to fallback route', error: e);
       rethrow;
     }
   }
