@@ -58,7 +58,7 @@ void _handleFlutterError(FlutterErrorDetails details) {
 /// Initializes the app configuration and runs the app
 Future<void> _initializeApp() async {
   await Config.load(
-    done: (error) async {
+    onComplete: (error) async {
       if (error != null) {
         logger.e('Failed to load app configuration: $error');
         isWindows || isWeb ? null : throw error;

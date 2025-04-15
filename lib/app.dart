@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       _networkListeningStarted = true;
     }
     eventsLoadedBefore = false;
-    Config.loadEvents(context);
+    Config.loadEvents(context: context);
   }
 
   @override
@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> retryInitialization() async {
     try {
       await Config.load(
-        done: (error) {
+        onComplete: (error) {
           if (error == null && mounted) {
             setState(() => _currentError = null);
             Nav.pushReplace(Routes.splash);
