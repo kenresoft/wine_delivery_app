@@ -5,6 +5,7 @@ import 'package:vintiora/core/di/di_setup.dart';
 import 'package:vintiora/core/network/bloc/network_bloc.dart';
 import 'package:vintiora/core/theme/bloc/theme_bloc.dart';
 import 'package:vintiora/features/cart/presentation/bloc/cart/cart_bloc.dart';
+import 'package:vintiora/features/cart/presentation/bloc/cart_old/cart_bloc.dart' as c;
 import 'package:vintiora/features/cart/presentation/bloc/promo_code/promo_code_bloc.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/flash_sale_details/flash_sale_details_bloc.dart';
@@ -18,6 +19,7 @@ import 'package:vintiora/features/product/presentation/bloc/category_filter/cate
 import 'package:vintiora/features/product/presentation/bloc/category_list/wines_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
+import 'package:vintiora/features/promotion/presentation/bloc/promotion_bloc.dart';
 import 'package:vintiora/features/user/data/repositories/user_repository.dart';
 import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 
@@ -33,7 +35,9 @@ class Providers {
       BlocProvider<ActiveFlashSalesBloc>(create: (context) => getIt()),
       BlocProvider<FlashSaleDetailsBloc>(create: (context) => getIt()),
       BlocProvider<FlashSaleProductsBloc>(create: (context) => getIt()),
-      BlocProvider<CartBloc>(create: (context) => CartBloc()),
+      BlocProvider<PromotionBloc>(create: (context) => getIt()),
+      BlocProvider<CartBloc>(create: (context) => getIt()),
+      BlocProvider<c.CartBloc>(create: (context) => c.CartBloc()),
       BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
       BlocProvider<ShippingAddressBloc>(create: (context) => ShippingAddressBloc()),
       BlocProvider<ShipmentBloc>(create: (context) => ShipmentBloc()),

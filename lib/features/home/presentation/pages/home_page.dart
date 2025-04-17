@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vintiora/core/config/app_config.dart';
+import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/asset_handler.dart';
@@ -12,6 +16,7 @@ import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sal
 import 'package:vintiora/features/flash_sale/presentation/pages/flash_sale_details_page.dart';
 import 'package:vintiora/features/flash_sale/presentation/widgets/flash_sale_banner.dart';
 import 'package:vintiora/features/home/presentation/widgets/product_filter_section.dart';
+import 'package:vintiora/features/promotion/presentation/widgets/promotion_banner_widget.dart';
 import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/shared/components/app_wrapper.dart';
 import 'package:vintiora/shared/components/svg_wrapper.dart';
@@ -27,6 +32,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   final double _categoryItemHeight = 85.0;
   final double _categoryIconSize = 60.0;
+  final _refreshKey = GlobalKey<RefreshIndicatorState>();
 
   bool _showAllCategories = false;
   final allCategories = WineCategory.values;
@@ -63,6 +69,31 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     });
   }
 
+  Future<void> _handleRefresh() async {
+    try {
+      return await Config.loadMainEvents(context).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () => throw TimeoutException('Connection timed out'),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      Nav.showCustomSnackBar(
+        SnackBar(
+          content: Text('Failed to refresh: ${e.toString().split('\n')[0]}'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: 'Retry',
+            textColor: Colors.white,
+            onPressed: () => _refreshKey.currentState?.show(),
+          ),
+        ),
+      );
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final padding = 24.0 * 2;
@@ -71,192 +102,122 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     return AppWrapper(
       useSafeArea: true,
-      child: CustomScrollView(
-        slivers: [
-          // App Bar
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-              child: Row(
-                children: [
-                  // Location
-                  Expanded(
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on,
-                          color: Color(0xFFCDA752),
-                          size: 20,
-                        ),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Location',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme(context).textTheme.bodySmall?.copyWith(
-                                      color: AppColors.black1,
-                                      fontSize: 12,
-                                    ),
-                              ),
-                              Row(
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      'New York, USA',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme(context).textTheme.headlineMedium?.copyWith(
-                                            fontSize: 14,
-                                          ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 16,
-                                    color: AppColors.black1,
-                                  ),
-                                ],
-                              ),
-                            ],
+      child: RefreshIndicator(
+        key: _refreshKey,
+        onRefresh: _handleRefresh,
+        displacement: 40.0,
+        color: const Color(0xFFCDA752),
+        backgroundColor: isDark(context) ? AppColors.grey8 : Colors.white,
+        strokeWidth: 2.5,
+        edgeOffset: 16.0,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                child: Row(
+                  children: [
+                    // Location
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on,
+                            color: Color(0xFFCDA752),
+                            size: 20,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Profile
-                  BlocBuilder<ProfileBloc, ProfileState>(
-                    builder: (context, state) {
-                      final profileImage = state.profile?.profileImage ?? Assets.profilePicture;
-                      return Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          shape: BoxShape.circle,
-                        ),
-                        child: AppCircleImage(
-                          Constants.baseUrl + profileImage,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Search Bar
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 45),
-                      child: CustomTextField(
-                        hintText: 'Search',
-                        fillColor: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(50),
-                        prefixIcon: SvgWrapper(Assets.search),
-                        hintStyle: TextStyle(),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Location',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme(context).textTheme.bodySmall?.copyWith(
+                                        color: AppColors.black1,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        'New York, USA',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: theme(context).textTheme.headlineMedium?.copyWith(
+                                              fontSize: 14,
+                                            ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    const Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 16,
+                                      color: AppColors.black1,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    height: 44,
-                    width: 44,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFCDA752),
-                      borderRadius: BorderRadius.circular(50),
+                    // Profile
+                    BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, state) {
+                        final profileImage = state.profile?.profileImage ?? '';
+                        return Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            shape: BoxShape.circle,
+                          ),
+                          child: AppCircleImage(
+                            Constants.baseUrl + profileImage,
+                          ),
+                        );
+                      },
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: SvgWrapper(
-                        Assets.filter,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Banner
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Container(
-                height: 145,
-                decoration: BoxDecoration(
-                  color: AppColors.white3,
-                  borderRadius: BorderRadius.circular(16),
+                  ],
                 ),
+              ),
+            ),
+
+            // Search Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'New Collection',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme(context).textTheme.displayMedium?.copyWith(
-                                    fontSize: 18,
-                                  ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Discount 50% for the first transaction',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme(context).textTheme.bodyMedium,
-                            ),
-                            const SizedBox(height: 16),
-                            Flexible(
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFCDA752),
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  minimumSize: const Size(100, 34),
-                                ),
-                                child: const Text(
-                                  'Shop Now',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                          ],
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 45),
+                        child: CustomTextField(
+                          hintText: 'Search',
+                          borderRadius: BorderRadius.circular(50),
+                          prefixIcon: const SvgWrapper(Assets.search),
+                          hintStyle: const TextStyle(),
                         ),
                       ),
                     ),
-                    const Expanded(
-                      flex: 2,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(16),
-                          bottomRight: Radius.circular(16),
-                        ),
-                        child: AppImage(
-                          "assets/images/wine-3.png",
-                          fit: BoxFit.contain,
+                    Container(
+                      margin: const EdgeInsets.all(8),
+                      height: 44,
+                      width: 44,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFCDA752),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: SvgWrapper(
+                          Assets.filter,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -264,109 +225,115 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
               ),
             ),
-          ),
 
-          // Category Section
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Category',
-                    style: theme(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 18,
-                        ),
-                  ),
-                  TextButton(
-                    onPressed: _toggleCategories,
-                    child: Text(
-                      _showAllCategories ? 'See Few' : 'See All',
-                      style: theme(context).textTheme.titleSmall,
-                    ),
-                  ),
-                ],
-              ),
+            // Banner
+            SliverToBoxAdapter(
+              child: const PromotionBannerWidget(),
             ),
-          ),
 
-          // Animated Category Layout
-          SliverToBoxAdapter(
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
+            // Category Section
+            SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return _showAllCategories ? _buildCategoryGrid(itemWidth, spacing) : _buildCategoryRow(itemWidth, spacing);
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Category',
+                      style: theme(context).textTheme.displayLarge?.copyWith(
+                            fontSize: 18,
+                          ),
+                    ),
+                    TextButton(
+                      onPressed: _toggleCategories,
+                      child: Text(
+                        _showAllCategories ? 'See Few' : 'See All',
+                        style: theme(context).textTheme.titleSmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Animated Category Layout
+            SliverToBoxAdapter(
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return _showAllCategories ? _buildCategoryGrid(itemWidth, spacing) : _buildCategoryRow(itemWidth, spacing);
+                    },
+                  ),
+                ),
+              ),
+            ),
+            // Flash Sale Section
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                child: BlocBuilder<ActiveFlashSalesBloc, ActiveFlashSalesState>(
+                  builder: (context, state) {
+                    if (state.status == ActiveFlashSalesStatus.loading) {
+                      return const SizedBox(
+                        height: 214,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    if (state.status == ActiveFlashSalesStatus.error) {
+                      return SizedBox(
+                        height: 214,
+                        child: Center(
+                          child: Text(state.errorMessage, textAlign: TextAlign.center),
+                        ),
+                      );
+                    }
+
+                    if (state.flashSales.isEmpty) {
+                      return const SizedBox(height: 214);
+                    }
+
+                    final flashSales = state.flashSales;
+
+                    return SizedBox(
+                      height: 214, // 218
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: flashSales.length,
+                        separatorBuilder: (context, index) => const SizedBox(width: 16),
+                        itemBuilder: (context, index) {
+                          final flashSale = flashSales[index];
+                          return FlashSaleBanner(
+                            flashSale: flashSale,
+                            onViewAllTap: () {
+                              Navigator.push(
+                                // TODO: Use Nav
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FlashSaleDetailsPage(
+                                    flashSaleId: flashSale.id,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    );
                   },
                 ),
               ),
             ),
-          ),
-          // Flash Sale Section
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-              child: BlocBuilder<ActiveFlashSalesBloc, ActiveFlashSalesState>(
-                builder: (context, state) {
-                  if (state.status == ActiveFlashSalesStatus.loading) {
-                    return const SizedBox(
-                      height: 214,
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
 
-                  if (state.status == ActiveFlashSalesStatus.error) {
-                    return SizedBox(
-                      height: 214,
-                      child: Center(
-                        child: Text(state.errorMessage, textAlign: TextAlign.center),
-                      ),
-                    );
-                  }
-
-                  if (state.flashSales.isEmpty) {
-                    return const SizedBox(height: 214);
-                  }
-
-                  final flashSales = state.flashSales;
-
-                  return SizedBox(
-                    height: 214, // 218
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: flashSales.length,
-                      separatorBuilder: (context, index) => const SizedBox(width: 16),
-                      itemBuilder: (context, index) {
-                        final flashSale = flashSales[index];
-                        return FlashSaleBanner(
-                          flashSale: flashSale,
-                          onViewAllTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FlashSaleDetailsPage(
-                                  flashSaleId: flashSale.id,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-
-          // Filter Section
-          SliverToBoxAdapter(child: ProductFilterSection()),
-        ],
+            // Filter Section
+            const SliverToBoxAdapter(child: ProductFilterSection()),
+          ],
+        ),
       ),
     );
   }
@@ -409,9 +376,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             width: _categoryIconSize,
             height: _categoryIconSize,
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: isDark(context) ? AppColors.grey8 : AppColors.white,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.grey1),
+              border: Border.all(color: isDark(context) ? AppColors.grey7 : AppColors.grey1),
             ),
             child: Icon(
               category.icon,
