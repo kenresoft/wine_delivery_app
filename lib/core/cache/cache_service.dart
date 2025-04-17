@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:vintiora/core/cache/cache_policy.dart';
 import 'package:vintiora/core/storage/local_storage.dart';
 
 abstract class CacheService {

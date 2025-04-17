@@ -9,6 +9,7 @@ import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sal
 import 'package:vintiora/features/flash_sale/presentation/blocs/flash_sale_details/flash_sale_details_bloc.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/flash_sale_products/flash_sale_products_bloc.dart';
 import 'package:vintiora/features/product/di/product_di.dart';
+import 'package:vintiora/features/promotion/di/promotion_di.dart';
 
 final getIt = GetIt.instance;
 
@@ -17,6 +18,7 @@ void setupDependencies() {
   AuthDI.dependencies();
   ProductDI.dependencies();
   CartDI.dependencies();
+  PromotionDI.dependencies();
 
   // Feature: Flash Sale
   getIt.registerLazySingleton<FlashSaleRemoteDataSource>(() => FlashSaleRemoteDataSourceImpl(apiService: getIt()));

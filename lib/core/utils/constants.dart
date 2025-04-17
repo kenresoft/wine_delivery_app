@@ -39,13 +39,14 @@ class ApiConstants {
   static const String addToCart = '/cart/add';
   static const String incrementCartItem = '/cart/increment/';
   static const String decrementCartItem = '/cart/decrement/';
-  static const String removeCartItem = '/cart';  // DELETE with ID appended
+  static const String removeCartItem = '/cart'; // DELETE with ID appended
   static const String applyCoupon = '/cart/apply-coupon';
   static const String removeCoupon = '/cart/remove-coupon';
 
   // Other endpoints
   static const String products = '/products';
   static const String flashSales = '/flash-sales';
+  static const String promotions = '/promotions';
   static const String categories = '/categories';
   static const String favorites = '/favorites';
   static const String orders = '/orders';
