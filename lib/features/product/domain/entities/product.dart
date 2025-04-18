@@ -11,11 +11,11 @@ class Product extends Equatable {
   final double defaultPrice;
   final int defaultQuantity;
   final double defaultDiscount;
-  final List<ProductSupplier> suppliers;
+  final List<ProductSuppliers> suppliers;
   final double alcoholContent;
   final List<String> tags;
   final List<String> images;
-  final String? image;
+  final String image;
   final Dimensions dimensions;
   final CurrentFlashSale? currentFlashSale;
   final List<ProductReview> reviews;
@@ -45,7 +45,7 @@ class Product extends Equatable {
     this.alcoholContent = 0.0,
     this.tags = const [],
     this.images = const [],
-    this.image,
+    this.image = '',
     this.dimensions = const Dimensions(),
     this.currentFlashSale,
     this.reviews = const [],
@@ -82,7 +82,7 @@ class Product extends Equatable {
     double? defaultPrice,
     int? defaultQuantity,
     double? defaultDiscount,
-    List<ProductSupplier>? suppliers,
+    List<ProductSuppliers>? suppliers,
     double? alcoholContent,
     List<String>? tags,
     List<String>? images,
@@ -184,21 +184,65 @@ class ProductCategory extends Equatable {
 @immutable
 class ProductSupplier extends Equatable {
   final String id;
-  final Map<String, dynamic> supplier;
+  final String name;
+  final String contact;
+  final String location;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int version;
+
+  const ProductSupplier({
+    required this.id,
+    required this.name,
+    required this.contact,
+    required this.location,
+    required this.createdAt,
+    required this.updatedAt,
+    this.version = 0,
+  });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        contact,
+        location,
+        createdAt,
+        updatedAt,
+        version,
+      ];
+}
+
+@immutable
+class ProductSuppliers extends Equatable {
+  final String id;
+  final ProductSupplier supplier;
   final double price;
   final int quantity;
   final double discount;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
-  const ProductSupplier({
+  const ProductSuppliers({
     required this.id,
     required this.supplier,
     this.price = 0.0,
     this.quantity = 0,
     this.discount = 0.0,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   @override
-  List<Object?> get props => [id, supplier, price, quantity, discount];
+  List<Object?> get props => [
+        id,
+        supplier,
+        price,
+        quantity,
+        discount,
+        createdAt,
+        updatedAt,
+      ];
 }
 
 @immutable
