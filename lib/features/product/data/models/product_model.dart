@@ -1,3 +1,4 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:vintiora/features/product/domain/entities/product.dart';
 
 class ProductModel extends Product {
@@ -8,7 +9,7 @@ class ProductModel extends Product {
     required super.defaultPrice,
     required super.defaultQuantity,
     required super.defaultDiscount,
-    required List<SupplierModel> super.suppliers,
+    required super.suppliers,
     required super.alcoholContent,
     required super.description,
     required super.deleted,
@@ -42,12 +43,13 @@ class ProductModel extends Product {
       id: json['_id'] ?? '',
       name: json['name'] ?? 'Unnamed Product',
       brand: json['brand'] ?? 'Generic Brand',
-      description: json['description'],
-      category: CategoryModel.fromJson(json['category'] ?? {}),
+      description: json['description'] ?? 'No description',
+      // If the category is provided as a Map, use it; otherwise, create a default category.
+      category: json['category'] is Map<String, dynamic> ? CategoryModel.fromJson(json['category']) : CategoryModel(id: json['category'] ?? '', name: 'Unknown Category'),
       defaultPrice: (json['defaultPrice'] ?? 0.0).toDouble(),
       defaultQuantity: json['defaultQuantity'] ?? 0,
       defaultDiscount: (json['defaultDiscount'] ?? 0.0).toDouble(),
-      suppliers: (json['suppliers'] as List<dynamic>?)?.map((s) => SupplierModel.fromJson(s)).toList() ?? [],
+      suppliers: (json['suppliers'] as List<dynamic>?)?.map((s) => ProductSuppliersModel.fromJson(s)).toList() ?? [],
       alcoholContent: (json['alcoholContent'] ?? 0.0).toDouble(),
       tags: List<String>.from(json['tags'] ?? []),
       images: List<String>.from(json['images'] ?? []),
@@ -145,6 +147,45 @@ class ProductModel extends Product {
     );
   }
 
+  factory ProductModel.fromCart(Map<String, dynamic> json) {
+    try {
+      final ProductModel product = ProductModel(
+        id: json['_id'] ?? '',
+        name: json['name'] ?? 'Unnamed Product',
+        brand: 'Generic Brand',
+        description: 'No description',
+        category: const CategoryModel(id: '', name: 'Unknown Category'),
+        defaultPrice: (json['defaultPrice'] ?? 0.0).toDouble(),
+        defaultQuantity: json['defaultQuantity'] ?? 0,
+        defaultDiscount: 0.0,
+        suppliers: const [],
+        alcoholContent: 0.0,
+        tags: const [],
+        images: json['image'] != null ? [json['image']] : const [],
+        image: json['image'],
+        dimensions: const DimensionsModel(),
+        currentFlashSale: null,
+        reviews: const [],
+        relatedProducts: const [],
+        isNewArrival: false,
+        isFeatured: false,
+        isOnSale: json['discountedPrice'] != null,
+        stockStatus: 'In Stock',
+        shippingCost: 0.0,
+        weight: 0.0,
+        deleted: false,
+        variants: const [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        version: 0,
+      );
+      return product;
+    } catch (e, stack) {
+      logger.e('Error loading product: $e', stackTrace: stack);
+      rethrow;
+    }
+  }
+
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -155,7 +196,7 @@ class ProductModel extends Product {
       'defaultPrice': defaultPrice,
       'defaultQuantity': defaultQuantity,
       'defaultDiscount': defaultDiscount,
-      'suppliers': suppliers.map((s) => (s as SupplierModel).toJson()).toList(),
+      'suppliers': suppliers.map((s) => (s as ProductSuppliersModel).toJson()).toList(),
       'alcoholContent': alcoholContent,
       'tags': tags,
       'images': images,
@@ -176,6 +217,93 @@ class ProductModel extends Product {
       'updatedAt': updatedAt.toIso8601String(),
       'version': version,
     };
+  }
+
+  factory ProductModel.fromProduct(Product product) {
+    return ProductModel(
+      id: product.id,
+      name: product.name,
+      category: product.category is CategoryModel ? product.category as CategoryModel : CategoryModel(id: product.category.id, name: product.category.name),
+      defaultPrice: product.defaultPrice,
+      defaultQuantity: product.defaultQuantity,
+      defaultDiscount: product.defaultDiscount,
+      suppliers: product.suppliers
+          .map((s) => s is ProductSuppliersModel
+              ? s
+              : ProductSuppliersModel(
+                  id: s.id,
+                  supplier: ProductSupplierModel(
+                    id: s.supplier.id,
+                    name: s.supplier.name,
+                    contact: s.supplier.contact,
+                    location: s.supplier.location,
+                    createdAt: s.supplier.createdAt,
+                    updatedAt: s.supplier.updatedAt,
+                    version: s.supplier.version,
+                  ),
+                  price: s.price,
+                  quantity: s.quantity,
+                  discount: s.discount,
+                  createdAt: s.createdAt,
+                  updatedAt: s.updatedAt,
+                ))
+          .toList(),
+      alcoholContent: product.alcoholContent,
+      description: product.description,
+      deleted: product.deleted,
+      tags: product.tags,
+      stockStatus: product.stockStatus,
+      isFeatured: product.isFeatured,
+      isOnSale: product.isOnSale,
+      variants: product.variants.map((v) => v is VariantModel ? v : VariantModel(type: v.type, value: v.value, id: v.id)).toList(),
+      shippingCost: product.shippingCost,
+      relatedProducts: product.relatedProducts
+          .map((rp) => rp is RelatedProductModel
+              ? rp
+              : RelatedProductModel(
+                  productId: rp.productId,
+                  matchedFields: rp.matchedFields,
+                  relationshipType: rp.relationshipType,
+                  priority: rp.priority,
+                ))
+          .toList(),
+      reviews: product.reviews
+          .map((r) => r is ReviewModel
+              ? r
+              : ReviewModel(
+                  userId: r.userId,
+                  rating: r.rating,
+                  comment: r.comment,
+                  createdAt: r.createdAt,
+                  updatedAt: r.updatedAt,
+                ))
+          .toList(),
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt,
+      version: product.version,
+      isNewArrival: product.isNewArrival,
+      brand: product.brand,
+      weight: product.weight,
+      images: product.images,
+      image: product.image,
+      dimensions: product.dimensions is DimensionsModel
+          ? product.dimensions as DimensionsModel
+          : DimensionsModel(
+              length: product.dimensions.length,
+              width: product.dimensions.width,
+              height: product.dimensions.height,
+            ),
+      currentFlashSale: product.currentFlashSale is CurrentFlashSaleModel
+          ? product.currentFlashSale as CurrentFlashSaleModel
+          : (product.currentFlashSale != null
+              ? CurrentFlashSaleModel(
+                  flashSaleId: product.currentFlashSale!.flashSaleId,
+                  specialPrice: product.currentFlashSale!.specialPrice,
+                  startDate: product.currentFlashSale!.startDate,
+                  endDate: product.currentFlashSale!.endDate,
+                )
+              : null),
+    );
   }
 }
 
@@ -200,33 +328,98 @@ class CategoryModel extends ProductCategory {
   }
 }
 
-class SupplierModel extends ProductSupplier {
-  const SupplierModel({
+class ProductSupplierModel extends ProductSupplier {
+  const ProductSupplierModel({
     required super.id,
-    required super.supplier,
-    super.price,
-    super.quantity,
-    super.discount,
+    required super.name,
+    required super.contact,
+    required super.location,
+    required super.createdAt,
+    required super.updatedAt,
+    super.version,
   });
 
-  factory SupplierModel.fromJson(Map<String, dynamic> json) {
-    return SupplierModel(
+  factory ProductSupplierModel.fromJson(Map<String, dynamic> json) {
+    return ProductSupplierModel(
       id: json['_id'] ?? '',
-      supplier: json['supplier'] ?? {},
-      price: (json['price'] ?? 0.0).toDouble(),
-      quantity: json['quantity'] ?? 0,
-      discount: (json['discount'] ?? 0.0).toDouble(),
+      name: json['name'] ?? '',
+      contact: json['contact'] ?? '',
+      location: json['location'] ?? '',
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : DateTime.now(),
+      version: json['__v'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'supplier': supplier,
+      'name': name,
+      'contact': contact,
+      'location': location,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      '__v': version,
+    };
+  }
+
+  factory ProductSupplierModel.empty() {
+    return ProductSupplierModel(
+      id: '',
+      name: '',
+      contact: '',
+      location: '',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
+}
+
+class ProductSuppliersModel extends ProductSuppliers {
+  const ProductSuppliersModel({
+    required super.id,
+    required ProductSupplierModel super.supplier,
+    super.price,
+    super.quantity,
+    super.discount,
+    required super.createdAt,
+    required super.updatedAt,
+  });
+
+  factory ProductSuppliersModel.fromJson(Map<String, dynamic> json) {
+    return ProductSuppliersModel(
+      id: json['_id'] ?? '',
+      supplier: json['supplier'] is Map<String, dynamic> ? ProductSupplierModel.fromJson(json['supplier']) : ProductSupplierModel.empty(),
+      price: (json['price'] ?? 0.0).toDouble(),
+      quantity: json['quantity'] ?? 0,
+      discount: (json['discount'] ?? 0.0).toDouble(),
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'supplier': (supplier as ProductSupplierModel).toJson(),
       'price': price,
       'quantity': quantity,
       'discount': discount,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  factory ProductSuppliersModel.empty() {
+    return ProductSuppliersModel(
+      id: '',
+      supplier: ProductSupplierModel.empty(),
+      price: 0.0,
+      quantity: 0,
+      discount: 0.0,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
   }
 }
 
