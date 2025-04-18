@@ -1,45 +1,51 @@
 part of 'product_bloc.dart';
 
-enum ProductsStatus {
-  initial,
-  loading,
-  loaded,
-  detailLoaded,
-  error,
-}
+enum ProductsStatus { initial, loading, loaded, detailLoaded, pricingLoaded, error }
 
 class ProductState extends Equatable {
   final ProductsStatus status;
   final List<Product> products;
-  final Product? selectedProduct;
-  final List<Product>? newArrivals;
+  final List<Product> newArrivals;
   final List<Product> popularProducts;
+  final Product? selectedProduct;
+  final ProductWithPricing? productWithPricing;
+  final String? relatedProductsError;
   final String? errorMessage;
+  final List<Product> relatedProducts; // Add this line
 
   const ProductState({
     this.status = ProductsStatus.initial,
     this.products = const [],
-    this.selectedProduct,
     this.newArrivals = const [],
     this.popularProducts = const [],
+    this.selectedProduct,
+    this.productWithPricing,
+    this.relatedProductsError,
     this.errorMessage,
+    this.relatedProducts = const [], // Add this line
   });
 
   ProductState copyWith({
     ProductsStatus? status,
     List<Product>? products,
-    Product? selectedProduct,
     List<Product>? newArrivals,
     List<Product>? popularProducts,
+    Product? selectedProduct,
+    ProductWithPricing? productWithPricing,
     String? errorMessage,
+    String? relatedProductsError,
+    List<Product>? relatedProducts, // Add this line
   }) {
     return ProductState(
       status: status ?? this.status,
       products: products ?? this.products,
-      selectedProduct: selectedProduct ?? this.selectedProduct,
       newArrivals: newArrivals ?? this.newArrivals,
       popularProducts: popularProducts ?? this.popularProducts,
+      selectedProduct: selectedProduct ?? this.selectedProduct,
+      productWithPricing: productWithPricing ?? this.productWithPricing,
+      relatedProductsError: relatedProductsError ?? this.relatedProductsError,
       errorMessage: errorMessage ?? this.errorMessage,
+      relatedProducts: relatedProducts ?? this.relatedProducts, // Add this line
     );
   }
 
@@ -47,9 +53,11 @@ class ProductState extends Equatable {
   List<Object?> get props => [
         status,
         products,
-        selectedProduct,
         newArrivals,
         popularProducts,
+        selectedProduct,
+        productWithPricing,
         errorMessage,
+        relatedProducts, // Add this line
       ];
 }
