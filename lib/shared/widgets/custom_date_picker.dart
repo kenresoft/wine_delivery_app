@@ -166,7 +166,7 @@ class _DatePickerDialogState extends State<DatePickerDialog> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: AppButtonTheme.elevatedButton,
+                style: AppButtonTheme.defaultElevatedButton,
                 onPressed: () {
                   widget.onChanged(selectedDateNotifier.value);
                   Navigator.of(context).pop(selectedDateNotifier.value);
