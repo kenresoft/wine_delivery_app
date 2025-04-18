@@ -6,6 +6,7 @@ import 'package:vintiora/features/product/domain/usecases/get_all_products.dart'
 import 'package:vintiora/features/product/domain/usecases/get_new_arrivals.dart';
 import 'package:vintiora/features/product/domain/usecases/get_popular_products.dart';
 import 'package:vintiora/features/product/domain/usecases/get_product_by_id.dart';
+import 'package:vintiora/features/product/domain/usecases/get_product_with_pricing.dart';
 import 'package:vintiora/features/product/domain/usecases/get_products_by_ids.dart';
 import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
 
@@ -15,7 +16,10 @@ class ProductDI {
     getIt.registerLazySingleton<ProductRemoteDataSource>(() => ProductRemoteDataSourceImpl(apiService: getIt()));
 
     // Repository
-    getIt.registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(remoteDataSource: getIt()));
+    getIt.registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(
+          remoteDataSource: getIt(),
+          connectionChecker: getIt(),
+        ));
 
     // Use Cases
     getIt.registerLazySingleton(() => GetAllProducts(getIt()));
@@ -23,6 +27,7 @@ class ProductDI {
     getIt.registerLazySingleton(() => GetProductsByIds(getIt()));
     getIt.registerLazySingleton(() => GetNewArrivals(getIt()));
     getIt.registerLazySingleton(() => GetPopularProducts(getIt()));
+    getIt.registerLazySingleton(() => GetProductWithPricing(getIt<ProductRepository>()));
 
     // Bloc
     getIt.registerFactory(() => ProductBloc(
@@ -31,6 +36,7 @@ class ProductDI {
           getProductsByIds: getIt(),
           getNewArrivals: getIt(),
           getPopularProducts: getIt(),
+          getProductWithPricing: getIt<GetProductWithPricing>(),
         ));
   }
 }
