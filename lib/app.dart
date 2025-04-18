@@ -123,8 +123,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           (failure) => Product.empty(), // throw
           (product) => product,
         );
-        // final product = await productRepository.getProductById(productId);
-        Nav.push(Routes.productDetails, arguments: product);
+        Nav.push(Routes.productDetails, arguments: product.id);
       } else if (uri.pathSegments[0] == 'cart') {
         logger.i('cart');
         Nav.push(Routes.cart);

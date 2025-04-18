@@ -49,9 +49,10 @@ class AppButtonTheme {
     );
   }
 
-  /// __Note:__ Input [height] is responsive
-  static ButtonStyle elevatedButton(double height) {
-    return ElevatedButton.styleFrom(
+  /// __Note:__ Input [height] is responsive.
+  /// Returns base elevated style with customisable elements
+  static ButtonStyle elevatedButton({double height = 51, ButtonStyle? style}) {
+    ButtonStyle baseStyle = ElevatedButton.styleFrom(
       minimumSize: Size(double.infinity, height.h.clamp(height, 63)),
       padding: EdgeInsets.symmetric(vertical: 16),
       textStyle: const TextStyle(
@@ -60,6 +61,8 @@ class AppButtonTheme {
         fontFamily: 'SFProDisplay',
       ),
     );
+
+    return baseStyle.merge(style);
   }
 
   static ButtonStyle get defaultElevatedButton {
