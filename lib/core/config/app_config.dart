@@ -18,13 +18,15 @@ import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/firebase_util.dart';
 import 'package:vintiora/core/utils/notification_util.dart';
 import 'package:vintiora/core/utils/utils.dart';
-import 'package:vintiora/features/cart/presentation/bloc/cart_old/cart_bloc.dart';
+import 'package:vintiora/features/cart/presentation/bloc/cart_old/cart_bloc.dart' as c;
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import 'package:vintiora/features/order/presentation/bloc/shipment/shipment_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
 import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/firebase_options.dart';
+
+import '../../features/cart/presentation/bloc/cart/cart_bloc.dart';
 
 class Config {
   static Future<void> load({void Function(dynamic error)? onComplete}) async {
@@ -128,9 +130,14 @@ class Config {
           action: (bloc) => bloc.add(GetShipmentDetails()),
           condition: (state) => state != null,
         ),
+        _waitForBlocCompletion<c.CartBloc, c.CartState>(
+          context: ctx,
+          action: (bloc) => bloc.add(c.GetCartItems()),
+          condition: (state) => state.status != c.CartStatus.loading,
+        ),
         _waitForBlocCompletion<CartBloc, CartState>(
           context: ctx,
-          action: (bloc) => bloc.add(GetCartItems()),
+          action: (bloc) => bloc.add(GetCartEvent()),
           condition: (state) => state.status != CartStatus.loading,
         ),
       ]);
