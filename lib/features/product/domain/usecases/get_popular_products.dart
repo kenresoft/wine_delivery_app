@@ -9,6 +9,6 @@ class GetPopularProducts {
   GetPopularProducts(this.repository);
 
   Future<Either<Failure, List<Product>>> call(int days, int limit) async {
-    return await repository.getPopularProducts(days: days, limit: limit);
+    return await repository.getPopularProducts(days, limit);
   }
 }

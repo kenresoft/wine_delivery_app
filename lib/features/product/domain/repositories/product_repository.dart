@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:vintiora/core/error/failures.dart';
 import 'package:vintiora/features/product/domain/entities/product.dart';
+import 'package:vintiora/features/product/domain/entities/product_pricing.dart';
 
 abstract class ProductRepository {
   Future<Either<Failure, List<Product>>> getAllProducts();
@@ -11,5 +12,7 @@ abstract class ProductRepository {
 
   Future<Either<Failure, List<Product>>> getNewArrivals();
 
-  Future<Either<Failure, List<Product>>> getPopularProducts({required int days, required int limit});
+  Future<Either<Failure, List<Product>>> getPopularProducts(int days, int limit);
+
+  Future<Either<Failure, ProductWithPricing>> getProductWithPricing(String productId);
 }
