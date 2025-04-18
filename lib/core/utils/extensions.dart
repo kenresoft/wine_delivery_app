@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vintiora/features/category/domain/enums/wine_category.dart';
 import 'package:vintiora/features/order/domain/enums/order_status.dart';
+import 'package:vintiora/features/product/domain/entities/product.dart';
 
 // Extension to compare DateTime objects by date only
 extension DateTimeComparison on DateTime {
@@ -100,6 +101,27 @@ extension WineCategoryExtension on WineCategory {
       WineCategory.lowSulfur => Icons.filter_alt,
       WineCategory.nonAlcoholic => Icons.no_drinks,
       WineCategory.vegan => CupertinoIcons.tree,
+    };
+  }
+}
+
+extension ProductCategoryExtension on ProductCategory {
+  IconData get icon {
+    return switch (name) {
+      'Red' => Icons.local_bar,
+      'White' => Icons.wine_bar,
+      'Rosé' => Icons.local_drink,
+      'Sparkling' => Icons.bubble_chart,
+      'Dessert' => Icons.cake,
+      'Fortified' => Icons.wine_bar,
+      'Organic' => Icons.eco,
+      'Biodynamic' => Icons.grass,
+      'Natural' => Icons.nature,
+      'Kosher' => CupertinoIcons.staroflife,
+      'Low Sulfur' => Icons.filter_alt,
+      'Non-Alcoholic' => Icons.no_drinks,
+      'Vegan' => CupertinoIcons.tree,
+      _ => Icons.category
     };
   }
 }
