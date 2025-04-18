@@ -3,9 +3,12 @@ import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/features/auth/presentation/pages/login_screen.dart';
 import 'package:vintiora/features/auth/presentation/pages/register_screen.dart';
 import 'package:vintiora/features/auth/presentation/pages/splash_screen.dart';
+import 'package:vintiora/features/cart/presentation/pages/cart_screen.dart';
 import 'package:vintiora/features/cart/shopping_cart.dart';
 import 'package:vintiora/features/category/products_category_screen.dart';
 import 'package:vintiora/features/favorite/favorites_screen.dart';
+import 'package:vintiora/features/flash_sale/presentation/pages/flash_sale_details_page.dart';
+import 'package:vintiora/features/flash_sale/presentation/pages/flash_sale_list_page.dart';
 import 'package:vintiora/features/main/presentation/pages/main_screen.dart';
 import 'package:vintiora/features/onboarding/onboarding_screen.dart';
 import 'package:vintiora/features/order/data/models/responses/order.dart';
@@ -15,6 +18,9 @@ import 'package:vintiora/features/order/presentation/pages/order_tracking_screen
 import 'package:vintiora/features/product/domain/entities/product.dart';
 // import 'package:vintiora/features/product/data/models/responses/product.dart';
 import 'package:vintiora/features/product/presentation/pages/product_detail_screen.dart';
+import 'package:vintiora/features/promotion/domain/entities/promotion_entity.dart';
+import 'package:vintiora/features/promotion/presentation/pages/promotion_page.dart';
+import 'package:vintiora/features/promotion/presentation/widgets/promotion_detail_page.dart';
 import 'package:vintiora/shared/components/error_page.dart';
 
 import 'nav.dart';
@@ -35,7 +41,9 @@ class AppRouter {
     Routes.main: (_) => MainScreen(),
     Routes.favorites: (_) => FavoritesScreen(),
     Routes.products: (_) => CategoryScreen(),
-    Routes.cart: (_) => ShoppingCartScreen(),
+    Routes.promotion: (_) => PromotionPage(),
+    Routes.flashSale: (_) => FlashSaleListPage(),
+    Routes.cart: (_) => CartScreen(),
   };
 
   /// Generates routes dynamically.
@@ -95,7 +103,13 @@ class AppRouter {
 
     return switch (route) {
       Routes.productDetails => _buildRoute((context) {
-          return ProductDetailScreen(product: _getArgOrDefault<Product>(settings.arguments));
+          return ProductDetailScreen(productId: _getArgOrDefault<String>(settings.arguments));
+        }, settings),
+      Routes.promotionDetails => _buildRoute((context) {
+          return PromotionDetailPage(promotionWithProducts: _getArgOrDefault<PromotionWithProductsEntity>(settings.arguments));
+        }, settings),
+      Routes.flashSaleDetails => _buildRoute((context) {
+          return FlashSaleDetailsPage(flashSaleId: _getArgOrDefault<String>(settings.arguments));
         }, settings),
       Routes.orderConfirmation => _buildRoute((context) {
           try {

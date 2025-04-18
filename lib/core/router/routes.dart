@@ -13,6 +13,14 @@ enum Routes {
   favorites('/favorites'),
   products('/products'),
   productDetails('/productDetails'),
+  reviews('/reviews'),
+  gallery('/gallery'),
+
+
+  promotion('/promotion'),
+  promotionDetails('/promotionDetails'),
+  flashSale('/flashSale'),
+  flashSaleDetails('/flashSaleDetails'),
   orderConfirmation('/orderConfirmation'),
   orderHistory('/orderHistory'),
   orderTracking('/orderTracking'),
