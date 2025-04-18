@@ -3,6 +3,7 @@ import 'package:vintiora/core/error/failures.dart';
 import 'package:vintiora/core/network/api_service.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/features/product/data/models/product_model.dart';
+import 'package:vintiora/features/product/data/models/product_pricing_model.dart';
 
 abstract class ProductRemoteDataSource {
   Future<Either<Failure, List<ProductModel>>> getAllProducts();
@@ -14,6 +15,8 @@ abstract class ProductRemoteDataSource {
   Future<Either<Failure, List<ProductModel>>> getNewArrivals();
 
   Future<Either<Failure, List<ProductModel>>> getPopularProducts({required int days, required int limit});
+
+  Future<Either<Failure, ProductWithPricingModel>> getProductWithPricing(String productId);
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
@@ -86,6 +89,19 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
           return productsList.map((product) => ProductModel.fromJson(product)).toList();
         }
         throw ServerFailure('Failed to fetch popular products.');
+      },
+    );
+  }
+
+  @override
+  Future<Either<Failure, ProductWithPricingModel>> getProductWithPricing(String productId) async {
+    return await _apiService.request<ProductWithPricingModel>(
+      endpoint: '${ApiConstants.products}/$productId/with-pricing',
+      parser: (data) {
+        if (data is Map<String, dynamic> && data['success'] == true && data.containsKey('data')) {
+          return ProductWithPricingModel.fromJson(data['data']);
+        }
+        throw ServerFailure('Failed to fetch product pricing details.');
       },
     );
   }
