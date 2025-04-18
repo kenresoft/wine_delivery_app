@@ -1,3 +1,4 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:vintiora/features/cart/data/models/cart_item_model.dart';
 import 'package:vintiora/features/cart/data/models/cart_pricing_model.dart';
 import 'package:vintiora/features/cart/domain/entities/cart.dart';
@@ -20,14 +21,20 @@ class CartModel extends Cart {
   });
 
   factory CartModel.fromJson(Map<String, dynamic> json) {
-    return CartModel(
-      id: json['id'] ?? json['_id'],
-      userId: json['user'],
-      items: (json['items'] as List).map((item) => CartItemModel.fromJson(item)).toList(),
-      pricing: CartPricingModel.fromJson(json['pricing']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      createdAt: DateTime.parse(json['createdAt']),
-    );
+    try {
+      final cart = CartModel(
+        id: json['id'] ?? json['_id'],
+        userId: json['user'],
+        items: (json['items'] as List).map((item) => CartItemModel.fromJson(item)).toList(),
+        pricing: CartPricingModel.fromJson(json['pricing']),
+        updatedAt: DateTime.parse(json['updatedAt']),
+        createdAt: DateTime.parse(json['createdAt']),
+      );
+      return cart;
+    } catch (e, stack) {
+      logger.e('Error loading cart: $e', stackTrace: stack);
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

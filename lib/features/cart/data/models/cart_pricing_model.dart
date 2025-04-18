@@ -1,3 +1,4 @@
+import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/features/cart/domain/entities/cart_pricing.dart';
 
 class CartPricingModel extends CartPricing {
@@ -15,9 +16,9 @@ class CartPricingModel extends CartPricing {
 
   factory CartPricingModel.fromJson(Map<String, dynamic> json) {
     return CartPricingModel(
-      subtotal: json['subtotal'],
-      discount: json['discount'],
-      total: json['total'],
+      subtotal: toDouble(json['subtotal']),
+      discount: toDouble(json['discount']),
+      total: toDouble(json['total']),
       id: json['_id'],
     );
   }
@@ -32,9 +33,9 @@ class CartPricingModel extends CartPricing {
   }
 
   CartPricingModel copyWith({
-    int? subtotal,
-    int? discount,
-    int? total,
+    double? subtotal,
+    double? discount,
+    double? total,
     String? id,
   }) {
     return CartPricingModel(
