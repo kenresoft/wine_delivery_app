@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/config/app_config.dart';
 import 'package:vintiora/core/router/nav.dart';
+import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/asset_handler.dart';
@@ -13,7 +14,6 @@ import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/extensions.dart';
 import 'package:vintiora/features/category/domain/enums/wine_category.dart';
 import 'package:vintiora/features/flash_sale/presentation/blocs/active_flash_sales/active_flash_sales_bloc.dart';
-import 'package:vintiora/features/flash_sale/presentation/pages/flash_sale_details_page.dart';
 import 'package:vintiora/features/flash_sale/presentation/widgets/flash_sale_banner.dart';
 import 'package:vintiora/features/home/presentation/widgets/product_filter_section.dart';
 import 'package:vintiora/features/promotion/presentation/widgets/promotion_banner_widget.dart';
@@ -310,17 +310,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           final flashSale = flashSales[index];
                           return FlashSaleBanner(
                             flashSale: flashSale,
-                            onViewAllTap: () {
-                              Navigator.push(
-                                // TODO: Use Nav
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FlashSaleDetailsPage(
-                                    flashSaleId: flashSale.id,
-                                  ),
-                                ),
-                              );
-                            },
+                            onViewAllTap: () => Nav.push(
+                              Routes.flashSaleDetails,
+                              arguments: flashSale.id,
+                            ),
                           );
                         },
                       ),
