@@ -9,10 +9,10 @@ class FlashSaleProductCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const FlashSaleProductCard({
-    Key? key,
+    super.key,
     required this.flashSale,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

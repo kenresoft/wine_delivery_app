@@ -8,13 +8,13 @@ class FlashSaleTimer extends StatelessWidget {
   final bool showLabels;
 
   const FlashSaleTimer({
-    Key? key,
+    super.key,
     required this.timeRemainingInSeconds,
     this.textColor = Colors.white,
     this.backgroundColor = Colors.redAccent,
     this.fontSize = 14.0,
     this.showLabels = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
