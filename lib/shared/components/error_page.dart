@@ -133,7 +133,7 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
                             width: double.infinity,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: theme(context).colorScheme.surfaceVariant,
+                              color: theme(context).colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Column(
@@ -199,7 +199,7 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
                                     _isLoadingNotifier.value = false;
                                   }
                                 },
-                          style: AppButtonTheme.elevatedButton,
+                          style: AppButtonTheme.defaultElevatedButton,
                           child: isLoading
                               ? const SizedBox(
                                   width: 24,

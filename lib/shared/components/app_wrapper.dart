@@ -15,15 +15,15 @@ class AppWrapper extends StatefulWidget {
   final PreferredSizeWidget? appBar;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
-
-  /// Drawer and End Drawer support
   final Widget? drawer;
   final Widget? endDrawer;
 
-  /// System UI configurations with theme-aware defaults
+  /// System UI configurations
   final Color? statusBarColor;
   final Brightness? statusBarBrightness;
   final Brightness? statusBarIconBrightness;
+  final Color? navigationBarColor;
+  final Brightness? navigationBarIconBrightness;
   final List<DeviceOrientation>? allowedOrientations;
 
   const AppWrapper({
@@ -42,6 +42,8 @@ class AppWrapper extends StatefulWidget {
     this.statusBarColor,
     this.statusBarBrightness,
     this.statusBarIconBrightness,
+    this.navigationBarColor,
+    this.navigationBarIconBrightness,
     this.allowedOrientations = const [
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -77,7 +79,6 @@ class _AppWrapperState extends State<AppWrapper> {
 
   @override
   void dispose() {
-    // Restore previous orientations when disposed
     SystemChrome.setPreferredOrientations(_previousOrientations);
     super.dispose();
   }
@@ -90,12 +91,14 @@ class _AppWrapperState extends State<AppWrapper> {
 
   SystemUiOverlayStyle _getSystemUiStyle(BuildContext context) {
     final brightness = Theme.of(context).brightness;
+    final isDarkMode = isDark(context);
 
     return SystemUiOverlayStyle(
       statusBarColor: widget.statusBarColor ?? Colors.transparent,
       statusBarBrightness: widget.statusBarBrightness ?? brightness,
-      statusBarIconBrightness: widget.statusBarIconBrightness ?? (isDark(context) ? Brightness.light : Brightness.dark),
-      systemNavigationBarColor: isDark(context) ? AppColors.secondary : AppColors.white,
+      statusBarIconBrightness: widget.statusBarIconBrightness ?? (isDarkMode ? Brightness.light : Brightness.dark),
+      systemNavigationBarColor: widget.navigationBarColor ?? (isDarkMode ? AppColors.secondary : AppColors.white),
+      systemNavigationBarIconBrightness: widget.navigationBarIconBrightness ?? (isDarkMode ? Brightness.light : Brightness.dark),
     );
   }
 
