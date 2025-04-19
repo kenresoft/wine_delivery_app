@@ -155,7 +155,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                 child: _buildStockAndVariants(productWithPricing),
               ),
               SliverToBoxAdapter(
-                child: _buildProductTabs(productWithPricing),
+                child: _buildDescriptionTab(productWithPricing),
+              ),
+              SliverToBoxAdapter(
+                child: _buildSpecificationsTab(productWithPricing),
               ),
               SliverToBoxAdapter(
                 child: _buildReviews(productWithPricing),
@@ -408,38 +411,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
         ],
       );
     }).toList();
-  }
-
-  Widget _buildProductTabs(ProductWithPricing p) {
-    return Column(
-      children: [
-        // Tab Bar
-        TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Description'),
-            Tab(text: 'Specifications'),
-            Tab(text: 'Similar Products'),
-          ],
-          labelColor: isDark(context) ? Colors.white : Colors.black,
-          unselectedLabelColor: isDark(context) ? AppColors.grey4 : AppColors.grey6,
-          indicatorColor: isDark(context) ? AppColors.primary : AppColors.primary,
-        ),
-
-        // Tab Content
-        SizedBox(
-          height: 250.h,
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              _buildDescriptionTab(p),
-              _buildSpecificationsTab(p),
-              _buildSimilarProductsTab(p),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _buildDescriptionTab(ProductWithPricing p) {
@@ -863,14 +834,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                             _buildRatingStars(review.rating.toDouble()),
                           ],
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'review.title',
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
                         const SizedBox(height: 6),
                         Text(
                           review.comment ?? '',
@@ -884,7 +847,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                           // if (review.photos.isNotEmpty) ...[
                           const SizedBox(height: 12),
                           SizedBox(
-                            height: 80,
+                            height: 60,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: 1,

@@ -3,12 +3,11 @@ import 'package:extensionresoft/extensionresoft.dart' hide AppImage;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/__.dart';
-import 'package:vintiora/core/router/nav.dart';
-import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/utils.dart';
+import 'package:vintiora/shared/widgets/fullscreen_gallery_view.dart';
 
 class EnhancedProductGallery extends StatefulWidget {
   final String image;
@@ -166,11 +165,10 @@ class _EnhancedProductGalleryState extends State<EnhancedProductGallery> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    // Navigate to fullscreen gallery view
-                    Nav.push(
-                      Routes.gallery,
-                      // images: images.map((img) => Constants.baseUrl + img).toList(),
-                      // initialIndex: index,
+                    context.openGallery(
+                      images: widget.images.map((img) => img).toList(),
+                      initialIndex: _currentPage,
+                      heroTag: widget.heroTag,
                     );
                   },
                   child: AppImage(
