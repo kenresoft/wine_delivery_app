@@ -2,8 +2,8 @@ import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/router/nav.dart';
+import 'package:vintiora/core/router/route_aware_state.dart';
 import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
@@ -26,20 +26,19 @@ import 'package:vintiora/shared/widgets/error_view.dart';
 class ProductDetailScreen extends StatefulWidget {
   final String productId;
 
-  const ProductDetailScreen({
-    super.key,
+  ProductDetailScreen({
+    Key? key,
     required this.productId,
-  });
+  }) : super(key: Key(productId));
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTickerProviderStateMixin {
+class _ProductDetailScreenState extends RouteAwareState<ProductDetailScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late PageController _galleryController;
   final ScrollController _scrollController = ScrollController();
-  int _currentImageIndex = 0;
   int _quantity = 1;
   String? _selectedSize;
   String? _selectedVariant;
@@ -52,8 +51,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
     _tabController = TabController(length: 3, vsync: this);
     _galleryController = PageController(viewportFraction: 0.85);
     _loadProductWithDetails();
-
-    // Initialize favorite status
     context.read<FavsBloc>().add(InitLike(widget.productId));
   }
 
@@ -67,6 +64,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
     _galleryController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void onReturnToScreen() {
+    _loadProductWithDetails();
   }
 
   double _calculateAverageRating(List<ProductReview>? reviews) {
@@ -334,7 +336,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
           // Size/Variant Selection
           if (product.variants.isNotEmpty) ...[
             // Group variants by type
-            ...buildVariantSelectors(product),
+            buildVariantSelectors(product),
             const SizedBox(height: 20),
           ],
 
@@ -362,7 +364,83 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
     );
   }
 
-  List<Widget> buildVariantSelectors(Product product) {
+  bool _showOnlySizes = true;
+
+  Widget buildVariantSelectors(Product product) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Toggle button with icon
+        TextButton.icon(
+          onPressed: () => setState(() => _showOnlySizes = !_showOnlySizes),
+          icon: Icon(_showOnlySizes ? Icons.expand_more : Icons.expand_less),
+          label: Text('Variants Selection'),
+        ),
+
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (child, animation) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, -0.1),
+                end: Offset.zero,
+              ).animate(CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutQuart,
+              )),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          child: _showOnlySizes ? _buildSizeVariantsOnly(product) : _buildAllVariants(product),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSizeVariantsOnly(Product product) {
+    final sizeVariants = product.variants.where((v) => v.type.toLowerCase() == 'size').toList();
+
+    return Material(
+      color: AppColors.transparent,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Select Size',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: sizeVariants.map((variant) {
+              final isSelected = _selectedSize == variant.value;
+
+              return ChoiceChip(
+                label: Text(variant.value),
+                selected: isSelected,
+                onSelected: (selected) {
+                  setState(() {
+                    _selectedSize = selected ? variant.value : null;
+                  });
+                },
+                selectedColor: isDark(context) ? AppColors.primary : AppColors.primary.withAlpha(180),
+                backgroundColor: isDark(context) ? AppColors.grey7 : AppColors.white2,
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAllVariants(Product product) {
     // Group variants by type
     final Map<String, List<ProductVariant>> variantsByType = {};
     for (final variant in product.variants) {
@@ -372,45 +450,48 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
       variantsByType[variant.type]!.add(variant);
     }
 
-    return variantsByType.entries.map((entry) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Material(
+      color: AppColors.transparent,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // Align all content to start
         children: [
-          Text(
-            'Select ${entry.key}',
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+          for (final entry in variantsByType.entries) ...[
+            Text(
+              'Select ${entry.key}',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: entry.value.map((variant) {
-              final isSelected = entry.key.toLowerCase() == 'size' ? _selectedSize == variant.value : _selectedVariant == variant.value;
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: entry.value.map((variant) {
+                final isSelected = entry.key.toLowerCase() == 'size' ? _selectedSize == variant.value : _selectedVariant == variant.value;
 
-              return ChoiceChip(
-                label: Text(variant.value),
-                selected: isSelected,
-                onSelected: (selected) {
-                  setState(() {
-                    if (entry.key.toLowerCase() == 'size') {
-                      _selectedSize = selected ? variant.value : null;
-                    } else {
-                      _selectedVariant = selected ? variant.value : null;
-                    }
-                  });
-                },
-                selectedColor: isDark(context) ? AppColors.primary : AppColors.primary.withAlpha(180),
-                backgroundColor: isDark(context) ? AppColors.grey7 : AppColors.white2,
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 16),
+                return ChoiceChip(
+                  label: Text(variant.value),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      if (entry.key.toLowerCase() == 'size') {
+                        _selectedSize = selected ? variant.value : null;
+                      } else {
+                        _selectedVariant = selected ? variant.value : null;
+                      }
+                    });
+                  },
+                  selectedColor: isDark(context) ? AppColors.primary : AppColors.primary.withAlpha(180),
+                  backgroundColor: isDark(context) ? AppColors.grey7 : AppColors.white2,
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16), // Consistent spacing between groups
+          ],
         ],
-      );
-    }).toList();
+      ),
+    );
   }
 
   Widget _buildDescriptionTab(ProductWithPricing p) {
@@ -1305,7 +1386,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                             color: isDarkMode ? AppColors.primary : AppColors.darkPrimary,
                           ),
                         ),
-                        if (pricing.regularPrice > effectivePrice) ...[
+                        /*if (pricing.regularPrice > effectivePrice) ...[
                           const SizedBox(width: 6),
                           Text(
                             '\$${pricing.regularPrice.toStringAsFixed(2)}',
@@ -1315,7 +1396,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                               color: isDarkMode ? AppColors.grey4 : AppColors.grey5,
                             ),
                           ),
-                        ],
+                        ],*/
                       ],
                     ),
                   ],
