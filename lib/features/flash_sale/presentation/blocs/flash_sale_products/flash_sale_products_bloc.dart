@@ -9,7 +9,7 @@ part 'flash_sale_products_state.dart';
 class FlashSaleProductsBloc extends Bloc<FlashSaleProductsEvent, FlashSaleProductsState> {
   final FlashSaleRepository repository;
 
-  FlashSaleProductsBloc({required this.repository}) : super(FlashSaleProductsInitial()) {
+  FlashSaleProductsBloc({required this.repository}) : super(const FlashSaleProductsState()) {
     on<LoadFlashSaleProducts>(_onLoadFlashSaleProducts);
     on<RefreshFlashSaleProducts>(_onRefreshFlashSaleProducts);
   }
@@ -18,13 +18,19 @@ class FlashSaleProductsBloc extends Bloc<FlashSaleProductsEvent, FlashSaleProduc
     LoadFlashSaleProducts event,
     Emitter<FlashSaleProductsState> emit,
   ) async {
-    emit(FlashSaleProductsLoading());
+    emit(state.copyWith(status: FlashSaleProductsStatus.loading));
 
     final result = await repository.getFlashSaleProducts();
 
     result.fold(
-      (failure) => emit(FlashSaleProductsError(failure.message)),
-      (products) => emit(FlashSaleProductsLoaded(products)),
+      (failure) => emit(state.copyWith(
+        status: FlashSaleProductsStatus.error,
+        errorMessage: failure.message,
+      )),
+      (products) => emit(state.copyWith(
+        status: FlashSaleProductsStatus.loaded,
+        products: products,
+      )),
     );
   }
 
@@ -32,19 +38,21 @@ class FlashSaleProductsBloc extends Bloc<FlashSaleProductsEvent, FlashSaleProduc
     RefreshFlashSaleProducts event,
     Emitter<FlashSaleProductsState> emit,
   ) async {
-    final currentState = state;
-
-    if (currentState is FlashSaleProductsLoaded) {
-      emit(FlashSaleProductsRefreshing(currentState.products));
-    } else {
-      emit(FlashSaleProductsLoading());
-    }
+    emit(state.copyWith(
+      status: state.status == FlashSaleProductsStatus.loaded ? FlashSaleProductsStatus.refreshing : FlashSaleProductsStatus.loading,
+    ));
 
     final result = await repository.getFlashSaleProducts();
 
     result.fold(
-      (failure) => emit(FlashSaleProductsError(failure.message)),
-      (products) => emit(FlashSaleProductsLoaded(products)),
+      (failure) => emit(state.copyWith(
+        status: FlashSaleProductsStatus.error,
+        errorMessage: failure.message,
+      )),
+      (products) => emit(state.copyWith(
+        status: FlashSaleProductsStatus.loaded,
+        products: products,
+      )),
     );
   }
 }

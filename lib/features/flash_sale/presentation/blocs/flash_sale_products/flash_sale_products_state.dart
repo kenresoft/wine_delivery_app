@@ -1,39 +1,36 @@
 part of 'flash_sale_products_bloc.dart';
 
-abstract class FlashSaleProductsState extends Equatable {
-  const FlashSaleProductsState();
-
-  @override
-  List<Object> get props => [];
+enum FlashSaleProductsStatus {
+  initial,
+  loading,
+  refreshing,
+  loaded,
+  error,
 }
 
-class FlashSaleProductsInitial extends FlashSaleProductsState {}
-
-class FlashSaleProductsLoading extends FlashSaleProductsState {}
-
-class FlashSaleProductsRefreshing extends FlashSaleProductsState {
+class FlashSaleProductsState extends Equatable {
+  final FlashSaleProductsStatus status;
   final List<FlashSaleProduct> products;
+  final String? errorMessage;
 
-  const FlashSaleProductsRefreshing(this.products);
+  const FlashSaleProductsState({
+    this.status = FlashSaleProductsStatus.initial,
+    this.products = const [],
+    this.errorMessage,
+  });
+
+  FlashSaleProductsState copyWith({
+    FlashSaleProductsStatus? status,
+    List<FlashSaleProduct>? products,
+    String? errorMessage,
+  }) {
+    return FlashSaleProductsState(
+      status: status ?? this.status,
+      products: products ?? this.products,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
   @override
-  List<Object> get props => [products];
-}
-
-class FlashSaleProductsLoaded extends FlashSaleProductsState {
-  final List<FlashSaleProduct> products;
-
-  const FlashSaleProductsLoaded(this.products);
-
-  @override
-  List<Object> get props => [products];
-}
-
-class FlashSaleProductsError extends FlashSaleProductsState {
-  final String message;
-
-  const FlashSaleProductsError(this.message);
-
-  @override
-  List<Object> get props => [message];
+  List<Object?> get props => [status, products, errorMessage];
 }
