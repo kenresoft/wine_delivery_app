@@ -8,6 +8,10 @@ class CartState extends Equatable {
   final String? message;
   final bool itemRemoved;
 
+  int get totalQuantity => cart?.items.fold(0, (sum, item) => sum! + item.quantity) ?? 0;
+
+  int get itemCount => cart?.items.length ?? 0;
+
   const CartState({
     this.status = CartStatus.initial,
     this.cart,
