@@ -159,6 +159,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         if (productWithPricing.product.relatedProducts.isNotEmpty) {
           final relatedIds = productWithPricing.product.relatedProducts.map((rp) => rp.productId).toList();
           add(LoadRelatedProducts(relatedIds));
+        } else {
+          add(LoadRelatedProducts([]));
         }
       },
     );
