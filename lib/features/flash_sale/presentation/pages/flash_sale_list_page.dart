@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vintiora/core/router/nav.dart';
+import 'package:vintiora/core/router/routes.dart';
+import 'package:vintiora/features/main/presentation/widgets/custom_app_bar.dart';
+import 'package:vintiora/shared/components/app_wrapper.dart';
+import 'package:vintiora/shared/widgets/animated_fade_scale.dart';
 
 import '../blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import '../blocs/flash_sale_products/flash_sale_products_bloc.dart';
 import '../widgets/flash_sale_banner.dart';
 import '../widgets/flash_sale_product_card.dart';
-import 'flash_sale_details_page.dart';
 
 class FlashSaleListPage extends StatelessWidget {
   const FlashSaleListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flash Sales'),
-        elevation: 0,
-      ),
-      body: RefreshIndicator(
+    return AppWrapper(
+      appBar: CustomAppBar(title: 'Flash Sales'),
+      child: RefreshIndicator(
         onRefresh: () async {
           context.read<ActiveFlashSalesBloc>().add(RefreshActiveFlashSales());
           context.read<FlashSaleProductsBloc>().add(RefreshFlashSaleProducts());
-          // Wait for the refresh to complete
           await Future.delayed(const Duration(seconds: 1));
         },
         child: CustomScrollView(
@@ -36,19 +36,21 @@ class FlashSaleListPage extends StatelessWidget {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: BlocBuilder<ActiveFlashSalesBloc, ActiveFlashSalesState>(
-                builder: (context, state) {
-                  if (state.status == ActiveFlashSalesStatus.loading) {
-                    return const Center(
+            BlocBuilder<ActiveFlashSalesBloc, ActiveFlashSalesState>(
+              builder: (context, state) {
+                if (state.status == ActiveFlashSalesStatus.loading) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
                       child: Padding(
                         padding: EdgeInsets.all(32.0),
                         child: CircularProgressIndicator(),
                       ),
-                    );
-                  }
-                  if (state.status == ActiveFlashSalesStatus.error) {
-                    return Center(
+                    ),
+                  );
+                }
+                if (state.status == ActiveFlashSalesStatus.error) {
+                  return SliverToBoxAdapter(
+                    child: Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32.0),
                         child: Column(
@@ -65,41 +67,45 @@ class FlashSaleListPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                    );
-                  }
+                    ),
+                  );
+                }
 
-                  final flashSales = state.flashSales;
+                final flashSales = state.flashSales;
 
-                  if (flashSales.isEmpty) {
-                    return const Center(
+                if (flashSales.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
                       child: Padding(
                         padding: EdgeInsets.all(32.0),
                         child: Text('No active flash sales right now.'),
                       ),
-                    );
-                  }
-
-                  return Column(
-                    children: flashSales
-                        .map(
-                          (flashSale) => FlashSaleBanner(
-                            flashSale: flashSale,
-                            onViewAllTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FlashSaleDetailsPage(
-                                    flashSaleId: flashSale.id,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                        .toList(),
+                    ),
                   );
-                },
-              ),
+                }
+
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final flashSale = flashSales[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: SizedBox(
+                          height: 214,
+                          child: FlashSaleBanner(
+                            flashSale: flashSale,
+                            onViewAllTap: () => Nav.push(
+                              Routes.flashSaleDetails,
+                              arguments: flashSale.id,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: flashSales.length,
+                  ),
+                );
+              },
             ),
 
             // Flash Sale Products section
@@ -123,25 +129,41 @@ class FlashSaleListPage extends StatelessWidget {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: BlocBuilder<ActiveFlashSalesBloc, ActiveFlashSalesState>(
-                builder: (context, state) {
-                  if (state.status == ActiveFlashSalesStatus.loading) {
-                    return const Center(
+            BlocBuilder<FlashSaleProductsBloc, FlashSaleProductsState>(
+              builder: (context, state) {
+                // Trigger loading if initial state
+                if (state.status == FlashSaleProductsStatus.initial) {
+                  context.read<FlashSaleProductsBloc>().add(LoadFlashSaleProducts());
+                  return const SliverToBoxAdapter(
+                    child: Center(
                       child: Padding(
                         padding: EdgeInsets.all(32.0),
                         child: CircularProgressIndicator(),
                       ),
-                    );
-                  }
-                  if (state.status == ActiveFlashSalesStatus.error) {
-                    return Center(
+                    ),
+                  );
+                }
+
+                if (state.status == FlashSaleProductsStatus.loading) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
+                }
+
+                if (state.status == FlashSaleProductsStatus.error) {
+                  return SliverToBoxAdapter(
+                    child: Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('Error: ${state.errorMessage}'),
+                            Text('${state.errorMessage}'),
                             const SizedBox(height: 16),
                             ElevatedButton(
                               onPressed: () {
@@ -152,38 +174,75 @@ class FlashSaleListPage extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ),
+                  );
+                }
+
+                // Handle refreshing state - show current products while loading
+                if (state.status == FlashSaleProductsStatus.refreshing) {
+                  if (state.products.isEmpty) {
+                    return const SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
                     );
                   }
-                  final products = state.flashSales;
+                  return SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 320,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.products.length,
+                        itemBuilder: (context, index) {
+                          final flashSaleProduct = state.products[index];
+                          return AnimatedFadeScale(
+                            delay: Duration(milliseconds: 50 * index),
+                            child: FlashSaleProductCard(
+                              flashSaleProduct: flashSaleProduct,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }
 
-                  if (products.isEmpty) {
-                    return const Center(
+                // Loaded state
+                if (state.products.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
                       child: Padding(
                         padding: EdgeInsets.all(32.0),
                         child: Text('No flash sale products available.'),
                       ),
-                    );
-                  }
+                    ),
+                  );
+                }
 
-                  return SizedBox(
-                    height: 280,
+                return SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 320,
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       scrollDirection: Axis.horizontal,
-                      itemCount: products.length,
+                      itemCount: state.products.length,
                       itemBuilder: (context, index) {
-                        final product = products[index];
-                        return FlashSaleProductCard(
-                          flashSale: product,
-                          onTap: () {
-                            // Navigate to product details
-                          },
+                        final product = state.products[index];
+                        return AnimatedFadeScale(
+                          delay: Duration(milliseconds: 50 * index),
+                          child: FlashSaleProductCard(
+                            flashSaleProduct: product,
+                          ),
                         );
                       },
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
 
             // Bottom padding
