@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/di/di_setup.dart';
+import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/asset_handler.dart';
@@ -177,8 +178,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   void _handleBackPress(BuildContext context) {
-    getIt<NavigationBloc>().add(const PageTapped(0));
-    // Nav.pop();
+    final bloc = getIt<NavigationBloc>();
+    if (bloc.state.selectedIndex == 0) {
+      Nav.pop();
+    } else {
+      bloc.add(const PageTapped(0));
+    }
   }
 
   @override

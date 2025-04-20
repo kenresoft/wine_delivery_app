@@ -20,6 +20,7 @@ import 'package:vintiora/features/promotion/presentation/widgets/promotion_banne
 import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/shared/components/app_wrapper.dart';
 import 'package:vintiora/shared/components/svg_wrapper.dart';
+import 'package:vintiora/shared/widgets/animated_fade_scale.dart';
 import 'package:vintiora/shared/widgets/custom_text_field.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   final _refreshKey = GlobalKey<RefreshIndicatorState>();
 
   bool _showAllCategories = false;
-  final allCategories = WineCategory.values;
+  final categories = WineCategory.values;
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -272,6 +273,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
               ),
             ),
+
             // Flash Sale Section
             SliverToBoxAdapter(
               child: Padding(
@@ -308,11 +310,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         separatorBuilder: (context, index) => const SizedBox(width: 16),
                         itemBuilder: (context, index) {
                           final flashSale = flashSales[index];
-                          return FlashSaleBanner(
-                            flashSale: flashSale,
-                            onViewAllTap: () => Nav.push(
-                              Routes.flashSaleDetails,
-                              arguments: flashSale.id,
+                          return AnimatedFadeScale(
+                            delay: Duration(milliseconds: 50 * index),
+                            child: FlashSaleBanner(
+                              flashSale: flashSale,
+                              onViewAllTap: () => Nav.push(
+                                Routes.flashSaleDetails,
+                                arguments: flashSale.id,
+                              ),
                             ),
                           );
                         },
@@ -332,7 +337,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   Widget _buildCategoryRow(double itemWidth, double spacing) {
-    final displayedCategories = allCategories.take(4).toList();
+    final displayedCategories = categories.take(4).toList();
     return SizedBox(
       height: _categoryItemHeight,
       child: ListView.separated(
@@ -340,7 +345,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         physics: const NeverScrollableScrollPhysics(),
         itemCount: displayedCategories.length,
         separatorBuilder: (_, __) => SizedBox(width: spacing),
-        itemBuilder: (_, index) => _buildCategoryItem(displayedCategories[index], itemWidth),
+        itemBuilder: (_, index) {
+          return AnimatedFadeScale(
+            delay: Duration(milliseconds: 50 * index),
+            child: _buildCategoryItem(displayedCategories[index], itemWidth),
+          );
+        },
       ),
     );
   }
@@ -354,7 +364,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       mainAxisSpacing: spacing,
       crossAxisSpacing: spacing,
       padding: EdgeInsets.zero,
-      children: allCategories.map((cat) => _buildCategoryItem(cat, itemWidth)).toList(),
+      children: List.generate(categories.length, (index) {
+        final category = categories[index];
+        return AnimatedFadeScale(
+          delay: Duration(milliseconds: 50 * index),
+          child: _buildCategoryItem(category, itemWidth),
+        );
+      }),
     );
   }
 
