@@ -5,6 +5,7 @@ import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/features/home/presentation/widgets/product_card.dart';
 import 'package:vintiora/features/product/domain/entities/product.dart';
 import 'package:vintiora/features/product/presentation/bloc/product/product_bloc.dart';
+import 'package:vintiora/shared/widgets/animated_fade_scale.dart';
 
 enum ProductFilterType { all, newest, popular }
 
@@ -116,7 +117,10 @@ class _ProductFilterSectionState extends State<ProductFilterSection> {
                     itemCount: selectedProducts.length,
                     itemBuilder: (context, index) {
                       final product = selectedProducts[index];
-                      return ProductCard(product: product);
+                      return AnimatedFadeScale(
+                        delay: Duration(milliseconds: 50 * index),
+                        child: ProductCard(product: product),
+                      );
                     },
                   ),
                 );

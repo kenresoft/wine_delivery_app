@@ -1,11 +1,15 @@
 import 'package:extensionresoft/extensionresoft.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
+import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/features/product/domain/entities/product.dart';
+import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -18,9 +22,10 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Nav.push(Routes.productDetails, arguments: product);
-      },
+      onTap: () => Nav.push(
+        Routes.productDetails,
+        arguments: product.id,
+      ),
       child: SizedBox(
         height: 185.h.clamp(185, 210),
         child: Column(
@@ -35,36 +40,33 @@ class ProductCard extends StatelessWidget {
                     width: double.infinity,
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: isDark(context) ? AppColors.grey8 : AppColors.white,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: AppImage(
-                      "${Constants.baseUrl}${product.image}",
-                      fit: BoxFit.fitHeight,
+                    child: Hero(
+                      tag: product.id,
+                      transitionOnUserGestures: true,
+                      child: AppImage(
+                        "${Constants.baseUrl}${product.image}",
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
                   ),
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
+                    child: BlocSelector<FavsBloc, FavsState, bool>(
+                      selector: (state) => state.likedProductIds.contains(product.id),
+                      builder: (context, isLiked) {
+                        return GestureDetector(
+                          onTap: () => context.read<FavsBloc>().add(ToggleLike(product.id, false)),
+                          child: Icon(
+                            CupertinoIcons.heart_circle_fill,
+                            size: 32,
+                            color: isLiked ? (isDark(context) ? AppColors.primary : AppColors.darkPrimary) : (isDark(context) ? AppColors.grey4 : AppColors.grey6),
                           ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.favorite_border,
-                        size: 18,
-                        color: Colors.black54,
-                      ),
+                        );
+                      },
                     ),
                   ),
                 ],
