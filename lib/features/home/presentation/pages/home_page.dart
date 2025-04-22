@@ -20,8 +20,6 @@ import 'package:vintiora/features/promotion/presentation/widgets/promotion_banne
 import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/shared/components/app_wrapper.dart';
 import 'package:vintiora/shared/components/svg_wrapper.dart';
-import 'package:vintiora/shared/widgets/animated_fade_scale.dart';
-import 'package:vintiora/shared/widgets/custom_text_field.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
