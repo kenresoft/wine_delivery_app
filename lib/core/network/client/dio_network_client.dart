@@ -39,11 +39,11 @@ class DioNetworkClient implements INetworkClient {
       CacheInterceptor(
         cacheService: _cacheService,
       ),
-      LogInterceptor(
+      /*LogInterceptor(
         requestBody: true,
         responseBody: true,
         // logPrint: logger.d,
-      ),
+      ),*/
     ]);
   }
 

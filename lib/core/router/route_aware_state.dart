@@ -19,11 +19,11 @@ abstract class RouteAwareState<T extends StatefulWidget> extends State<T> with R
     super.dispose();
   }
 
-  void onReturnToScreen() {}
+  void onReturn() {}
 
   @override
   void didPopNext() {
-    onReturnToScreen();
+    onReturn();
   }
 
   @override
