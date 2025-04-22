@@ -6,14 +6,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/router/routes.dart';
+import 'package:vintiora/core/theme/app_button_theme.dart';
+import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
+import 'package:vintiora/core/theme/bloc/theme_bloc.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/core/utils/extensions.dart';
-import 'package:vintiora/core/utils/utils.dart';
 import 'package:vintiora/features/auth/presentation/bloc/auth/auth_bloc.dart';
-import 'package:vintiora/features/favorite/favorites_screen.dart';
+import 'package:vintiora/features/main/presentation/widgets/custom_app_bar.dart';
 import 'package:vintiora/features/order/presentation/bloc/shipment/shipment_bloc.dart';
-import 'package:vintiora/features/product/data/models/responses/product.dart';
+import 'package:vintiora/features/product/domain/entities/product.dart';
+// import 'package:vintiora/features/product/data/models/responses/product.dart';
 import 'package:vintiora/features/product/presentation/bloc/favorite/favs_bloc.dart';
 import 'package:vintiora/features/user/presentation/bloc/profile/profile_bloc.dart';
 import 'package:vintiora/features/user/presentation/pages/user_profile_edit_page.dart';
@@ -36,69 +39,67 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (context.current) {
-      context.read<ProfileBloc>().add(const ProfileFetch());
-      context.read<FavsBloc>().add(LoadFavs());
-      context.read<ShipmentBloc>().add(GetShipmentDetails());
+      // context.read<ProfileBloc>().add(const ProfileFetch());
+      // context.read<FavsBloc>().add(LoadFavs());
+      // context.read<ShipmentBloc>().add(GetShipmentDetails());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
-      return switch (state) {
-        ProfileFetching() => _buildShimmerLoading(),
-        // ProfileFetching() => const Center(child: CircularProgressIndicator()),
-        ProfileError() => _buildShimmerLoading(),
-        // ProfileError() => const Center(child: CircularProgressIndicator()),
-        // ProfileError() => Center(child: Text(state.error)),
-        ProfileLoaded() => Scaffold(
-            appBar: AppBar(
-              title: const Text('User Profile'),
-              automaticallyImplyLeading: false,
-              actions: [
-                IconButton(
-                  icon: FontAwesomeIcons.penFancy.ic,
-                  onPressed: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return UserProfileEditPage(profile: state.profile);
-                      },
-                    ),
-                  ),
+      if (state.status == ProfileStatus.loading) {
+        return _buildShimmerLoading();
+      } else if (state.status == ProfileStatus.failure) {
+        return _buildShimmerLoading();
+      }
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: 'User Profile',
+          actions: [
+            IconButton(
+              icon: FontAwesomeIcons.penFancy.ic,
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return UserProfileEditPage(profile: state.profile!);
+                  },
                 ),
-              ],
+              ),
             ),
-            body: buildBody(context, state),
-          ),
-      };
+          ],
+        ),
+        body: buildBody(context, state),
+      );
     });
   }
 
-  // Build the Shimmers
+// Build the Shimmers
   Widget _buildShimmerLoading() {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return ListView(
       children: [
-        _buildShimmerProfileHeader(),
-        _buildShimmerAccountInfo(),
-        _buildShimmerOrderHistory(),
-        _buildShimmerFavoritesSection(),
+        _buildShimmerProfileHeader(isDarkMode),
+        _buildShimmerAccountInfo(isDarkMode),
+        _buildShimmerOrderHistory(isDarkMode),
+        _buildShimmerFavoritesSection(isDarkMode),
       ],
     );
   }
 
-  Widget _buildShimmerProfileHeader() {
+  Widget _buildShimmerProfileHeader(bool isDarkMode) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: isDarkMode ? AppColors.grey8 : AppColors.grey1,
+      highlightColor: isDarkMode ? AppColors.grey6 : AppColors.white4,
       child: Container(
         padding: const EdgeInsets.all(16.0),
-        color: Colors.grey[200],
+        color: isDarkMode ? AppColors.grey7 : AppColors.white1,
         child: Row(
           children: [
             CircleAvatar(
               radius: 40,
-              backgroundColor: Colors.grey[300],
+              backgroundColor: isDarkMode ? AppColors.grey6 : AppColors.grey1,
             ),
             const SizedBox(width: 16.0),
             Expanded(
@@ -108,13 +109,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   Container(
                     height: 20,
                     width: double.infinity,
-                    color: Colors.grey[300],
+                    color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                   ),
                   const SizedBox(height: 4.0),
                   Container(
                     height: 15,
                     width: 150,
-                    color: Colors.grey[300],
+                    color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                   ),
                 ],
               ),
@@ -125,10 +126,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _buildShimmerAccountInfo() {
+  Widget _buildShimmerAccountInfo(bool isDarkMode) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: isDarkMode ? AppColors.grey8 : AppColors.grey1,
+      highlightColor: isDarkMode ? AppColors.grey6 : AppColors.white4,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -137,12 +138,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Container(
               height: 20,
               width: 200,
-              color: Colors.grey[300],
+              color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
             ),
             const SizedBox(height: 8.0),
             Container(
               height: 40,
-              color: Colors.grey[300],
+              color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
             ),
           ],
         ),
@@ -150,18 +151,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _buildShimmerOrderHistory() {
+  Widget _buildShimmerOrderHistory(bool isDarkMode) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: isDarkMode ? AppColors.grey8 : AppColors.grey1,
+      highlightColor: isDarkMode ? AppColors.grey6 : AppColors.white4,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            Container(
               height: 20,
               width: 200,
+              color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
             ),
             const SizedBox(height: 8.0),
             ListView.builder(
@@ -170,22 +172,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               itemCount: 3,
               itemBuilder: (context, index) {
                 return Card(
+                  color: isDarkMode ? AppColors.darkCard : AppColors.lightCard,
                   child: ListTile(
-                    leading: SizedBox(
+                    leading: Container(
                       width: 50,
                       height: 50,
+                      color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                     ),
-                    title: SizedBox(
+                    title: Container(
                       height: 20,
                       width: 150,
+                      color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                     ),
-                    subtitle: SizedBox(
+                    subtitle: Container(
                       height: 15,
                       width: 100,
+                      color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                     ),
-                    trailing: SizedBox(
+                    trailing: Container(
                       width: 20,
                       height: 20,
+                      color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                     ),
                   ),
                 );
@@ -197,10 +204,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _buildShimmerFavoritesSection() {
+  Widget _buildShimmerFavoritesSection(bool isDarkMode) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: isDarkMode ? AppColors.grey8 : AppColors.grey1,
+      highlightColor: isDarkMode ? AppColors.grey6 : AppColors.white4,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -209,7 +216,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Container(
               height: 20,
               width: 200,
-              color: Colors.grey[300],
+              color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
             ),
             const SizedBox(height: 8.0),
             GridView.builder(
@@ -223,19 +230,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               itemCount: 6,
               itemBuilder: (context, index) {
                 return Card(
+                  color: isDarkMode ? AppColors.darkCard : AppColors.lightCard,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         width: 60,
                         height: 60,
-                        color: Colors.grey[300],
+                        color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                       ),
                       const SizedBox(height: 4.0),
                       Container(
                         height: 15,
                         width: 80,
-                        color: Colors.grey[300],
+                        color: isDarkMode ? AppColors.grey6 : AppColors.grey1,
                       ),
                     ],
                   ),
@@ -250,39 +258,32 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   ///
 
-  Widget buildBody(BuildContext context, ProfileLoaded state) {
+  Widget buildBody(BuildContext context, ProfileState state) {
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Profile Header
-          _buildProfileHeader(context, state),
-
-          // Account Information
-          _buildAccountInfo(context),
-
-          // Order History
-          // _buildOrderHistory(context),
-
-          // Favorites
-          _buildFavoritesSection(context),
-
-          // Account Settings
-          _buildAccountSettings(context),
-
-          // Help & Support
-          _buildHelpSupport(context),
-
-          // Logout
-          _buildLogoutButton(context),
-        ],
+        children: List.generate(6, (index) {
+          return AnimatedFadeScale(
+            delay: Duration(milliseconds: 50 * index),
+            child: switch (index) {
+              0 => _buildProfileHeader(context, state),
+              1 => _buildAccountInfo(context),
+              2 => _buildFavoritesSection(context),
+              3 => _buildAccountSettings(context),
+              4 => _buildHelpSupport(context),
+              5 => _buildLogoutButton(context),
+              // 6 => _buildOrderHistory(context),
+              _ => const SizedBox.shrink(),
+            },
+          );
+        }),
       ),
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, ProfileLoaded state) {
-    final imagePath = state.profile.profileImage;
+  Widget _buildProfileHeader(BuildContext context, ProfileState state) {
+    final imagePath = state.profile?.profileImage;
     return Container(
       padding: const EdgeInsets.all(16.0).r,
       child: Row(
@@ -295,13 +296,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 side: BorderSide(color: colorScheme(context).tertiary),
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: CircleAvatar(
+              child: AppCircleImage(
+                imagePath != null ? '${Constants.baseUrl}$imagePath' : null,
                 radius: 40,
-                backgroundImage: conditionFunction(
-                  imagePath != null,
-                  () => NetworkImage('${Constants.baseUrl}$imagePath'),
-                  () => AssetImage(Constants.imagePlaceholder),
-                ),
+                fallbackImage: Constants.imagePlaceholder,
+                backgroundColor: colorScheme(context).tertiary.withValues(alpha: 0.1),
               ),
             ),
           ),
@@ -313,13 +312,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    state.profile.username,
+                    state.profile!.username,
                     maxLines: 2,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    state.profile.email,
+                    state.profile!.email,
                     maxLines: 1,
                   ),
                 ],
@@ -386,82 +385,92 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           SizedBox(height: 8.h),
           BlocBuilder<FavsBloc, FavsState>(
             builder: (context, state) {
-              return switch (state) {
-                // FavsLoading() => const Center(child: CircularProgressIndicator()),
-                FavsError() => Center(child: Text(state.error)),
-                FavsLoaded() => GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 3.5.w / 4.h,
-                      crossAxisSpacing: 5,
-                      mainAxisSpacing: 5,
-                    ),
-                    itemCount: state.favorites.take(6).length,
-                    itemBuilder: (context, index) {
-                      final product = state.favorites[index].product;
-                      return GestureDetector(
-                        onTap: () {
-                          // Navigate to Wine Details page
-                          _viewProductDetails(product);
-                        },
-                        child: Card(
-                          // color: Colors.red,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      minWidth: double.infinity,
-                                      maxHeight: 90,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image(
-                                        image: Utils.networkImage(product.image),
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 4.h),
-                                Text(
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  product.name ?? 'No product',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                                ),
-                              ],
+              if (state.status == FavsStatus.loading) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (state.status == FavsStatus.error) {
+                return Center(child: Text(state.error.toString()));
+              }
+
+              final favorites = state.favorites;
+              final count = 3;
+
+              return SizedBox(
+                height: 165,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: favorites.length < count ? favorites.length + 1 : count + 1,
+                  itemBuilder: (context, index) {
+                    if (index == (favorites.length < count ? favorites.length : count)) {
+                      return SizedBox(
+                        width: 150,
+                        child: AnimatedFadeScale(
+                          delay: Duration(milliseconds: 50 * index),
+                          child: Center(
+                            child: OutlinedButton(
+                              style: AppButtonTheme.activeSelectableButton,
+                              onPressed: () => Nav.push(Routes.favorites),
+                              child: const Text('View All Favorites', textAlign: TextAlign.center),
                             ),
                           ),
                         ),
                       );
-                    },
-                  ),
-                _ => SizedBox(),
-              };
+                    }
+
+                    if (index >= favorites.length) {
+                      return const SizedBox.shrink();
+                    }
+
+                    final product = favorites[index];
+                    return SizedBox(
+                      width: 135,
+                      child: GestureDetector(
+                        onTap: () => _viewProductDetails(product),
+                        child: AnimatedFadeScale(
+                          delay: Duration(milliseconds: 50 * index),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        minWidth: double.infinity,
+                                        maxHeight: 90,
+                                      ),
+                                      child: Hero(
+                                        tag: product.id,
+                                        transitionOnUserGestures: true,
+                                        child: AppImage(
+                                          Constants.baseUrl + product.image,
+                                          fit: BoxFit.contain,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    product.name,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
             },
-          ),
-          const SizedBox(height: 8.0),
-          Center(
-            child: OutlinedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return FavoritesScreen();
-                    },
-                  ),
-                );
-              },
-              child: const Text('View All Favorites'),
-            ),
           ),
         ],
       ),
@@ -470,7 +479,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   Widget _buildAccountSettings(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0).copyWith(top: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -505,6 +514,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             title: const Text('App Theme'),
             onTap: () {
               // Navigate to App Theme settings page
+              context.read<ThemeBloc>().add(ToggleThemeEvent());
               /*showDialog(
                 context: context,
                 builder: (context) => ThemeSettingsDialog(),
@@ -554,15 +564,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            // backgroundColor: Colors.redAccent,
-            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+        child: SizedBox(
+          width: 180,
+          height: 46,
+          child: ElevatedButton(
+            style: AppButtonTheme.defaultElevatedButton,
+            onPressed: () {
+              _showLogoutDialog(context);
+            },
+            child: const Text('Logout'),
           ),
-          onPressed: () {
-            _showLogoutDialog(context);
-          },
-          child: const Text('Logout', style: TextStyle(fontSize: 18.0)),
         ),
       ),
     );
@@ -577,9 +588,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           content: const Text('Are you sure you want to logout?'),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
             ),
             TextButton(
@@ -600,7 +609,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _viewProductDetails(Product product) {
-    Nav.push(Routes.productDetails, arguments: product);
+    Nav.push(Routes.productDetails, arguments: product.id);
     /*Navigator.push(context, MaterialPageRoute(
       builder: (context) {
         return ProductDetailScreen(product: product);
