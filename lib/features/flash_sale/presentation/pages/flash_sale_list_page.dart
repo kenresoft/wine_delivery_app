@@ -1,10 +1,10 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vintiora/core/router/nav.dart';
 import 'package:vintiora/core/router/routes.dart';
 import 'package:vintiora/features/main/presentation/widgets/custom_app_bar.dart';
 import 'package:vintiora/shared/components/app_wrapper.dart';
-import 'package:vintiora/shared/widgets/animated_fade_scale.dart';
 
 import '../blocs/active_flash_sales/active_flash_sales_bloc.dart';
 import '../blocs/flash_sale_products/flash_sale_products_bloc.dart';
