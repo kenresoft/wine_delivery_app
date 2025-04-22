@@ -11,7 +11,6 @@ import 'package:vintiora/core/theme/app_button_theme.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/shared/components/app_wrapper.dart';
-import 'package:vintiora/shared/widgets/custom_text_field.dart';
 
 enum ErrorType {
   route,
@@ -59,7 +58,8 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
-    )..forward();
+    )
+      ..forward();
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _loadPackageInfo();
   }
@@ -101,15 +101,15 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
                     _getErrorTitle(),
                     textAlign: TextAlign.center,
                     style: theme(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 24,
-                        ),
+                      fontSize: 24,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     _getErrorMessage(widget.message),
                     style: theme(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 16,
-                        ),
+                      fontSize: 16,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -146,9 +146,9 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
                                       Text(
                                         'Error:',
                                         style: theme(context).textTheme.bodySmall?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: theme(context).colorScheme.error,
-                                            ),
+                                          fontWeight: FontWeight.bold,
+                                          color: theme(context).colorScheme.error,
+                                        ),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
@@ -165,9 +165,9 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
                                       Text(
                                         'Stack Trace:',
                                         style: theme(context).textTheme.bodySmall?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: theme(context).colorScheme.error,
-                                            ),
+                                          fontWeight: FontWeight.bold,
+                                          color: theme(context).colorScheme.error,
+                                        ),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
@@ -192,30 +192,30 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
                           onPressed: isLoading
                               ? null
                               : () async {
-                                  _isLoadingNotifier.value = true;
-                                  try {
-                                    await widget.onRetry();
-                                  } finally {
-                                    _isLoadingNotifier.value = false;
-                                  }
-                                },
+                            _isLoadingNotifier.value = true;
+                            try {
+                              await widget.onRetry();
+                            } finally {
+                              _isLoadingNotifier.value = false;
+                            }
+                          },
                           style: AppButtonTheme.defaultElevatedButton,
                           child: isLoading
                               ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 3,
-                                  ),
-                                )
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 3,
+                            ),
+                          )
                               : Text(
-                                  widget.actionText ?? 'Try Again',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                            widget.actionText ?? 'Try Again',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -350,24 +350,24 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
                   onPressed: isLoading
                       ? null
                       : () {
-                          if (_validateInput(_issueController.text)) {
-                            _confirmReport(context, _issueController.text);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Please enter a description (1-500 characters)',
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                    if (_validateInput(_issueController.text)) {
+                      _confirmReport(context, _issueController.text);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Please enter a description (1-500 characters)',
+                          ),
+                        ),
+                      );
+                    }
+                  },
                   child: isLoading
                       ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
                       : const Text('Submit Report'),
                 ),
               ],
@@ -386,7 +386,7 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
           title: const Text('Confirm Submission'),
           content: const Text(
             'This will send the error details to our support team. '
-            'Do you want to proceed?',
+                'Do you want to proceed?',
           ),
           actions: [
             TextButton(
@@ -407,7 +407,9 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
   }
 
   bool _validateInput(String input) {
-    return input.trim().isNotEmpty && input.length <= 500;
+    return input
+        .trim()
+        .isNotEmpty && input.length <= 500;
   }
 
   Future<void> _submitReport(String issue) async {
@@ -421,7 +423,10 @@ class _ErrorPageState extends State<ErrorPage> with SingleTickerProviderStateMix
         'errorType': widget.errorType.toString(),
         'appVersion': _packageInfo?.version,
         'buildNumber': _packageInfo?.buildNumber,
-        'platform': Theme.of(context).platform.toString(),
+        'platform': Theme
+            .of(context)
+            .platform
+            .toString(),
         'timestamp': DateTime.now().toIso8601String(),
       };
 

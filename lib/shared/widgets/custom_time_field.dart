@@ -1,5 +1,5 @@
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
-import 'package:vintiora/shared/widgets/custom_text_field.dart';
 
 class CustomTimeField extends StatelessWidget {
   final String labelText;
