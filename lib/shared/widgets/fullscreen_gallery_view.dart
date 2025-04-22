@@ -1,14 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:extensionresoft/extensionresoft.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vintiora/__.dart';
 import 'package:vintiora/core/theme/app_colors.dart';
 import 'package:vintiora/core/theme/app_theme.dart';
 import 'package:vintiora/core/utils/asset_handler.dart';
 import 'package:vintiora/core/utils/constants.dart';
 import 'package:vintiora/features/main/presentation/widgets/custom_app_bar.dart';
-import 'package:vintiora/shared/widgets/animated_fade_scale.dart';
 
 /// A controller class to manage the state of the gallery view
 class GalleryController {
