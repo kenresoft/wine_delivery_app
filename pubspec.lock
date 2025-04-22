@@ -157,10 +157,10 @@ packages:
     dependency: transitive
     description:
       name: connectivity_plus
-      sha256: "8a68739d3ee113e51ad35583fdf9ab82c55d09d693d3c39da1aebab87c938412"
+      sha256: "04bf81bb0b77de31557b58d052b24b3eee33f09a6e7a8c68a3e247c7df19ec27"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.2"
+    version: "6.1.3"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -252,11 +252,10 @@ packages:
   extensionresoft:
     dependency: "direct main"
     description:
-      name: extensionresoft
-      sha256: "589d2066e30cb6957ade563885dde9952ba8555091a043d749261244f47a1ccc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
+      path: "../../packages/extensionresoft"
+      relative: true
+    source: path
+    version: "1.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -928,14 +927,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  payment_card:
-    dependency: "direct main"
-    description:
-      name: payment_card
-      sha256: "47e8ae7517ba8c4e466a935a3136175615daeeaf179b65b888a81b7868e65da0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1"
   permission_handler:
     dependency: "direct main"
     description:
@@ -1032,14 +1023,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.2"
-  riff_switch:
-    dependency: "direct main"
-    description:
-      name: riff_switch
-      sha256: "34bb632365f6598b88eaab76deec005bbc1c3819bb73b6541295e4c951397be4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
   rxdart:
     dependency: transitive
     description:
@@ -1068,10 +1051,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences
-      sha256: "688ee90fbfb6989c980254a56cb26ebe9bb30a3a2dff439a78894211f73de67a"
+      sha256: "6e8bf70b7fef813df4e9a36f658ac46d107db4b4cfe1048b477d4e453a8159f5"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.3"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -1446,5 +1429,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.7.0-0 <4.0.0"
+  dart: ">=3.7.0 <4.0.0"
   flutter: ">=3.27.0"

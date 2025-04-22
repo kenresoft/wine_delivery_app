@@ -34,7 +34,10 @@ dependencies:
 
   # Core
   cupertino_icons: ^1.0.8
-  extensionresoft: ^1.0.0
+  extensionresoft:
+    path: ../../packages/extensionresoft
+  #  extensionresoft: ^1.1.0
+  fontresoft: ^0.0.5 # Update needed
   flutter_bloc: ^9.1.0
   hydrated_bloc: ^10.0.0
   equatable: ^2.0.7
@@ -72,7 +75,7 @@ dependencies:
   # UI
   flutter_svg: ^2.1.0
   circular_image: ^0.0.6 #use mine
-#  flutter_rating_bar: ^4.0.1 #use mine
+  #  flutter_rating_bar: ^4.0.1 #use mine
   flutter_screenutil: ^5.9.3
   fluttertoast: ^8.2.12
   font_awesome_flutter: ^10.8.0
